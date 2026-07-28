@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#184f3b" />
+      <stop offset="100%" stop-color="#62a56f" />
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)" />
+  <circle cx="860" cy="300" r="130" fill="#f7c756" opacity="0.95" />
+  <text x="120" y="940" font-size="108" font-family="Segoe UI, sans-serif" fill="#ffffff" font-weight="700">RIAGRO CRM V3</text>
+  <text x="120" y="1020" font-size="42" font-family="Segoe UI, sans-serif" fill="#e9fff0">Release Candidate RC1</text>
+</svg>

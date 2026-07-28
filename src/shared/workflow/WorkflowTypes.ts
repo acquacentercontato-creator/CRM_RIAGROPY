@@ -1,0 +1,84 @@
+export const WORKFLOW_TYPE_MAP = {
+  A: 'Aspersao',
+  C: 'Carretel',
+  P: 'Pivo',
+  G: 'Gotejamento',
+  M: 'Microaspersao',
+  R: 'Recalque',
+  I: 'IMOTO',
+  T: 'Transportadores',
+} as const
+
+export type WorkflowTypeCode = keyof typeof WORKFLOW_TYPE_MAP
+
+export const WORKFLOW_STATUS = {
+  LEAD: 'LEAD',
+  CLIENTE: 'CLIENTE',
+  VISITA: 'VISITA',
+  LEVANTAMENTO: 'LEVANTAMENTO',
+  AGUARDANDO_ENGENHARIA: 'AGUARDANDO ENGENHARIA',
+  EM_PROJETO: 'EM PROJETO',
+  AGUARDANDO_MEMORIAL: 'AGUARDANDO MEMORIAL',
+  PROJETO_COMPLETO: 'PROJETO COMPLETO',
+  ORCAMENTO: 'ORÇAMENTO',
+  NEGOCIACAO: 'NEGOCIAÇÃO',
+  VENDIDO: 'VENDIDO',
+  OBRA: 'OBRA',
+  ENTREGUE: 'ENTREGUE',
+  GARANTIA: 'GARANTIA',
+  ASSISTENCIA: 'ASSISTÊNCIA',
+  CANCELADO: 'CANCELADO',
+} as const
+
+export type WorkflowStatus = (typeof WORKFLOW_STATUS)[keyof typeof WORKFLOW_STATUS]
+
+export const WORKFLOW_STATUS_VALUES = Object.values(WORKFLOW_STATUS) as WorkflowStatus[]
+
+export const WORKFLOW_DEFAULT_SEQUENCE: WorkflowStatus[] = [
+  WORKFLOW_STATUS.CLIENTE,
+  WORKFLOW_STATUS.VISITA,
+  WORKFLOW_STATUS.LEVANTAMENTO,
+  WORKFLOW_STATUS.EM_PROJETO,
+  WORKFLOW_STATUS.AGUARDANDO_MEMORIAL,
+  WORKFLOW_STATUS.ORCAMENTO,
+  WORKFLOW_STATUS.NEGOCIACAO,
+  WORKFLOW_STATUS.VENDIDO,
+  WORKFLOW_STATUS.OBRA,
+  WORKFLOW_STATUS.ENTREGUE,
+  WORKFLOW_STATUS.GARANTIA,
+  WORKFLOW_STATUS.ASSISTENCIA,
+]
+
+const normalize = (value: string) =>
+  value
+    .trim()
+    .toUpperCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+
+export const WORKFLOW_LEGACY_STATUS_MAP: Record<string, WorkflowStatus> = {
+  'AGENDAR APRESENTACAO': WORKFLOW_STATUS.LEAD,
+  'APRESENTADO / FALTA FECHAR': WORKFLOW_STATUS.NEGOCIACAO,
+  CONCORRENCIA: WORKFLOW_STATUS.NEGOCIACAO,
+  'VENDIDO / ENCAMINHADO BANCO': WORKFLOW_STATUS.VENDIDO,
+  'VENDIDO / BANCO PENAPOLIS': WORKFLOW_STATUS.VENDIDO,
+  'AGUARDANDO PROJETISTA': WORKFLOW_STATUS.AGUARDANDO_ENGENHARIA,
+  PROJETO: WORKFLOW_STATUS.EM_PROJETO,
+  'AJUSTE PROJETO': WORKFLOW_STATUS.EM_PROJETO,
+  'PROJETO HIDRAULICO PRONTO': WORKFLOW_STATUS.PROJETO_COMPLETO,
+  'MEMORIAL DESCRITIVO PRONTO': WORKFLOW_STATUS.AGUARDANDO_MEMORIAL,
+  LIBERADO: WORKFLOW_STATUS.OBRA,
+  EXECUCAO: WORKFLOW_STATUS.OBRA,
+}
+
+export const normalizeWorkflowStatus = (value: string): WorkflowStatus | null => {
+  const normalized = normalize(value)
+  const direct = WORKFLOW_STATUS_VALUES.find((item) => normalize(item) === normalized)
+  if (direct) return direct
+  return WORKFLOW_LEGACY_STATUS_MAP[normalized] ?? null
+}
+
+export const isWorkflowStatus = (value: string): value is WorkflowStatus => {
+  return normalizeWorkflowStatus(value) !== null
+}

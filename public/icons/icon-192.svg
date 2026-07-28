@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f5f46" />
+      <stop offset="100%" stop-color="#4e9f6d" />
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="36" fill="url(#g)" />
+  <path d="M44 118c18-30 40-45 67-45 16 0 28 6 37 18-23-5-39 6-49 32z" fill="#fff" opacity="0.92" />
+  <circle cx="141" cy="54" r="13" fill="#f7c756" />
+  <text x="27" y="168" font-size="30" font-family="Segoe UI, sans-serif" font-weight="700" fill="#fff">RCM</text>
+</svg>
