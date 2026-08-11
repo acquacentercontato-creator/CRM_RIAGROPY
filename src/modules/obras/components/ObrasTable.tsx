@@ -67,7 +67,7 @@ export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: O
           <MenuItem value="TODOS">{ts('obras.table.all')}</MenuItem>
           {OBRAS_STATUS.map((item) => (
             <MenuItem key={item} value={item}>
-              {ts(`obras.tabs.${item.toLowerCase()}` as Parameters<typeof ts>[0]) || item.replaceAll('_', ' ')}
+              {ts(`obras.status.${item}`)}
             </MenuItem>
           ))}
         </TextField>
@@ -130,6 +130,10 @@ export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: O
         page={page}
         onPageChange={(_, next) => setPage(next)}
         rowsPerPage={rowsPerPage}
+        labelRowsPerPage={ts('obras.table.rowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) =>
+          ts('obras.table.displayedRows', { from, to, count })
+        }
         onRowsPerPageChange={(event) => {
           setRowsPerPage(Number(event.target.value))
           setPage(0)

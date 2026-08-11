@@ -503,6 +503,33 @@ export const esPY = {
     editWork: 'Editar obra {{codigo}}',
     deleteWork: 'Eliminar obra',
     deleteDescription: 'Confirma eliminar la obra {{codigo}}?',
+    dashboard: {
+      total: 'Total de Obras',
+      criadas: 'Obra Creada',
+      planejamento: 'Planificacion',
+      execucao: 'Ejecucion',
+      acompanhamento: 'Seguimiento',
+      entrega: 'Entrega',
+      encerramento: 'Cierre',
+    },
+    status: {
+      OBRA_CRIADA: 'Obra Creada',
+      PLANEJAMENTO: 'Planificacion',
+      EXECUCAO: 'Ejecucion',
+      ACOMPANHAMENTO: 'Seguimiento',
+      ENTREGA: 'Entrega',
+      ENCERRAMENTO: 'Cierre',
+    },
+    validation: {
+      required: 'Campo obligatorio.',
+      minTwo: 'Ingrese al menos 2 caracteres.',
+      clientMin: 'Ingrese al menos 2 caracteres para el cliente.',
+      projectRequired: 'Informe el proyecto relacionado.',
+      projectNameMin: 'Ingrese al menos 2 caracteres para el proyecto.',
+      responsibleMin: 'Ingrese al menos 2 caracteres para el responsable.',
+      nonnegative: 'El valor no puede ser negativo.',
+      percentage: 'Ingrese un porcentaje entre 0 y 100.',
+    },
     fields: {
       cliente: 'Cliente',
       responsavel: 'Responsable',
@@ -546,6 +573,14 @@ export const esPY = {
     feedback: {
       saveBeforeUpload: 'Guarde la obra antes de enviar archivos.',
     },
+    timeline: {
+      types: {
+        OBRA_CRIADA: 'Obra creada',
+        OBRA_ATUALIZADA: 'Obra actualizada',
+        STATUS_OBRA_ALTERADO: 'Estado de la obra actualizado',
+        UPLOAD_OBRA: 'Archivos enviados',
+      },
+    },
     table: {
       search: 'Busqueda',
       status: 'Estado',
@@ -557,6 +592,8 @@ export const esPY = {
       prevista: 'Prevista',
       acoes: 'Acciones',
       empty: 'No se encontraron obras.',
+      rowsPerPage: 'Obras por pagina',
+      displayedRows: '{{from}}–{{to}} de {{count}}',
     },
   },
   timeline: {

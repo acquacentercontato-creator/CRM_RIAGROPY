@@ -2,54 +2,57 @@ import { z } from 'zod'
 import { OBRAS_STATUS } from '@/modules/obras/types/obrasTypes'
 
 const uploadSchema = z.object({
-  id: z.string().min(1),
+  id: z.string().min(1, 'obras.validation.required'),
   category: z.enum(['FOTO', 'VIDEO', 'PDF', 'OUTRO']),
-  name: z.string().min(1),
+  name: z.string().min(1, 'obras.validation.required'),
   mimeType: z.string(),
-  size: z.number().nonnegative(),
-  url: z.string().min(1),
-  createdAt: z.string().min(1),
+  size: z.number().nonnegative('obras.validation.nonnegative'),
+  url: z.string().min(1, 'obras.validation.required'),
+  createdAt: z.string().min(1, 'obras.validation.required'),
 })
 
 const teamMemberSchema = z.object({
-  id: z.string().min(1),
-  nome: z.string().min(2),
-  funcao: z.string().min(2),
+  id: z.string().min(1, 'obras.validation.required'),
+  nome: z.string().min(2, 'obras.validation.minTwo'),
+  funcao: z.string().min(2, 'obras.validation.minTwo'),
 })
 
 const teamSchema = z.object({
-  id: z.string().min(1),
-  nome: z.string().min(2),
-  responsavel: z.string().min(2),
+  id: z.string().min(1, 'obras.validation.required'),
+  nome: z.string().min(2, 'obras.validation.minTwo'),
+  responsavel: z.string().min(2, 'obras.validation.minTwo'),
   integrantes: z.array(teamMemberSchema),
 })
 
 const scheduleSchema = z.object({
-  id: z.string().min(1),
-  etapa: z.string().min(2),
-  dataInicio: z.string().min(1),
-  dataFim: z.string().min(1),
-  percentualConcluido: z.number().min(0).max(100),
+  id: z.string().min(1, 'obras.validation.required'),
+  etapa: z.string().min(2, 'obras.validation.minTwo'),
+  dataInicio: z.string().min(1, 'obras.validation.required'),
+  dataFim: z.string().min(1, 'obras.validation.required'),
+  percentualConcluido: z
+    .number()
+    .min(0, 'obras.validation.percentage')
+    .max(100, 'obras.validation.percentage'),
   dependencias: z.array(z.string()),
 })
 
 const diarySchema = z.object({
-  id: z.string().min(1),
-  data: z.string().min(1),
-  responsavel: z.string().min(2),
-  atividades: z.string().min(2),
+  id: z.string().min(1, 'obras.validation.required'),
+  data: z.string().min(1, 'obras.validation.required'),
+  responsavel: z.string().min(2, 'obras.validation.minTwo'),
+  atividades: z.string().min(2, 'obras.validation.minTwo'),
   ocorrencias: z.string(),
   observacoes: z.string(),
 })
 
 export const obraSchema = z.object({
-  clienteNome: z.string().min(2),
-  projetoId: z.string().min(1),
-  projetoNome: z.string().min(2),
+  clienteNome: z.string().min(2, 'obras.validation.clientMin'),
+  projetoId: z.string().min(1, 'obras.validation.projectRequired'),
+  projetoNome: z.string().min(2, 'obras.validation.projectNameMin'),
   projetoTipo: z.enum(['A', 'C', 'P', 'G', 'M', 'R', 'I', 'T']),
-  responsavelObra: z.string().min(2),
+  responsavelObra: z.string().min(2, 'obras.validation.responsibleMin'),
   status: z.enum(OBRAS_STATUS),
-  dataCriacaoObra: z.string().min(1),
+  dataCriacaoObra: z.string().min(1, 'obras.validation.required'),
   dataInicio: z.string(),
   dataPrevista: z.string(),
   dataEntrega: z.string(),

@@ -1,5 +1,6 @@
 import { Chip } from '@mui/material'
 import type { ObraStatus } from '@/modules/obras/types/obrasTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type ObrasStatusChipProps = {
   status: ObraStatus
@@ -15,5 +16,7 @@ const colorByStatus: Record<ObraStatus, 'default' | 'warning' | 'info' | 'succes
 }
 
 export const ObrasStatusChip = ({ status }: ObrasStatusChipProps) => {
-  return <Chip size="small" color={colorByStatus[status]} label={status.replaceAll('_', ' ')} />
+  const ts = useTranslationService()
+
+  return <Chip size="small" color={colorByStatus[status]} label={ts(`obras.status.${status}`)} />
 }

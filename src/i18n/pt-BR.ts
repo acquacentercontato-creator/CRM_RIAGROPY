@@ -503,6 +503,33 @@ export const ptBR = {
     editWork: 'Editar obra {{codigo}}',
     deleteWork: 'Excluir obra',
     deleteDescription: 'Confirma exclusao da obra {{codigo}}?',
+    dashboard: {
+      total: 'Total de Obras',
+      criadas: 'Obra Criada',
+      planejamento: 'Planejamento',
+      execucao: 'Execucao',
+      acompanhamento: 'Acompanhamento',
+      entrega: 'Entrega',
+      encerramento: 'Encerramento',
+    },
+    status: {
+      OBRA_CRIADA: 'Obra Criada',
+      PLANEJAMENTO: 'Planejamento',
+      EXECUCAO: 'Execucao',
+      ACOMPANHAMENTO: 'Acompanhamento',
+      ENTREGA: 'Entrega',
+      ENCERRAMENTO: 'Encerramento',
+    },
+    validation: {
+      required: 'Campo obrigatorio.',
+      minTwo: 'Informe pelo menos 2 caracteres.',
+      clientMin: 'Informe pelo menos 2 caracteres para o cliente.',
+      projectRequired: 'Informe o projeto relacionado.',
+      projectNameMin: 'Informe pelo menos 2 caracteres para o projeto.',
+      responsibleMin: 'Informe pelo menos 2 caracteres para o responsavel.',
+      nonnegative: 'O valor nao pode ser negativo.',
+      percentage: 'Informe um percentual entre 0 e 100.',
+    },
     fields: {
       cliente: 'Cliente',
       responsavel: 'Responsavel',
@@ -546,6 +573,14 @@ export const ptBR = {
     feedback: {
       saveBeforeUpload: 'Salve a obra antes de enviar arquivos.',
     },
+    timeline: {
+      types: {
+        OBRA_CRIADA: 'Obra criada',
+        OBRA_ATUALIZADA: 'Obra atualizada',
+        STATUS_OBRA_ALTERADO: 'Status da obra alterado',
+        UPLOAD_OBRA: 'Arquivos enviados',
+      },
+    },
     table: {
       search: 'Pesquisa',
       status: 'Status',
@@ -557,6 +592,8 @@ export const ptBR = {
       prevista: 'Prevista',
       acoes: 'Acoes',
       empty: 'Nenhuma obra encontrada.',
+      rowsPerPage: 'Obras por pagina',
+      displayedRows: '{{from}}–{{to}} de {{count}}',
     },
   },
   timeline: {

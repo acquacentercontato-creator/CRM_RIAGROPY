@@ -19,7 +19,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { GlobalFileUpload } from '@/shared/components/GlobalFileUpload'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
-import { WORKFLOW_TYPE_MAP } from '@/shared/workflow/WorkflowTypes'
 import { useObrasDraft } from '@/modules/obras/hooks/useObrasDraft'
 import { OBRAS_TIPO_OPTIONS } from '@/modules/obras/models/obrasModels'
 import { ObrasService } from '@/modules/obras/services/ObrasService'
@@ -154,7 +153,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                     label={ts('obras.fields.cliente')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -169,7 +168,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                     label={ts('obras.fields.responsavel')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -184,7 +183,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                     label={ts('obras.fields.projetoId')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -199,7 +198,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                     label={ts('obras.fields.projetoNome')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -212,7 +211,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   <TextField {...field} select label={ts('obras.fields.tipoProjeto')} fullWidth>
                     {OBRAS_TIPO_OPTIONS.map((type) => (
                       <MenuItem key={type} value={type}>
-                        {type} - {WORKFLOW_TYPE_MAP[type]}
+                        {type} - {ts(`engenharia.types.${type}`)}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -282,7 +281,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   <TextField {...field} select label={ts('obras.fields.status')} fullWidth>
                     {OBRAS_STATUS.map((status) => (
                       <MenuItem key={status} value={status}>
-                        {status.replaceAll('_', ' ')}
+                        {ts(`obras.status.${status}`)}
                       </MenuItem>
                     ))}
                   </TextField>

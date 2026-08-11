@@ -503,6 +503,33 @@ export const gnPY = {
     editWork: 'Editar obra {{codigo}}',
     deleteWork: 'Eliminar obra',
     deleteDescription: 'Emoneĩ piko oñembogue hag̃ua obra {{codigo}}?',
+    dashboard: {
+      total: 'Obra kuera total',
+      criadas: 'Obra ojejapoma',
+      planejamento: 'Planeamiento',
+      execucao: 'Ejecucion',
+      acompanhamento: 'Acompanamiento',
+      entrega: 'Entrega',
+      encerramento: 'Encerramiento',
+    },
+    status: {
+      OBRA_CRIADA: 'Obra ojejapoma',
+      PLANEJAMENTO: 'Planeamiento',
+      EXECUCAO: 'Ejecucion',
+      ACOMPANHAMENTO: 'Acompanamiento',
+      ENTREGA: 'Entrega',
+      ENCERRAMENTO: 'Encerramiento',
+    },
+    validation: {
+      required: 'Ko campo oñeikoteve.',
+      minTwo: 'Ehai mokoi tai jepe.',
+      clientMin: 'Ehai mokoi tai jepe cliente-pe guara.',
+      projectRequired: 'Ehai proyecto ojoajua.',
+      projectNameMin: 'Ehai mokoi tai jepe proyecto-pe guara.',
+      responsibleMin: 'Ehai mokoi tai jepe responsable-pe guara.',
+      nonnegative: 'Ko valor ndaikatui negativo.',
+      percentage: 'Ehai porcentaje 0 ha 100 mbyte.',
+    },
     fields: {
       cliente: 'Cliente',
       responsavel: 'Responsable',
@@ -546,6 +573,14 @@ export const gnPY = {
     feedback: {
       saveBeforeUpload: 'Eñongatu raẽ obra remondo mboyve archivos.',
     },
+    timeline: {
+      types: {
+        OBRA_CRIADA: 'Obra ojejapoma',
+        OBRA_ATUALIZADA: 'Obra oñembopyahu',
+        STATUS_OBRA_ALTERADO: 'Obra estado oñembopyahu',
+        UPLOAD_OBRA: 'Archivo kuera oñemondo',
+      },
+    },
     table: {
       search: 'Jeheka',
       status: 'Estado',
@@ -557,6 +592,8 @@ export const gnPY = {
       prevista: 'Prevista',
       acoes: 'Acciones',
       empty: 'Ndaipori obra ojuhuva.',
+      rowsPerPage: 'Obra kuera pagina rehe',
+      displayedRows: '{{from}}–{{to}} de {{count}}',
     },
   },
   timeline: {

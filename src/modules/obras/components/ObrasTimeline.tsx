@@ -24,7 +24,7 @@ export const ObrasTimeline = ({ events }: ObrasTimelineProps) => {
           <ListItem key={event.id} divider>
             <ListItemText
               primary={event.message}
-              secondary={`${event.type} | ${new Date(event.createdAt).toLocaleString()} | ${event.actorName}`}
+              secondary={`${ts(`obras.timeline.types.${event.type}`)} | ${new Date(event.createdAt).toLocaleString()} | ${event.actorName}`}
             />
           </ListItem>
         ))}
