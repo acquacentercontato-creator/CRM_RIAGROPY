@@ -44,7 +44,7 @@ export const gnPY = {
     obras: 'Obras',
     assistencia: 'Asistencia',
     relatorios: 'Reportes',
-    administracao: 'Administracion',
+    administracao: 'Ñangareko',
     configuracoes: 'Configuraciones',
   },
   dashboard: {
@@ -161,7 +161,7 @@ export const gnPY = {
     obras: { title: 'Obras' },
     assistencia: { title: 'Asistencia' },
     relatorios: { title: 'Reportes' },
-    administracao: { title: 'Administracion' },
+    administracao: { title: 'Ñangareko' },
     configuracoes: { title: 'Configuraciones' },
   },
   comercial: {

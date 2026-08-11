@@ -44,7 +44,7 @@ export const ptBR = {
     obras: 'Obras',
     assistencia: 'Assistencia',
     relatorios: 'Relatorios',
-    administracao: 'Administracao',
+    administracao: 'Administração',
     configuracoes: 'Configuracoes',
   },
   dashboard: {
@@ -161,7 +161,7 @@ export const ptBR = {
     obras: { title: 'Obras' },
     assistencia: { title: 'Assistencia' },
     relatorios: { title: 'Relatorios' },
-    administracao: { title: 'Administracao' },
+    administracao: { title: 'Administração' },
     configuracoes: { title: 'Configuracoes' },
   },
   comercial: {

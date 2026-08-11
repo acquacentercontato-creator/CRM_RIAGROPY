@@ -44,7 +44,7 @@ export const esPY = {
     obras: 'Obras',
     assistencia: 'Asistencia',
     relatorios: 'Reportes',
-    administracao: 'Administracion',
+    administracao: 'Administración',
     configuracoes: 'Configuraciones',
   },
   dashboard: {
@@ -161,7 +161,7 @@ export const esPY = {
     obras: { title: 'Obras' },
     assistencia: { title: 'Asistencia' },
     relatorios: { title: 'Reportes' },
-    administracao: { title: 'Administracion' },
+    administracao: { title: 'Administración' },
     configuracoes: { title: 'Configuraciones' },
   },
   comercial: {
