@@ -30,6 +30,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import ErrorIcon from '@mui/icons-material/Error'
 import { AttachmentService, PreviewService, type AttachmentCategory, type ModuleContext, type AttachmentType } from '@/shared/attachments'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 interface UploadFile {
   file: File
@@ -62,6 +63,7 @@ export const AttachmentUploader = ({
   onClose,
   onUploadCompleto,
 }: AttachmentUploaderProps) => {
+  const ts = useTranslationService()
   const [arquivos, setArquivos] = useState<UploadFile[]>([])
   const [categoriaPadrao, setCategoriaPadrao] = useState<AttachmentCategory>('DOCUMENTACAO')
   const [observacoesPadrao, setObservacoesPadrao] = useState('')
@@ -115,14 +117,14 @@ export const AttachmentUploader = ({
 
     arquivos.forEach((arquivo, index) => {
       if (!arquivo.tipo) {
-        novosErros.push(`Arquivo ${index + 1}: Tipo de arquivo não reconhecido`)
+        novosErros.push(ts('attachments.uploader.unknownType', { index: index + 1 }))
       }
       if (!arquivo.nome.trim()) {
-        novosErros.push(`Arquivo ${index + 1}: Nome não pode estar vazio`)
+        novosErros.push(ts('attachments.uploader.emptyName', { index: index + 1 }))
       }
       if (arquivo.file.size > 500 * 1024 * 1024) {
         novosErros.push(
-          `Arquivo ${index + 1}: Arquivo excede tamanho máximo de 500MB`
+          ts('attachments.uploader.tooLarge', { index: index + 1 })
         )
       }
     })
@@ -144,7 +146,7 @@ export const AttachmentUploader = ({
       if (!arquivo.tipo) {
         handleAtualizarArquivo(i, {
           status: 'ERRO',
-          mensagem: 'Tipo de arquivo não suportado',
+          mensagem: ts('attachments.uploader.unsupportedType'),
         })
         falhas++
         continue
@@ -182,7 +184,7 @@ export const AttachmentUploader = ({
         handleAtualizarArquivo(i, {
           status: 'SUCESSO',
           progresso: 100,
-          mensagem: `Upload concluído com sucesso`,
+          mensagem: ts('attachments.uploader.success'),
         })
 
         sucessos++
@@ -190,7 +192,7 @@ export const AttachmentUploader = ({
         handleAtualizarArquivo(i, {
           status: 'ERRO',
           progresso: 0,
-          mensagem: error instanceof Error ? error.message : 'Erro ao fazer upload',
+          mensagem: error instanceof Error ? error.message : ts('attachments.uploader.uploadError'),
         })
         falhas++
       }
@@ -217,12 +219,12 @@ export const AttachmentUploader = ({
 
   return (
     <Dialog open={open} onClose={handleFechar} maxWidth="sm" fullWidth>
-      <DialogTitle>Upload de Anexos</DialogTitle>
+      <DialogTitle>{ts('attachments.uploader.title')}</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {/* Exibir erros */}
         {erros.length > 0 && (
           <Alert severity="error">
-            <Typography variant="subtitle2">Erros ao validar arquivos:</Typography>
+            <Typography variant="subtitle2">{ts('attachments.uploader.validationErrors')}</Typography>
             <ul>
               {erros.map((erro, i) => (
                 <li key={i}>{erro}</li>
@@ -250,9 +252,9 @@ export const AttachmentUploader = ({
           onClick={() => fileInputRef.current?.click()}
         >
           <CloudUploadIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-          <Typography variant="h6">Arraste arquivos aqui</Typography>
+          <Typography variant="h6">{ts('attachments.uploader.dropHere')}</Typography>
           <Typography variant="body2" color="text.secondary">
-            ou clique para selecionar
+            {ts('attachments.uploader.clickToSelect')}
           </Typography>
           <input
             ref={fileInputRef}
@@ -268,18 +270,18 @@ export const AttachmentUploader = ({
         {arquivos.length === 0 && (
           <Stack spacing={2}>
             <FormControl fullWidth>
-              <InputLabel>Categoria Padrão</InputLabel>
+              <InputLabel>{ts('attachments.uploader.defaultCategory')}</InputLabel>
               <Select
                 value={categoriaPadrao}
                 onChange={(e) => setCategoriaPadrao(e.target.value as AttachmentCategory)}
-                label="Categoria Padrão"
+                label={ts('attachments.uploader.defaultCategory')}
               >
-                <MenuItem value="DOCUMENTACAO">Documentação</MenuItem>
-                <MenuItem value="MIDIA">Mídia</MenuItem>
-                <MenuItem value="TECNICO">Técnico</MenuItem>
-                <MenuItem value="FINANCEIRO">Financeiro</MenuItem>
-                <MenuItem value="ADMINISTRATIVO">Administrativo</MenuItem>
-                <MenuItem value="OUTRO">Outro</MenuItem>
+                <MenuItem value="DOCUMENTACAO">{ts('attachments.categories.DOCUMENTACAO')}</MenuItem>
+                <MenuItem value="MIDIA">{ts('attachments.categories.MIDIA')}</MenuItem>
+                <MenuItem value="TECNICO">{ts('attachments.categories.TECNICO')}</MenuItem>
+                <MenuItem value="FINANCEIRO">{ts('attachments.categories.FINANCEIRO')}</MenuItem>
+                <MenuItem value="ADMINISTRATIVO">{ts('attachments.categories.ADMINISTRATIVO')}</MenuItem>
+                <MenuItem value="OUTRO">{ts('attachments.categories.OUTRO')}</MenuItem>
               </Select>
             </FormControl>
 
@@ -287,8 +289,8 @@ export const AttachmentUploader = ({
               fullWidth
               multiline
               rows={2}
-              label="Observações Padrão"
-              placeholder="Observações que serão aplicadas a todos os arquivos"
+              label={ts('attachments.uploader.defaultNotes')}
+              placeholder={ts('attachments.uploader.defaultNotesPlaceholder')}
               value={observacoesPadrao}
               onChange={(e) => setObservacoesPadrao(e.target.value)}
             />
@@ -302,13 +304,13 @@ export const AttachmentUploader = ({
               <ListItem
                 key={index}
                 secondaryAction={
-                  <Tooltip title="Remover">
+                  <Tooltip title={ts('actions.remove')}>
                     <Button
                       size="small"
                       onClick={() => handleRemoveArquivo(index)}
                       disabled={arquivo.status === 'ENVIANDO'}
                     >
-                      Remover
+                      {ts('actions.remove')}
                     </Button>
                   </Tooltip>
                 }
@@ -373,14 +375,14 @@ export const AttachmentUploader = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleFechar} disabled={uploading}>
-          Cancelar
+          {ts('actions.cancel')}
         </Button>
         <Button
           variant="contained"
           onClick={handleUpload}
           disabled={arquivos.length === 0 || uploading}
         >
-          {uploading ? 'Enviando...' : 'Upload'}
+          {uploading ? ts('attachments.uploader.uploading') : ts('actions.upload')}
         </Button>
       </DialogActions>
     </Dialog>

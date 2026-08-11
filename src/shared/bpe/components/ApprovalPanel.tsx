@@ -70,7 +70,7 @@ export const ApprovalPanel = ({
       codigoOficial,
       clienteNome,
       tipo,
-      solicitadoPor: user?.name ?? 'Sistema',
+      solicitadoPor: user?.name ?? ts('technical.ass.system'),
     })
     reload()
   }
@@ -81,7 +81,7 @@ export const ApprovalPanel = ({
       aprovacaoId: aprovacao.id,
       decisao,
       responsavelId: user.email ?? 'user',
-      responsavelNome: user.name ?? 'Usuário',
+      responsavelNome: user.name ?? ts('common.user'),
       responsavelRole: role ?? 'ADMINISTRADOR',
       observacao,
     })
@@ -192,7 +192,7 @@ export const ApprovalPanel = ({
       </List>
 
       {solicitadas.every((s) => s.status === 'APROVADO') && (
-        <Alert severity="success">Todas as aprovações concedidas.</Alert>
+        <Alert severity="success">{ts('bpe.allApproved')}</Alert>
       )}
     </Stack>
   )

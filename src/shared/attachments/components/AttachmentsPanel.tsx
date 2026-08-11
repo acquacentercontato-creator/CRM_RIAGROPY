@@ -29,6 +29,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import { AttachmentService, PreviewService, type AttachmentMetadata } from '@/shared/attachments'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 interface AttachmentsPanelProps {
   clienteId: string
@@ -38,9 +39,10 @@ interface AttachmentsPanelProps {
 
 export const AttachmentsPanel = ({
   clienteId,
-  titulo = 'Anexos',
+  titulo,
   maxHeight = 400,
 }: AttachmentsPanelProps) => {
+  const ts = useTranslationService()
   const [anexos, setAnexos] = useState<AttachmentMetadata[]>([])
   const [loading, setLoading] = useState(true)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -96,10 +98,10 @@ export const AttachmentsPanel = ({
   return (
     <Paper sx={{ p: 2 }}>
       <Stack spacing={2}>
-        <Typography variant="h6">{titulo}</Typography>
+        <Typography variant="h6">{titulo ?? ts('attachments.tab')}</Typography>
         
         {anexos.length === 0 ? (
-          <Typography color="text.secondary">Nenhum anexo encontrado.</Typography>
+          <Typography color="text.secondary">{ts('attachments.empty')}</Typography>
         ) : (
           <List sx={{ maxHeight: maxHeight, overflow: 'auto' }}>
             {anexos.map((anexo) => (
@@ -107,7 +109,7 @@ export const AttachmentsPanel = ({
                 key={anexo.id}
                 secondaryAction={
                   <Stack direction="row" spacing={0.5}>
-                    <Tooltip title="Favorito">
+                    <Tooltip title={ts('attachments.favorite')}>
                       <IconButton
                         edge="end"
                         size="small"
@@ -117,7 +119,7 @@ export const AttachmentsPanel = ({
                       </IconButton>
                     </Tooltip>
                     {PreviewService.suportaPreview(anexo.tipo) && (
-                      <Tooltip title="Visualizar">
+                      <Tooltip title={ts('attachments.preview')}>
                         <IconButton
                           edge="end"
                           size="small"
@@ -127,7 +129,7 @@ export const AttachmentsPanel = ({
                         </IconButton>
                       </Tooltip>
                     )}
-                    <Tooltip title="Download">
+                    <Tooltip title={ts('attachments.download')}>
                       <IconButton
                         edge="end"
                         size="small"
@@ -136,7 +138,7 @@ export const AttachmentsPanel = ({
                         <DownloadIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Deletar">
+                    <Tooltip title={ts('attachments.delete')}>
                       <IconButton
                         edge="end"
                         size="small"
@@ -196,7 +198,7 @@ export const AttachmentsPanel = ({
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setPreviewOpen(false)}>Fechar</Button>
+          <Button onClick={() => setPreviewOpen(false)}>{ts('actions.close')}</Button>
           {anexoSelecionado && (
             <Button
               variant="contained"
@@ -216,13 +218,14 @@ interface AttachmentPreviewContentProps {
 }
 
 const AttachmentPreviewContent = ({ anexo }: AttachmentPreviewContentProps) => {
+  const ts = useTranslationService()
   const previewUrl = PreviewService.gerarPreview(anexo.url, anexo.tipo)
   const tipoPreview = PreviewService.obterTipoPreview(anexo.tipo)
 
   if (!previewUrl) {
     return (
       <Typography color="text.secondary">
-        Tipo de arquivo {anexo.tipo} nao suporta preview.
+        {ts('attachments.unsupportedPreview', { type: anexo.tipo })}
       </Typography>
     )
   }
@@ -269,7 +272,7 @@ const AttachmentPreviewContent = ({ anexo }: AttachmentPreviewContentProps) => {
     default:
       return (
         <Typography color="text.secondary">
-          Preview indisponível para este tipo de arquivo.
+          {ts('attachments.noPreview')}
         </Typography>
       )
   }

@@ -12,6 +12,8 @@ export const ptBR = {
     close: 'Fechar',
     upload: 'Upload',
     download: 'Download',
+    remove: 'Remover',
+    confirm: 'Confirmar',
   },
   auth: {
     welcome: 'Acesso ao sistema',
@@ -283,6 +285,7 @@ export const ptBR = {
     },
   },
   common: {
+    user: 'Usuario',
     foundationOnly: 'Fundacao do modulo preparada para crescimento.',
     search: 'Pesquisa',
     status: 'Status',
@@ -616,6 +619,18 @@ export const ptBR = {
     lastChange: 'Ultima alteracao: {{data}}',
     cadFile: 'Arquivo CAD',
     geoFile: 'Arquivo geografico',
+    unsupportedPreview: 'O tipo de arquivo {{type}} nao suporta visualizacao.',
+    categories: {
+      DOCUMENTACAO: 'Documentacao', MIDIA: 'Midia', TECNICO: 'Tecnico', FINANCEIRO: 'Financeiro', ADMINISTRATIVO: 'Administrativo', OUTRO: 'Outro',
+    },
+    uploader: {
+      title: 'Upload de Anexos', validationErrors: 'Erros ao validar arquivos:', dropHere: 'Arraste arquivos aqui',
+      clickToSelect: 'ou clique para selecionar', defaultCategory: 'Categoria Padrao', defaultNotes: 'Observacoes Padrao',
+      defaultNotesPlaceholder: 'Observacoes que serao aplicadas a todos os arquivos', unknownType: 'Arquivo {{index}}: tipo de arquivo nao reconhecido',
+      emptyName: 'Arquivo {{index}}: o nome nao pode estar vazio', tooLarge: 'Arquivo {{index}}: o arquivo excede o tamanho maximo de 500 MB',
+      unsupportedType: 'Tipo de arquivo nao suportado', success: 'Upload concluido com sucesso', uploadError: 'Erro ao fazer upload',
+      uploading: 'Enviando...',
+    },
   },
   errors: {
     invalidRole: 'Perfil invalido para autenticacao',
@@ -732,6 +747,15 @@ export const ptBR = {
     condicoes: 'Condições',
     aprovacoes: 'Aprovações',
     tarefas: 'Tarefas',
+    solicitarAprovacao: 'Solicitar aprovacao', aprovar: 'Aprovar', reprovar: 'Reprovar', solicitadoEm: 'Solicitado em',
+    respondidoEm: 'Respondido em', responsavel: 'Responsavel', observacao: 'Observacao', pendente: 'Pendente',
+    aprovado: 'Aprovado', reprovado: 'Reprovado', cancelado: 'Cancelado', allApproved: 'Todas as aprovacoes concedidas.',
+    aprovacaoTipo: { ENGENHARIA: 'Engenharia', FINANCEIRO: 'Financeiro', GERENCIA: 'Gerencia', OBRAS: 'Obras', ASSISTENCIA: 'Assistencia' },
+    dashboard: {
+      aguardandoAprovacao: 'Aguardando aprovacao', aguardandoResponsavel: 'Aguardando responsavel', bloqueados: 'Bloqueados', codigo: 'Codigo',
+      semItens: 'Nenhum item encontrado.', semMovimentacao: 'Sem movimentacao', slaVencido: 'SLA vencido', tarefasPendentes: 'Tarefas pendentes', tipo: 'Tipo',
+      lateDays: '{{code}} +{{days}}d', stoppedDays: '{{code}} ({{days}}d)',
+    },
   },
   crm: {
     currency: {
@@ -1191,6 +1215,7 @@ export const ptBR = {
       npsh: 'NPSH requerido',
       motor: 'Motor indicado',
       tubulacao: 'Tubulação recomendada',
+      operationPointShort: 'Ponto op.',
     },
     lib: {
       tipo: 'Tipo',
@@ -1213,6 +1238,8 @@ export const ptBR = {
     },
   },
   doc: {
+    defaults: { well: 'Poco', deepWell: 'Poco tubular profundo' },
+    common: { cpf: 'CPF', cnpj: 'CNPJ', cpfCnpj: 'CPF / CNPJ', phone: 'Telefone', email: 'E-mail', days: 'dias' },
     info: 'IA gera Memorial Descritivo e Lista de Materiais a partir dos cálculos. Escolha imprimir ou exportar como PDF.',
     gerarMemorial: 'Gerar Memorial com IA',
     gerando: 'Gerando...',
@@ -1243,12 +1270,14 @@ export const ptBR = {
       CARRETEL: 'Carretel',
       MICROASPERSAO: 'Microaspersão',
     },
-    materiais: { titulo: 'Lista de Materiais do Sistema' },
+    materiais: { titulo: 'Lista de Materiais do Sistema', subtotal: 'Subtotal', reserve: 'Reserva', total: 'Total', totalValue: 'Total: R$ {{value}}' },
+    cultures: { Soja: 'Soja', Milho: 'Milho', Trigo: 'Trigo', 'Feijão': 'Feijao', Tomate: 'Tomate', Alface: 'Alface', Café: 'Cafe', 'Cana-de-açúcar': 'Cana-de-acucar', Pastagem: 'Pastagem', Outro: 'Outro' },
     pdf: {
       instrucao: 'Use o botão abaixo para imprimir cada documento separadamente ou o projeto completo. O browser abre a janela de impressão que permite salvar como PDF.',
       memorial: 'Memorial Descritivo (PDF)',
       materiais: 'Lista de Materiais (PDF)',
       completo: 'Projeto Completo (PDF)',
+      completeTitle: 'Projeto Completo — {{project}}',
     },
     art: {
       title: 'ART',
@@ -1261,8 +1290,27 @@ export const ptBR = {
       dataConclusao: 'Data de Conclusão',
       valorContrato: 'Valor do Contrato',
       gerar: 'Gerar ART (PDF)',
+      activityPlaceholder: 'Projeto, supervisao e execucao de sistema de irrigacao por aspersao convencional...',
+      print: {
+        title: 'ANOTACAO DE RESPONSABILIDADE TECNICA — ART', subtitle: 'Sistema de Irrigacao e Drenagem',
+        legal: 'Conforme Lei 6.496/77 e Resolucao 1025/09 do CONFEA', responsibleSection: '1. DADOS DO RESPONSAVEL TECNICO',
+        name: 'Nome', contractorSection: '2. DADOS DO CONTRATANTE', businessName: 'Nome / Razao Social', cityState: 'Municipio / UF',
+        activitySection: '3. DESCRICAO DA ATIVIDADE', defaultActivity: 'Projeto, supervisao e execucao de sistema de irrigacao por aspersao.',
+        scheduleSection: '4. CRONOGRAMA', declarationSection: '5. DECLARACAO',
+        declaration: 'O profissional acima identificado declara que e responsavel tecnico pela atividade descrita neste documento e se obriga a cumprir os dispositivos legais, regulamentares e normativos pertinentes.',
+        fileTitle: 'ART — {{name}}',
+      },
     },
     proposta: {
+      defaults: { payment: '50% entrada + 50% na entrega', warranty: '12 meses' },
+      print: {
+        title: 'PROPOSTA COMERCIAL', client: 'Cliente', date: 'Data', validFor: 'Valida por: {{days}} dias', system: 'Sistema de Irrigacao',
+        companySection: '1. DADOS DA EMPRESA', address: 'Endereco', clientSection: '2. CLIENTE', pricingSection: '3. COMPOSICAO DE PRECOS',
+        item: 'Item', description: 'Descricao', value: 'Valor', materials: 'Materiais hidraulicos (conforme lista de materiais)',
+        services: 'Mao de obra e servicos de instalacao', projectDocs: 'Projeto tecnico, ART e documentacao', termsSection: '4. CONDICOES COMERCIAIS',
+        executionDays: 'Prazo de execucao: {{days}} dias corridos', systemWarranty: 'Garantia do sistema',
+        proposalValidity: 'Validade desta proposta: {{days}} dias', notesSection: '5. OBSERVACOES', validUntil: 'Proposta valida ate', fileTitle: 'Proposta — {{project}}',
+      },
       title: 'Proposta Comercial',
       tabTitle: 'Proposta',
       empresa: 'Nome da Empresa',

@@ -12,6 +12,8 @@ export const esPY = {
     close: 'Cerrar',
     upload: 'Subir',
     download: 'Descargar',
+    remove: 'Quitar',
+    confirm: 'Confirmar',
   },
   auth: {
     welcome: 'Acceso al sistema',
@@ -283,6 +285,7 @@ export const esPY = {
     },
   },
   common: {
+    user: 'Usuario',
     foundationOnly: 'Base del modulo preparada para crecimiento.',
     search: 'Busqueda',
     status: 'Estado',
@@ -616,6 +619,18 @@ export const esPY = {
     lastChange: 'Ultimo cambio: {{data}}',
     cadFile: 'Archivo CAD',
     geoFile: 'Archivo geografico',
+    unsupportedPreview: 'El tipo de archivo {{type}} no admite visualizacion.',
+    categories: {
+      DOCUMENTACAO: 'Documentacion', MIDIA: 'Multimedia', TECNICO: 'Tecnico', FINANCEIRO: 'Financiero', ADMINISTRATIVO: 'Administrativo', OUTRO: 'Otro',
+    },
+    uploader: {
+      title: 'Carga de Adjuntos', validationErrors: 'Errores al validar archivos:', dropHere: 'Arrastre archivos aqui',
+      clickToSelect: 'o haga clic para seleccionar', defaultCategory: 'Categoria Predeterminada', defaultNotes: 'Observaciones Predeterminadas',
+      defaultNotesPlaceholder: 'Observaciones que se aplicaran a todos los archivos', unknownType: 'Archivo {{index}}: tipo no reconocido',
+      emptyName: 'Archivo {{index}}: el nombre no puede estar vacio', tooLarge: 'Archivo {{index}}: supera el tamano maximo de 500 MB',
+      unsupportedType: 'Tipo de archivo no compatible', success: 'Carga completada con exito', uploadError: 'Error al cargar el archivo',
+      uploading: 'Cargando...',
+    },
   },
   errors: {
     invalidRole: 'Perfil invalido para autenticacion',
@@ -733,6 +748,15 @@ export const esPY = {
     condicoes: 'Condiciones',
     aprovacoes: 'Aprobaciones',
     tarefas: 'Tareas',
+    solicitarAprovacao: 'Solicitar aprobacion', aprovar: 'Aprobar', reprovar: 'Rechazar', solicitadoEm: 'Solicitado el',
+    respondidoEm: 'Respondido el', responsavel: 'Responsable', observacao: 'Observacion', pendente: 'Pendiente',
+    aprovado: 'Aprobado', reprovado: 'Rechazado', cancelado: 'Cancelado', allApproved: 'Todas las aprobaciones concedidas.',
+    aprovacaoTipo: { ENGENHARIA: 'Ingenieria', FINANCEIRO: 'Financiero', GERENCIA: 'Gerencia', OBRAS: 'Obras', ASSISTENCIA: 'Asistencia' },
+    dashboard: {
+      aguardandoAprovacao: 'Esperando aprobacion', aguardandoResponsavel: 'Esperando responsable', bloqueados: 'Bloqueados', codigo: 'Codigo',
+      semItens: 'No se encontraron elementos.', semMovimentacao: 'Sin movimiento', slaVencido: 'SLA vencido', tarefasPendentes: 'Tareas pendientes', tipo: 'Tipo',
+      lateDays: '{{code}} +{{days}}d', stoppedDays: '{{code}} ({{days}}d)',
+    },
   },
   crm: {
     currency: {
@@ -1190,6 +1214,7 @@ export const esPY = {
       npsh: 'NPSH requerido',
       motor: 'Motor indicado',
       tubulacao: 'Tuberia recomendada',
+      operationPointShort: 'Punto op.',
     },
     lib: {
       tipo: 'Tipo',
@@ -1212,6 +1237,8 @@ export const esPY = {
     },
   },
   doc: {
+    defaults: { well: 'Pozo', deepWell: 'Pozo tubular profundo' },
+    common: { cpf: 'CPF', cnpj: 'RUC', cpfCnpj: 'CPF / RUC', phone: 'Telefono', email: 'Correo', days: 'dias' },
     info: 'IA genera Memorial Descriptivo y Lista de Materiales a partir de los calculos.',
     gerarMemorial: 'Generar Memorial con IA',
     gerando: 'Generando...',
@@ -1242,12 +1269,14 @@ export const esPY = {
       CARRETEL: 'Carrete',
       MICROASPERSAO: 'Microaspersion',
     },
-    materiais: { titulo: 'Lista de Materiales del Sistema' },
+    materiais: { titulo: 'Lista de Materiales del Sistema', subtotal: 'Subtotal', reserve: 'Reserva', total: 'Total', totalValue: 'Total: R$ {{value}}' },
+    cultures: { Soja: 'Soja', Milho: 'Maiz', Trigo: 'Trigo', 'Feijão': 'Poroto', Tomate: 'Tomate', Alface: 'Lechuga', Café: 'Cafe', 'Cana-de-açúcar': 'Cana de azucar', Pastagem: 'Pastura', Outro: 'Otro' },
     pdf: {
       instrucao: 'Use el boton para imprimir cada documento o el proyecto completo.',
       memorial: 'Memorial Descriptivo (PDF)',
       materiais: 'Lista de Materiales (PDF)',
       completo: 'Proyecto Completo (PDF)',
+      completeTitle: 'Proyecto Completo — {{project}}',
     },
     art: {
       title: 'ART',
@@ -1260,8 +1289,27 @@ export const esPY = {
       dataConclusao: 'Fecha de Conclusion',
       valorContrato: 'Valor del Contrato',
       gerar: 'Generar ART (PDF)',
+      activityPlaceholder: 'Proyecto, supervision y ejecucion de sistema de riego por aspersion convencional...',
+      print: {
+        title: 'ANOTACION DE RESPONSABILIDAD TECNICA — ART', subtitle: 'Sistema de Riego y Drenaje',
+        legal: 'Conforme a la Ley 6.496/77 y Resolucion 1025/09 del CONFEA', responsibleSection: '1. DATOS DEL RESPONSABLE TECNICO',
+        name: 'Nombre', contractorSection: '2. DATOS DEL CONTRATANTE', businessName: 'Nombre / Razon Social', cityState: 'Municipio / Departamento',
+        activitySection: '3. DESCRIPCION DE LA ACTIVIDAD', defaultActivity: 'Proyecto, supervision y ejecucion de sistema de riego por aspersion.',
+        scheduleSection: '4. CRONOGRAMA', declarationSection: '5. DECLARACION',
+        declaration: 'El profesional identificado declara que es responsable tecnico de la actividad descrita y se obliga a cumplir las disposiciones legales, reglamentarias y normativas aplicables.',
+        fileTitle: 'ART — {{name}}',
+      },
     },
     proposta: {
+      defaults: { payment: '50% de anticipo + 50% en la entrega', warranty: '12 meses' },
+      print: {
+        title: 'PROPUESTA COMERCIAL', client: 'Cliente', date: 'Fecha', validFor: 'Valida por: {{days}} dias', system: 'Sistema de Riego',
+        companySection: '1. DATOS DE LA EMPRESA', address: 'Direccion', clientSection: '2. CLIENTE', pricingSection: '3. COMPOSICION DE PRECIOS',
+        item: 'Item', description: 'Descripcion', value: 'Valor', materials: 'Materiales hidraulicos (segun lista de materiales)',
+        services: 'Mano de obra y servicios de instalacion', projectDocs: 'Proyecto tecnico, ART y documentacion', termsSection: '4. CONDICIONES COMERCIALES',
+        executionDays: 'Plazo de ejecucion: {{days}} dias corridos', systemWarranty: 'Garantia del sistema',
+        proposalValidity: 'Validez de esta propuesta: {{days}} dias', notesSection: '5. OBSERVACIONES', validUntil: 'Propuesta valida hasta', fileTitle: 'Propuesta — {{project}}',
+      },
       title: 'Propuesta Comercial',
       tabTitle: 'Propuesta',
       empresa: 'Nombre de la Empresa',

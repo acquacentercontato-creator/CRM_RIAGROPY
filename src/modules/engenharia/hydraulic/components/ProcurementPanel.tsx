@@ -124,7 +124,7 @@ export const ProcurementPanel = () => {
       nomeProjeto, nomeCliente, nomeResponsavel: user?.name ?? 'RT',
       crea: '', municipio: '', estado: '', areaIrrigada: 10,
       culturaIrrigada: 'Soja', sistemaIrrigacao: 'ASPERSAO',
-      fonteDagua: 'Poço', params, resultado,
+      fonteDagua: ts('doc.defaults.well'), params, resultado,
     }
     const lista = MaterialListService.gerar(input)
 
@@ -162,7 +162,7 @@ export const ProcurementPanel = () => {
 
   const handleAprovarCotacao = () => {
     if (!cotacao) return
-    const aprovada = CotacaoService.aprovar(cotacao.id, user?.name ?? 'Usuário')
+    const aprovada = CotacaoService.aprovar(cotacao.id, user?.name ?? ts('common.user'))
     if (aprovada) { setCotacao(aprovada); setCotacaoDialogOpen(false); setStep(2) }
   }
 

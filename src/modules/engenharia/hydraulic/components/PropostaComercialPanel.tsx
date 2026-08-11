@@ -56,55 +56,51 @@ const ARTPanel = () => {
   const handleImprimirART = () => {
     const html = `
 <div class="cover">
-  <div class="empresa">ANOTAÇÃO DE RESPONSABILIDADE TÉCNICA — ART</div>
-  <div class="doc-tipo">Sistema de Irrigação e Drenagem</div>
+  <div class="empresa">${ts('doc.art.print.title')}</div>
+  <div class="doc-tipo">${ts('doc.art.print.subtitle')}</div>
 </div>
 <div style="page-break-before:always"></div>
-<h1>ANOTAÇÃO DE RESPONSABILIDADE TÉCNICA — ART</h1>
-<p style="text-align:center;color:#666;font-size:9pt">Conforme Lei 6.496/77 e Resolução 1025/09 do CONFEA</p>
+<h1>${ts('doc.art.print.title')}</h1>
+<p style="text-align:center;color:#666;font-size:9pt">${ts('doc.art.print.legal')}</p>
 
-<h2>1. DADOS DO RESPONSÁVEL TÉCNICO</h2>
+<h2>${ts('doc.art.print.responsibleSection')}</h2>
 <pre>
-Nome: ${art.nomeResponsavel}
-CPF: ${art.cpf}
+${ts('doc.art.print.name')}: ${art.nomeResponsavel}
+${ts('doc.common.cpf')}: ${art.cpf}
 CREA: ${art.crea}
-Telefone: ${art.telefone}
-E-mail: ${art.email}
+${ts('doc.common.phone')}: ${art.telefone}
+${ts('doc.common.email')}: ${art.email}
 </pre>
 
-<h2>2. DADOS DO CONTRATANTE</h2>
+<h2>${ts('doc.art.print.contractorSection')}</h2>
 <pre>
-Nome / Razão Social: ${art.nomeCliente}
-CPF / CNPJ: ${art.cpfCnpjCliente}
-Endereço da obra: ${art.enderecoObra}
-Município / UF: ${art.municipioObra} / ${art.ufObra}
+${ts('doc.art.print.businessName')}: ${art.nomeCliente}
+${ts('doc.common.cpfCnpj')}: ${art.cpfCnpjCliente}
+${ts('doc.art.enderecoObra')}: ${art.enderecoObra}
+${ts('doc.art.print.cityState')}: ${art.municipioObra} / ${art.ufObra}
 </pre>
 
-<h2>3. DESCRIÇÃO DA ATIVIDADE</h2>
-<pre>${art.descricaoAtividade || 'Projeto, supervisão e execução de sistema de irrigação por aspersão.'}</pre>
+<h2>${ts('doc.art.print.activitySection')}</h2>
+<pre>${art.descricaoAtividade || ts('doc.art.print.defaultActivity')}</pre>
 
-<h2>4. CRONOGRAMA</h2>
+<h2>${ts('doc.art.print.scheduleSection')}</h2>
 <pre>
-Data de início: ${art.dataInicio}
-Data de conclusão: ${art.dataConclsuao}
-Valor do contrato: R$ ${art.valorContrato}
+${ts('doc.art.dataInicio')}: ${art.dataInicio}
+${ts('doc.art.dataConclusao')}: ${art.dataConclsuao}
+${ts('doc.art.valorContrato')}: R$ ${art.valorContrato}
 </pre>
 
-<h2>5. DECLARAÇÃO</h2>
-<p>
-O profissional acima identificado declara, para os fins e efeitos do Art. 1° da Lei 6.496, de 7 de dezembro de 1977, 
-que é responsável técnico pela atividade descrita neste documento, obrigando-se a cumprir os dispositivos legais, 
-regulamentares e normativos pertinentes.
-</p>
+<h2>${ts('doc.art.print.declarationSection')}</h2>
+<p>${ts('doc.art.print.declaration')}</p>
 
 <p style="margin-top:20mm;text-align:center">
 ____________________________________<br/>
 ${art.nomeResponsavel}<br/>
 CREA ${art.crea}<br/><br/>
-${new Date().toLocaleDateString('pt-BR')}
+${new Date().toLocaleDateString(ts('crm.currency.locale'))}
 </p>`
 
-    PrintService.imprimirHtml(html, 'ART — ' + art.nomeResponsavel)
+    PrintService.imprimirHtml(html, ts('doc.art.print.fileTitle', { name: art.nomeResponsavel }))
   }
 
   return (
@@ -120,9 +116,9 @@ ${new Date().toLocaleDateString('pt-BR')}
         {[
           { label: ts('doc.form.nomeResponsavel'), key: 'nomeResponsavel' as const },
           { label: ts('doc.form.crea'), key: 'crea' as const },
-          { label: 'CPF', key: 'cpf' as const },
-          { label: 'Telefone', key: 'telefone' as const },
-          { label: 'E-mail', key: 'email' as const },
+          { label: ts('doc.common.cpf'), key: 'cpf' as const },
+          { label: ts('doc.common.phone'), key: 'telefone' as const },
+          { label: ts('doc.common.email'), key: 'email' as const },
         ].map(({ label, key }) => (
           <Grid key={key} size={{ xs: 12, md: 4 }}>
             <TextField fullWidth size="small" label={label} value={art[key]} onChange={setField(key)} />
@@ -134,7 +130,7 @@ ${new Date().toLocaleDateString('pt-BR')}
         </Grid>
         {[
           { label: ts('doc.form.nomeCliente'), key: 'nomeCliente' as const, size: 6 },
-          { label: 'CPF / CNPJ', key: 'cpfCnpjCliente' as const, size: 3 },
+          { label: ts('doc.common.cpfCnpj'), key: 'cpfCnpjCliente' as const, size: 3 },
           { label: ts('doc.form.municipio'), key: 'municipioObra' as const, size: 2 },
           { label: ts('doc.form.estado'), key: 'ufObra' as const, size: 1 },
           { label: ts('doc.art.enderecoObra'), key: 'enderecoObra' as const, size: 12 },
@@ -147,7 +143,7 @@ ${new Date().toLocaleDateString('pt-BR')}
         <Grid size={{ xs: 12 }}>
           <TextField fullWidth size="small" multiline rows={3} label={ts('doc.art.atividade')}
             value={art.descricaoAtividade} onChange={setField('descricaoAtividade')}
-            placeholder="Projeto, supervisão e execução de sistema de irrigação por aspersão convencional..." />
+            placeholder={ts('doc.art.activityPlaceholder')} />
         </Grid>
 
         <Grid size={{ xs: 12, md: 4 }}>
@@ -200,10 +196,10 @@ const PropostaPainel = () => {
     nomeEmpresa: 'RIAGRO', cnpjEmpresa: '',
     telefoneEmpresa: '', emailEmpresa: '',
     enderecoEmpresa: '', validadeProposta: '30',
-    condicoesPagamento: '50% entrada + 50% na entrega',
+    condicoesPagamento: ts('doc.proposta.defaults.payment'),
     totalMateriais: '', totalServicos: '',
     totalProjeto: '', prazoExecucao: '30',
-    garantia: '12 meses', observacoes: '',
+    garantia: ts('doc.proposta.defaults.warranty'), observacoes: '',
   })
 
   const setField = (key: keyof PropostaData) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -216,61 +212,61 @@ const PropostaPainel = () => {
     const html = `
 <div class="cover">
   <div class="empresa">${proposta.nomeEmpresa}</div>
-  <div class="doc-tipo">PROPOSTA COMERCIAL</div>
+  <div class="doc-tipo">${ts('doc.proposta.print.title')}</div>
   <div class="projeto">${proposta.nomeProjeto}</div>
   <div class="info">
-    Cliente: ${proposta.nomeCliente}<br/>
-    Data: ${new Date().toLocaleDateString('pt-BR')}<br/>
-    Válida por: ${proposta.validadeProposta} dias
+    ${ts('doc.proposta.print.client')}: ${proposta.nomeCliente}<br/>
+    ${ts('doc.proposta.print.date')}: ${new Date().toLocaleDateString(ts('crm.currency.locale'))}<br/>
+    ${ts('doc.proposta.print.validFor', { days: proposta.validadeProposta })}
   </div>
 </div>
 <div style="page-break-before:always"></div>
-<h1>PROPOSTA COMERCIAL</h1>
-<h2>Sistema de Irrigação — ${proposta.nomeProjeto}</h2>
+<h1>${ts('doc.proposta.print.title')}</h1>
+<h2>${ts('doc.proposta.print.system')} — ${proposta.nomeProjeto}</h2>
 
-<h2>1. DADOS DA EMPRESA</h2>
+<h2>${ts('doc.proposta.print.companySection')}</h2>
 <pre>
-Empresa: ${proposta.nomeEmpresa}
+${ts('doc.proposta.empresa')}: ${proposta.nomeEmpresa}
 CNPJ: ${proposta.cnpjEmpresa}
-Telefone: ${proposta.telefoneEmpresa}
-E-mail: ${proposta.emailEmpresa}
-Endereço: ${proposta.enderecoEmpresa}
+${ts('doc.common.phone')}: ${proposta.telefoneEmpresa}
+${ts('doc.common.email')}: ${proposta.emailEmpresa}
+${ts('doc.proposta.print.address')}: ${proposta.enderecoEmpresa}
 </pre>
 
-<h2>2. CLIENTE</h2>
-<pre>Nome / Razão Social: ${proposta.nomeCliente}</pre>
+<h2>${ts('doc.proposta.print.clientSection')}</h2>
+<pre>${ts('doc.art.print.businessName')}: ${proposta.nomeCliente}</pre>
 
-<h2>3. COMPOSIÇÃO DE PREÇOS</h2>
+<h2>${ts('doc.proposta.print.pricingSection')}</h2>
 <table>
-  <thead><tr><th>Item</th><th>Descrição</th><th style="text-align:right">Valor</th></tr></thead>
+  <thead><tr><th>${ts('doc.proposta.print.item')}</th><th>${ts('doc.proposta.print.description')}</th><th style="text-align:right">${ts('doc.proposta.print.value')}</th></tr></thead>
   <tbody>
-    <tr><td>01</td><td>Materiais hidráulicos (conforme lista de materiais)</td><td style="text-align:right">R$ ${parseFloat(proposta.totalMateriais || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>
-    <tr><td>02</td><td>Mão de obra e serviços de instalação</td><td style="text-align:right">R$ ${parseFloat(proposta.totalServicos || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>
-    <tr><td>03</td><td>Projeto técnico, ART e documentação</td><td style="text-align:right">R$ ${parseFloat(proposta.totalProjeto || '0').toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>
+    <tr><td>01</td><td>${ts('doc.proposta.print.materials')}</td><td style="text-align:right">R$ ${parseFloat(proposta.totalMateriais || '0').toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</td></tr>
+    <tr><td>02</td><td>${ts('doc.proposta.print.services')}</td><td style="text-align:right">R$ ${parseFloat(proposta.totalServicos || '0').toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</td></tr>
+    <tr><td>03</td><td>${ts('doc.proposta.print.projectDocs')}</td><td style="text-align:right">R$ ${parseFloat(proposta.totalProjeto || '0').toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</td></tr>
   </tbody>
   <tfoot>
-    <tr class="total-row"><td colspan="2"><strong>TOTAL GERAL</strong></td><td style="text-align:right"><strong>R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td></tr>
+    <tr class="total-row"><td colspan="2"><strong>${ts('doc.proposta.totalGeral')}</strong></td><td style="text-align:right"><strong>R$ ${total.toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</strong></td></tr>
   </tfoot>
 </table>
 
-<h2>4. CONDIÇÕES COMERCIAIS</h2>
+<h2>${ts('doc.proposta.print.termsSection')}</h2>
 <pre>
-Condições de pagamento: ${proposta.condicoesPagamento}
-Prazo de execução: ${proposta.prazoExecucao} dias corridos
-Garantia do sistema: ${proposta.garantia}
-Validade desta proposta: ${proposta.validadeProposta} dias
+${ts('doc.proposta.condicoes')}: ${proposta.condicoesPagamento}
+${ts('doc.proposta.print.executionDays', { days: proposta.prazoExecucao })}
+${ts('doc.proposta.print.systemWarranty')}: ${proposta.garantia}
+${ts('doc.proposta.print.proposalValidity', { days: proposta.validadeProposta })}
 </pre>
 
-${proposta.observacoes ? `<h2>5. OBSERVAÇÕES</h2><pre>${proposta.observacoes}</pre>` : ''}
+${proposta.observacoes ? `<h2>${ts('doc.proposta.print.notesSection')}</h2><pre>${proposta.observacoes}</pre>` : ''}
 
 <p style="margin-top:15mm;text-align:center">
-Proposta válida até: ${new Date(Date.now() + parseInt(proposta.validadeProposta) * 86400000).toLocaleDateString('pt-BR')}<br/><br/>
+${ts('doc.proposta.print.validUntil')}: ${new Date(Date.now() + parseInt(proposta.validadeProposta) * 86400000).toLocaleDateString(ts('crm.currency.locale'))}<br/><br/>
 ____________________________________<br/>
 ${proposta.nomeEmpresa}<br/>
 ${proposta.emailEmpresa}
 </p>`
 
-    PrintService.imprimirHtml(html, `Proposta — ${proposta.nomeProjeto}`)
+    PrintService.imprimirHtml(html, ts('doc.proposta.print.fileTitle', { project: proposta.nomeProjeto }))
   }
 
   return (
@@ -286,10 +282,10 @@ ${proposta.emailEmpresa}
           <TextField fullWidth size="small" label={ts('doc.proposta.empresa')} value={proposta.nomeEmpresa} onChange={setField('nomeEmpresa')} />
         </Grid>
         <Grid size={{ xs: 12, md: 3 }}>
-          <TextField fullWidth size="small" label="CNPJ" value={proposta.cnpjEmpresa} onChange={setField('cnpjEmpresa')} />
+          <TextField fullWidth size="small" label={ts('doc.common.cnpj')} value={proposta.cnpjEmpresa} onChange={setField('cnpjEmpresa')} />
         </Grid>
         <Grid size={{ xs: 12, md: 3 }}>
-          <TextField fullWidth size="small" label="Telefone" value={proposta.telefoneEmpresa} onChange={setField('telefoneEmpresa')} />
+          <TextField fullWidth size="small" label={ts('doc.common.phone')} value={proposta.telefoneEmpresa} onChange={setField('telefoneEmpresa')} />
         </Grid>
 
         <Grid size={{ xs: 12 }}>
@@ -311,7 +307,7 @@ ${proposta.emailEmpresa}
             <Paper sx={{ p: 1.5, bgcolor: 'primary.main', color: 'white', borderRadius: 1 }}>
               <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                 <Typography variant="h6">{ts('doc.proposta.totalGeral')}</Typography>
-                <Typography variant="h6">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Typography>
+                <Typography variant="h6">R$ {total.toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</Typography>
               </Stack>
             </Paper>
           </Grid>
@@ -322,7 +318,7 @@ ${proposta.emailEmpresa}
         </Grid>
         <Grid size={{ xs: 12, md: 3 }}>
           <TextField fullWidth size="small" type="number" label={ts('doc.proposta.prazo')} value={proposta.prazoExecucao} onChange={setField('prazoExecucao')}
-            slotProps={{ input: { endAdornment: <Typography variant="caption">dias</Typography> } }} />
+            slotProps={{ input: { endAdornment: <Typography variant="caption">{ts('doc.common.days')}</Typography> } }} />
         </Grid>
         <Grid size={{ xs: 12, md: 3 }}>
           <TextField fullWidth size="small" label={ts('doc.proposta.garantia')} value={proposta.garantia} onChange={setField('garantia')} />

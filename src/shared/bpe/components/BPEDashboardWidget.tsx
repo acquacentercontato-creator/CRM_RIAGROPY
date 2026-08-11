@@ -138,7 +138,7 @@ export const BPEDashboardWidget = ({ metrics }: BPEDashboardWidgetProps) => {
             {metrics.slaVencido.slice(0, 5).map((item) => (
               <Chip
                 key={item.projetoId}
-                label={`${item.codigo} +${item.diasAtraso}d`}
+                label={ts('bpe.dashboard.lateDays', { code: item.codigo, days: item.diasAtraso })}
                 size="small"
                 color="error"
                 variant="outlined"
@@ -158,7 +158,7 @@ export const BPEDashboardWidget = ({ metrics }: BPEDashboardWidgetProps) => {
             {metrics.semMovimentacao.slice(0, 5).map((item) => (
               <Chip
                 key={item.projetoId}
-                label={`${item.codigo} (${item.diasParado}d)`}
+                label={ts('bpe.dashboard.stoppedDays', { code: item.codigo, days: item.diasParado })}
                 size="small"
                 variant="outlined"
               />

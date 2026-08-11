@@ -8,6 +8,7 @@ import {
 } from '@mui/material'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import type { PropsWithChildren, ReactNode } from 'react'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type DialogOptions = {
   title: string
@@ -30,6 +31,7 @@ type DialogContextType = {
 const DialogContext = createContext<DialogContextType | null>(null)
 
 export const DialogProvider = ({ children }: PropsWithChildren) => {
+  const ts = useTranslationService()
   const [dialogOptions, setDialogOptions] = useState<DialogOptions | null>(null)
   const [confirmState, setConfirmState] = useState<
     (ConfirmOptions & { resolve: (value: boolean) => void }) | null
@@ -66,7 +68,7 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
         <DialogTitle>{dialogOptions?.title}</DialogTitle>
         <DialogContent>{dialogOptions?.content}</DialogContent>
         <DialogActions>
-          <Button onClick={closeDialog}>Fechar</Button>
+          <Button onClick={closeDialog}>{ts('actions.close')}</Button>
         </DialogActions>
       </Dialog>
 
@@ -82,7 +84,7 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
               setConfirmState(null)
             }}
           >
-            {confirmState?.cancelLabel || 'Cancelar'}
+            {confirmState?.cancelLabel || ts('actions.cancel')}
           </Button>
           <Button
             color="error"
@@ -92,7 +94,7 @@ export const DialogProvider = ({ children }: PropsWithChildren) => {
               setConfirmState(null)
             }}
           >
-            {confirmState?.confirmLabel || 'Confirmar'}
+            {confirmState?.confirmLabel || ts('actions.confirm')}
           </Button>
         </DialogActions>
       </Dialog>

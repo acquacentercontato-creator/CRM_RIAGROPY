@@ -77,7 +77,7 @@ const initialForm: ProjectForm = {
 export const DocumentGeneratorPanel = () => {
   const ts = useTranslationService()
   const [activeStep, setActiveStep] = useState(0)
-  const [form, setForm] = useState<ProjectForm>(initialForm)
+  const [form, setForm] = useState<ProjectForm>({ ...initialForm, fonteDagua: ts('doc.defaults.deepWell') })
   const [params, setParams] = useState<HydraulicSystemParams>(defaultParams)
   const [memorial, setMemorial] = useState<MemorialDescritivo | null>(null)
   const [materialList, setMaterialList] = useState<MaterialList | null>(null)
@@ -112,7 +112,7 @@ export const DocumentGeneratorPanel = () => {
   const handleImprimirMateriais = () => {
     if (!materialList) return
     const html = PrintService.materialListToHtml(materialList, form.nomeProjeto, form.nomeCliente)
-    PrintService.imprimirHtml(html, 'Lista de Materiais')
+    PrintService.imprimirHtml(html, ts('doc.materiais.titulo'))
   }
 
   const steps = [
@@ -159,7 +159,7 @@ export const DocumentGeneratorPanel = () => {
               <Grid size={{ xs: 12, md: 3 }}>
                 <TextField select fullWidth size="small" label={ts('doc.form.cultura')} value={form.culturaIrrigada} onChange={setField('culturaIrrigada')}
                   slotProps={{ select: { native: true } }}>
-                  {CULTURAS.map((c) => <option key={c} value={c}>{c}</option>)}
+                  {CULTURAS.map((c) => <option key={c} value={c}>{ts(`doc.cultures.${c}`)}</option>)}
                 </TextField>
               </Grid>
               <Grid size={{ xs: 12, md: 3 }}>
@@ -246,7 +246,9 @@ export const DocumentGeneratorPanel = () => {
                   <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="subtitle2">{ts('doc.materiais.titulo')}</Typography>
                     <Chip
-                      label={`Total: R$ ${materialList.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                      label={ts('doc.materiais.totalValue', {
+                        value: materialList.total.toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 }),
+                      })}
                       color="primary"
                       size="small"
                     />
@@ -270,10 +272,10 @@ export const DocumentGeneratorPanel = () => {
                   </Box>
 
                   <Stack direction="row" spacing={2} sx={{ justifyContent: 'flex-end', mt: 1, pt: 1, borderTop: '2px solid', borderColor: 'primary.main' }}>
-                    <Typography variant="body2">Subtotal: <strong>R$ {materialList.subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></Typography>
-                    <Typography variant="body2">Reserva: <strong>R$ {materialList.reservaTecnica.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></Typography>
+                    <Typography variant="body2">{ts('doc.materiais.subtotal')}: <strong>R$ {materialList.subtotal.toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</strong></Typography>
+                    <Typography variant="body2">{ts('doc.materiais.reserve')}: <strong>R$ {materialList.reservaTecnica.toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}</strong></Typography>
                     <Typography variant="body2" color="primary" sx={{ fontWeight: 700 }}>
-                      Total: R$ {materialList.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      {ts('doc.materiais.total')}: R$ {materialList.total.toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}
                     </Typography>
                   </Stack>
                 </Paper>
@@ -309,7 +311,7 @@ export const DocumentGeneratorPanel = () => {
                       if (!memorial || !materialList) return
                       const html = PrintService.memorialToHtml(memorial) + '<div style="page-break-before:always"></div>' +
                         PrintService.materialListToHtml(materialList, form.nomeProjeto, form.nomeCliente)
-                      PrintService.imprimirHtml(html, 'Projeto Completo — ' + form.nomeProjeto)
+                      PrintService.imprimirHtml(html, ts('doc.pdf.completeTitle', { project: form.nomeProjeto }))
                     },
                   },
                 ].map(({ label, icon, action, disabled }) => (

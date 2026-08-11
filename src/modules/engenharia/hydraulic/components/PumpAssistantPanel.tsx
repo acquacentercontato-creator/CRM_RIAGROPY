@@ -27,6 +27,7 @@ interface PumpCurveDisplayProps {
 }
 
 const PumpCurveDisplay = ({ curva, pontoOperacao }: PumpCurveDisplayProps) => {
+  const ts = useTranslationService()
   const maxAltura = Math.max(...curva.map((p) => p.altura))
   const maxVazao = Math.max(...curva.map((p) => p.vazao))
 
@@ -80,7 +81,7 @@ const PumpCurveDisplay = ({ curva, pontoOperacao }: PumpCurveDisplayProps) => {
         <line x1="75" y1="112" x2="93" y2="112" stroke="#4caf50" strokeWidth="1.5" strokeDasharray="4,2" />
         <text x="95" y="115" fontSize="6" fill="#4caf50">η%</text>
         <circle cx="130" cy="112" r="3" fill="#ff5722" />
-        <text x="136" y="115" fontSize="6" fill="#ff5722">Ponto op.</text>
+        <text x="136" y="115" fontSize="6" fill="#ff5722">{ts('hydraulic.assistant.operationPointShort')}</text>
       </svg>
     </Box>
   )
@@ -239,4 +240,3 @@ export const PumpAssistantPanel = () => {
     </Stack>
   )
 }
-

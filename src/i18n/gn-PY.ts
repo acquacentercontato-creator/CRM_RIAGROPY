@@ -12,6 +12,8 @@ export const gnPY = {
     close: 'Mboty',
     upload: 'Jupi',
     download: 'Mboguejy',
+    remove: 'Eipea',
+    confirm: 'Emonei',
   },
   auth: {
     welcome: 'Jeike sistema-pe',
@@ -283,6 +285,7 @@ export const gnPY = {
     },
   },
   common: {
+    user: 'Usuario',
     foundationOnly: 'Modulo ñepyrũ oñembosako okakuaa hagua.',
     search: 'Jeheka',
     status: 'Estado',
@@ -616,6 +619,18 @@ export const gnPY = {
     lastChange: 'Ipype jeroky: {{data}}',
     cadFile: 'Archivo CAD',
     geoFile: 'Archivo geografico',
+    unsupportedPreview: 'Archivo tipo {{type}} ndaikatui ojehecha.',
+    categories: {
+      DOCUMENTACAO: 'Documentacion', MIDIA: 'Multimedia', TECNICO: 'Tecnico', FINANCEIRO: 'Financiero', ADMINISTRATIVO: 'Administrativo', OUTRO: 'Ambue',
+    },
+    uploader: {
+      title: 'Adjunto ñemondo', validationErrors: 'Archivo jejavy:', dropHere: 'Emoi archivo ko ape',
+      clickToSelect: 'tera eikutu eiporavo hagua', defaultCategory: 'Categoria ypykue', defaultNotes: 'Observacion ypykue',
+      defaultNotesPlaceholder: 'Observacion ojeporutava opa archivo-pe', unknownType: 'Archivo {{index}}: tipo ndojekuaai',
+      emptyName: 'Archivo {{index}}: tera ndaikatui inandi', tooLarge: 'Archivo {{index}}: tuichaiterei, 500 MB ari',
+      unsupportedType: 'Archivo tipo ndojeporukuaai', success: 'Archivo oñemondo pora', uploadError: 'Archivo ñemondo ojavy',
+      uploading: 'Oñemondo...',
+    },
   },
   errors: {
     invalidRole: 'Perfil ndoikoi jeike haguã',
@@ -733,6 +748,15 @@ export const gnPY = {
     condicoes: 'Condiciones',
     aprovacoes: 'Aprobaciones',
     tarefas: 'Tareas',
+    solicitarAprovacao: 'Ejerure aprobacion', aprovar: 'Emonei', reprovar: 'Embotove', solicitadoEm: 'Ojejerure',
+    respondidoEm: 'Oñembohovai', responsavel: 'Responsable', observacao: 'Observacion', pendente: 'Ohaaro',
+    aprovado: 'Oñemonei', reprovado: 'Oñembotove', cancelado: 'Oñembogue', allApproved: 'Opa aprobacion oñemoneima.',
+    aprovacaoTipo: { ENGENHARIA: 'Ingenieria', FINANCEIRO: 'Financiero', GERENCIA: 'Gerencia', OBRAS: 'Obras', ASSISTENCIA: 'Asistencia' },
+    dashboard: {
+      aguardandoAprovacao: 'Ohaaro aprobacion', aguardandoResponsavel: 'Ohaaro responsable', bloqueados: 'Ojejoko', codigo: 'Codigo',
+      semItens: 'Ndaipori mbaeve.', semMovimentacao: 'Ndaipori movimiento', slaVencido: 'SLA opama', tarefasPendentes: 'Tarea ohaaro', tipo: 'Tipo',
+      lateDays: '{{code}} +{{days}} ara', stoppedDays: '{{code}} ({{days}} ara)',
+    },
   },
   crm: {
     currency: {
@@ -1190,6 +1214,7 @@ export const gnPY = {
       npsh: 'NPSH requerido',
       motor: 'Motor ojeikuaa',
       tubulacao: 'Kanno recomendado',
+      operationPointShort: 'Punto op.',
     },
     lib: {
       tipo: 'Tipo',
@@ -1212,6 +1237,8 @@ export const gnPY = {
     },
   },
   doc: {
+    defaults: { well: 'Ykua', deepWell: 'Ykua tubular pypuku' },
+    common: { cpf: 'CPF', cnpj: 'RUC', cpfCnpj: 'CPF / RUC', phone: 'Telefono', email: 'Correo', days: 'ara' },
     info: 'IA ojejapova Memorial ha Lista Materiales calculo rehe.',
     gerarMemorial: 'Ojejapova Memorial IA rehe',
     gerando: 'Ojejapo...',
@@ -1242,12 +1269,14 @@ export const gnPY = {
       CARRETEL: 'Carrete',
       MICROASPERSAO: 'Microaspersion',
     },
-    materiais: { titulo: 'Lista materiales sistema' },
+    materiais: { titulo: 'Lista materiales sistema', subtotal: 'Subtotal', reserve: 'Reserva', total: 'Total', totalValue: 'Total: R$ {{value}}' },
+    cultures: { Soja: 'Soja', Milho: 'Avati', Trigo: 'Trigo', 'Feijão': 'Kumanda', Tomate: 'Tomate', Alface: 'Lechuga', Café: 'Cafe', 'Cana-de-açúcar': 'Takuaree', Pastagem: 'Kapiipe', Outro: 'Ambue' },
     pdf: {
       instrucao: 'Ejapo imprimir documento ojejapova.',
       memorial: 'Memorial (PDF)',
       materiais: 'Materiales (PDF)',
       completo: 'Proyecto completo (PDF)',
+      completeTitle: 'Proyecto completo — {{project}}',
     },
     art: {
       title: 'ART',
@@ -1260,8 +1289,27 @@ export const gnPY = {
       dataConclusao: 'Ara ojekuaa',
       valorContrato: 'Contrato precio',
       gerar: 'Ojejapova ART (PDF)',
+      activityPlaceholder: 'Proyecto, supervision ha ejecucion sistema riego aspersion convencional...',
+      print: {
+        title: 'ANOTACION RESPONSABILIDAD TECNICA — ART', subtitle: 'Sistema Riego ha Drenaje',
+        legal: 'Ley 6.496/77 ha Resolucion 1025/09 CONFEA heihape', responsibleSection: '1. RESPONSABLE TECNICO DATO',
+        name: 'Tera', contractorSection: '2. CONTRATANTE DATO', businessName: 'Tera / Razon Social', cityState: 'Municipio / Departamento',
+        activitySection: '3. ACTIVIDAD DESCRIPCION', defaultActivity: 'Proyecto, supervision ha ejecucion sistema riego aspersion.',
+        scheduleSection: '4. CRONOGRAMA', declarationSection: '5. DECLARACION',
+        declaration: 'Profesional ojehaiva he i ha eha responsable tecnico actividad ko documento-pe ha omoañeteta norma ha ley kuera.',
+        fileTitle: 'ART — {{name}}',
+      },
     },
     proposta: {
+      defaults: { payment: '50% adelanto + 50% entrega-pe', warranty: '12 jasy' },
+      print: {
+        title: 'PROPUESTA COMERCIAL', client: 'Cliente', date: 'Ara', validFor: 'Valida {{days}} ara', system: 'Sistema Riego',
+        companySection: '1. EMPRESA DATO', address: 'Direccion', clientSection: '2. CLIENTE', pricingSection: '3. PRECIO COMPOSICION',
+        item: 'Item', description: 'Descripcion', value: 'Valor', materials: 'Material hidraulico lista materiales heihape',
+        services: 'Mba apo ha servicio instalacion', projectDocs: 'Proyecto tecnico, ART ha documentacion', termsSection: '4. CONDICION COMERCIAL',
+        executionDays: 'Ejecucion plazo: {{days}} ara', systemWarranty: 'Sistema garantia',
+        proposalValidity: 'Propuesta validez: {{days}} ara', notesSection: '5. OBSERVACION', validUntil: 'Propuesta valida ko ara peve', fileTitle: 'Propuesta — {{project}}',
+      },
       title: 'Propuesta Comercial',
       tabTitle: 'Propuesta',
       empresa: 'Empresa rery',
