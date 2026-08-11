@@ -95,7 +95,11 @@ export const CRMFunilView = ({ oportunidades, onMover, onEditar }: CRMFunilViewP
                   <Typography variant="caption">{cards.length} {ts('crm.funil.registros')}</Typography>
                   {total > 0 && (
                     <Typography variant="caption">
-                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: 'compact' }).format(total)}
+                      {new Intl.NumberFormat(ts('crm.currency.locale'), {
+                        style: 'currency',
+                        currency: ts('crm.currency.code'),
+                        notation: 'compact',
+                      }).format(total)}
                     </Typography>
                   )}
                 </Stack>
@@ -118,7 +122,11 @@ export const CRMFunilView = ({ oportunidades, onMover, onEditar }: CRMFunilViewP
                               <Stack direction="row" spacing={0.25} sx={{ alignItems: 'center' }}>
                                 <AttachMoneyIcon sx={{ fontSize: 12, color: 'success.main' }} />
                                 <Typography variant="caption" color="success.main">
-                                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: 'compact' }).format(op.valorEstimado)}
+                                  {new Intl.NumberFormat(ts('crm.currency.locale'), {
+                                    style: 'currency',
+                                    currency: ts('crm.currency.code'),
+                                    notation: 'compact',
+                                  }).format(op.valorEstimado)}
                                 </Typography>
                               </Stack>
                             )}

@@ -34,12 +34,12 @@ const OportunidadeCard = ({ item }: { item: Oportunidade }) => {
         </Stack>
         <Chip
           size="small"
-          label={ts('oportunidades.level', { nivel: item.nivel })}
+          label={ts('oportunidades.level', { nivel: ts(`crm.nivel.${item.nivel}`) })}
           color={colorByLevel[item.nivel]}
           sx={{ width: 'fit-content' }}
         />
         <Typography variant="body2" color="text.secondary">
-          {ts('oportunidades.statusCliente', { status: item.statusCliente })}
+          {ts('oportunidades.statusCliente', { status: ts(`comercial.status.${item.statusCliente}`) })}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {ts('oportunidades.ultimaVisita', { valor: item.ultimaVisita || ts('oportunidades.semRegistro') })}

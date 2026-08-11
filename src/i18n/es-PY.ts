@@ -662,6 +662,10 @@ export const esPY = {
     tarefas: 'Tareas',
   },
   crm: {
+    currency: {
+      locale: 'es-PY',
+      code: 'BRL',
+    },
     cliente: {
       classificacao: 'Clasificacion',
       classificacoes: {
@@ -708,6 +712,10 @@ export const esPY = {
       produto: 'Producto',
       responsavel: 'Responsable',
       observacoes: 'Observaciones',
+      validation: {
+        nonNegative: 'Ingrese un valor igual o mayor que cero.',
+        probabilityRange: 'Ingrese una probabilidad entre 0 y 100.',
+      },
     },
     funil: {
       title: 'Embudo de Ventas',

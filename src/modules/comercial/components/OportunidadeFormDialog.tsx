@@ -99,7 +99,7 @@ export const OportunidadeFormDialog = ({
                   fullWidth
                   label={ts('crm.oportunidade.cliente')}
                   error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
+                  helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   onChange={(e) => {
                     field.onChange(e)
                     const cl = clientes.find((c) => c.id === e.target.value)

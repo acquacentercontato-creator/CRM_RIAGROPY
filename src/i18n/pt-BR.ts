@@ -661,6 +661,10 @@ export const ptBR = {
     tarefas: 'Tarefas',
   },
   crm: {
+    currency: {
+      locale: 'pt-BR',
+      code: 'BRL',
+    },
     cliente: {
       classificacao: 'Classificação',
       classificacoes: {
@@ -707,6 +711,10 @@ export const ptBR = {
       produto: 'Produto',
       responsavel: 'Responsável',
       observacoes: 'Observações',
+      validation: {
+        nonNegative: 'Informe um valor igual ou maior que zero.',
+        probabilityRange: 'Informe uma probabilidade entre 0 e 100.',
+      },
     },
     funil: {
       title: 'Funil de Vendas',

@@ -662,6 +662,10 @@ export const gnPY = {
     tarefas: 'Tareas',
   },
   crm: {
+    currency: {
+      locale: 'gn-PY',
+      code: 'BRL',
+    },
     cliente: {
       classificacao: 'Clasificacion',
       classificacoes: {
@@ -708,6 +712,10 @@ export const gnPY = {
       produto: 'Producto',
       responsavel: 'Responsable',
       observacoes: 'Observaciones',
+      validation: {
+        nonNegative: 'Ehai valor zero tera tuichaveva.',
+        probabilityRange: 'Ehai probabilidad 0 ha 100 pa ume.',
+      },
     },
     funil: {
       title: 'Funel venta',

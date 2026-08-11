@@ -18,15 +18,17 @@ interface CRMKpiPanelProps {
   visitas: Visita[]
 }
 
-const fmt = (value: number, currency = false) => {
+const fmt = (value: number, currency: boolean, locale: string, currencyCode: string) => {
   if (currency) {
-    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: 'compact' }).format(value)
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode, notation: 'compact' }).format(value)
   }
   return value.toFixed(0)
 }
 
 export const CRMKpiPanel = ({ oportunidades, visitas }: CRMKpiPanelProps) => {
   const ts = useTranslationService()
+  const locale = ts('crm.currency.locale')
+  const currencyCode = ts('crm.currency.code')
 
   const totalPipeline = oportunidades.reduce((sum, o) => sum + (o.valorEstimado ?? 0), 0)
   const fechadas = oportunidades.filter((o) => o.etapaFunil === 'FECHAMENTO' || o.etapaFunil === 'EXECUCAO' || o.etapaFunil === 'POS_VENDA')
@@ -50,13 +52,13 @@ export const CRMKpiPanel = ({ oportunidades, visitas }: CRMKpiPanelProps) => {
   const kpis = [
     {
       label: ts('crm.kpi.valorPipeline'),
-      value: fmt(totalPipeline, true),
+      value: fmt(totalPipeline, true, locale, currencyCode),
       icon: <AccountBalanceWalletIcon color="primary" />,
       color: 'primary.main',
     },
     {
       label: ts('crm.kpi.emNegociacao'),
-      value: fmt(emNegociacao.reduce((s, o) => s + (o.valorEstimado ?? 0), 0), true),
+      value: fmt(emNegociacao.reduce((s, o) => s + (o.valorEstimado ?? 0), 0), true, locale, currencyCode),
       icon: <TrendingUpIcon color="warning" />,
       color: 'warning.main',
     },
@@ -68,31 +70,31 @@ export const CRMKpiPanel = ({ oportunidades, visitas }: CRMKpiPanelProps) => {
     },
     {
       label: ts('crm.kpi.ticketMedio'),
-      value: fmt(ticketMedio, true),
+      value: fmt(ticketMedio, true, locale, currencyCode),
       icon: <TimerIcon color="info" />,
       color: 'info.main',
     },
     {
       label: ts('crm.kpi.ganhos'),
-      value: fmt(fechadas.length),
+      value: fmt(fechadas.length, false, locale, currencyCode),
       icon: <ThumbUpIcon color="success" />,
       color: 'success.main',
     },
     {
       label: ts('crm.kpi.perdidos'),
-      value: fmt(perdidas.length),
+      value: fmt(perdidas.length, false, locale, currencyCode),
       icon: <ThumbDownIcon color="error" />,
       color: 'error.main',
     },
     {
       label: ts('crm.kpi.visitasSemana'),
-      value: fmt(visitasSemana),
+      value: fmt(visitasSemana, false, locale, currencyCode),
       icon: <GroupIcon color="primary" />,
       color: 'primary.main',
     },
     {
       label: ts('crm.kpi.clientesAtivos'),
-      value: fmt(clientesAtivos),
+      value: fmt(clientesAtivos, false, locale, currencyCode),
       icon: <GroupIcon color="secondary" />,
       color: 'secondary.main',
     },

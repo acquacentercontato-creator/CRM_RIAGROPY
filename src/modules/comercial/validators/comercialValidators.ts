@@ -53,12 +53,16 @@ export const visitaSchema = z.object({
 })
 
 export const oportunidadeSchema = z.object({
-  clienteId: z.string().min(1),
-  clienteNome: z.string().min(2),
+  clienteId: z.string().min(1, 'comercial.validation.required'),
+  clienteNome: z.string().min(2, 'comercial.validation.minTwoCharacters'),
   nivel: z.enum(['ALTA', 'MEDIA', 'BAIXA']),
   etapaFunil: z.enum(['LEAD', 'CONTATO', 'VISITA', 'LEVANTAMENTO', 'PROJETO', 'APRESENTACAO', 'NEGOCIACAO', 'FECHAMENTO', 'EXECUCAO', 'POS_VENDA']).optional(),
-  valorEstimado: z.number().min(0).optional(),
-  probabilidade: z.number().min(0).max(100).optional(),
+  valorEstimado: z.number().min(0, 'crm.oportunidade.validation.nonNegative').optional(),
+  probabilidade: z
+    .number()
+    .min(0, 'crm.oportunidade.validation.probabilityRange')
+    .max(100, 'crm.oportunidade.validation.probabilityRange')
+    .optional(),
   concorrente: z.string().optional(),
   dataFechamento: z.string().optional(),
   produto: z.string().optional(),
