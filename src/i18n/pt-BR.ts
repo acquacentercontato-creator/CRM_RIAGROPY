@@ -1086,6 +1086,7 @@ export const ptBR = {
     },
     ass: {
       title: 'Assistência Técnica',
+      locale: 'pt-BR',
       info: 'Gestão de chamados, triagem, agendamento, manutenção e garantia.',
       novoChamado: 'Novo Chamado',
       semChamados: 'Nenhum chamado encontrado.',

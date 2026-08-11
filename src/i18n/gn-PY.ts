@@ -1085,6 +1085,7 @@ export const gnPY = {
     },
     ass: {
       title: 'Asistencia Tecnica',
+      locale: 'gn-PY',
       info: 'Chamado, triaje, agendamiento, mantenimiento ha garantia.',
       novoChamado: 'Chamado pyahu',
       semChamados: 'Ndaipori chamado.',

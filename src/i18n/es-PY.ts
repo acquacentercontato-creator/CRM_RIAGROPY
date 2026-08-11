@@ -1085,6 +1085,7 @@ export const esPY = {
     },
     ass: {
       title: 'Asistencia Tecnica',
+      locale: 'es-PY',
       info: 'Gestion de llamados, triaje, agendamiento, mantenimiento y garantia.',
       novoChamado: 'Nuevo Llamado',
       semChamados: 'Ningun llamado encontrado.',

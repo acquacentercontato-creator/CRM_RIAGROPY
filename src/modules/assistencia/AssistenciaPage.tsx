@@ -226,7 +226,9 @@ export const AssistenciaPage = () => {
                   <Paper key={h.id} variant="outlined" sx={{ p: 1 }}>
                     <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
                       <Chip label={ts(`technical.ass.status.${h.status}`)} size="small" color={STATUS_COLOR[h.status]} />
-                      <Typography variant="caption" color="text.secondary">{new Date(h.timestamp).toLocaleString()}</Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {new Date(h.timestamp).toLocaleString(ts('technical.ass.locale'))}
+                      </Typography>
                     </Stack>
                     <Typography variant="body2" sx={{ mt: 0.5 }}>
                       {h.descricao === 'Chamado aberto' || h.descricao === 'technical.ass.history.opened'
