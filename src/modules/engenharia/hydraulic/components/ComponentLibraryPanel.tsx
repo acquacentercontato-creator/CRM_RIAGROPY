@@ -51,7 +51,7 @@ const ComponentCard = ({ component }: { component: HydraulicComponent }) => {
       </Stack>
 
       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
-        {component.descricao}
+        {ts(`hydraulic.catalog.${component.id.replace(/[^A-Za-z0-9]/g, '_')}`)}
       </Typography>
 
       <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.25 }}>
@@ -69,7 +69,7 @@ const ComponentCard = ({ component }: { component: HydraulicComponent }) => {
         )}
         {component.preco && (
           <Chip
-            label={`R$ ${component.preco.toLocaleString('pt-BR')}`}
+            label={`R$ ${component.preco.toLocaleString(ts('crm.currency.locale'))}`}
             size="small"
             color="success"
             sx={{ fontSize: 9, height: 16 }}
@@ -108,7 +108,7 @@ export const ComponentLibraryPanel = () => {
     <Stack spacing={2}>
       {/* Stats */}
       <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5 }}>
-        <Chip label={`${CATALOG_STATS.totalComponentes} componentes`} size="small" color="primary" />
+        <Chip label={ts('hydraulic.lib.componentCount', { count: CATALOG_STATS.totalComponentes })} size="small" color="primary" />
         {Object.entries(CATALOG_STATS.porFabricante).map(([fab, count]) => (
           <Chip key={fab} label={`${fab}: ${count}`} size="small" variant="outlined" />
         ))}
@@ -171,4 +171,3 @@ export const ComponentLibraryPanel = () => {
     </Stack>
   )
 }
-

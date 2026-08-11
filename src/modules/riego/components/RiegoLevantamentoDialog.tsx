@@ -27,7 +27,6 @@ import {
 } from '@/modules/riego/types/riegoTypes'
 import { riegoLevantamentoSchema } from '@/modules/riego/validators/riegoValidators'
 import { createEmptyLevantamentoForm, createEmptyQuestionnaire } from '@/modules/riego/utils/riegoUtils'
-import { RIEGO_SEGMENT_LABELS } from '@/modules/riego/models/riegoModels'
 import { RiegoService } from '@/modules/riego/services/RiegoService'
 import { RiegoMediaUploader } from './RiegoMediaUploader'
 import { RiegoSegmentForm } from './RiegoSegmentForm'
@@ -117,7 +116,7 @@ export const RiegoLevantamentoDialog = ({
                       label={ts('riego.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -132,7 +131,7 @@ export const RiegoLevantamentoDialog = ({
                       label={ts('riego.fields.propriedade')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -147,7 +146,7 @@ export const RiegoLevantamentoDialog = ({
                       label={ts('riego.fields.responsavel')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -163,7 +162,7 @@ export const RiegoLevantamentoDialog = ({
                       label={ts('riego.fields.segmento')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                       onChange={(event) => {
                         const value = event.target.value as RiegoSegment
                         field.onChange(value)
@@ -172,7 +171,7 @@ export const RiegoLevantamentoDialog = ({
                     >
                       {RIEGO_SEGMENTS.map((segment) => (
                         <MenuItem key={segment} value={segment}>
-                          {RIEGO_SEGMENT_LABELS[segment]}
+                          {ts(`riego.segments.${segment}`)}
                         </MenuItem>
                       ))}
                     </TextField>
@@ -190,11 +189,11 @@ export const RiegoLevantamentoDialog = ({
                       label={ts('riego.fields.status')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     >
                       {RIEGO_STATUS.map((status) => (
                         <MenuItem key={status} value={status}>
-                          {status}
+                          {ts(`riego.status.${status}`)}
                         </MenuItem>
                       ))}
                     </TextField>

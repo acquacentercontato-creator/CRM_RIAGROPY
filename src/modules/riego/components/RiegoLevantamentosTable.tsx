@@ -19,7 +19,6 @@ import { useMemo, useState } from 'react'
 import type { RiegoLevantamento } from '@/modules/riego/types/riegoTypes'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { RiegoStatusChip } from './RiegoStatusChip'
-import { segmentoLabel } from '@/modules/riego/utils/riegoUtils'
 
 type RiegoLevantamentosTableProps = {
   rows: RiegoLevantamento[]
@@ -79,12 +78,12 @@ export const RiegoLevantamentosTable = ({
               <TableRow key={row.id} hover>
                 <TableCell>{row.codigo}</TableCell>
                 <TableCell>{row.clienteNome}</TableCell>
-                <TableCell>{segmentoLabel(row.segmento)}</TableCell>
+                <TableCell>{ts(`riego.segments.${row.segmento}`)}</TableCell>
                 <TableCell>
                   <RiegoStatusChip status={row.status} />
                 </TableCell>
                 <TableCell>{row.responsavel}</TableCell>
-                <TableCell>{new Date(row.updatedAt).toLocaleString()}</TableCell>
+                <TableCell>{new Date(row.updatedAt).toLocaleString(ts('riego.locale'))}</TableCell>
                 <TableCell align="right">
                   <IconButton size="small" onClick={() => onEdit(row)}>
                     <EditIcon fontSize="small" />

@@ -23,8 +23,8 @@ export const ImotoTimeline = ({ events }: ImotoTimelineProps) => {
         {events.map((event) => (
           <ListItem key={event.id} divider>
             <ListItemText
-              primary={event.message}
-              secondary={`${event.type} | ${new Date(event.createdAt).toLocaleString()} | ${event.actorName}`}
+              primary={ts(`imoto.timeline.events.${event.type}`)}
+              secondary={`${ts(`imoto.timeline.types.${event.type}`)} | ${new Date(event.createdAt).toLocaleString(ts('imoto.locale'))} | ${event.actorName}`}
             />
           </ListItem>
         ))}

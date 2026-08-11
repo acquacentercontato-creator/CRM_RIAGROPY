@@ -12,9 +12,9 @@ const mediaItemSchema = z.object({
 
 export const riegoLevantamentoSchema = z
   .object({
-    clienteNome: z.string().min(2),
-    propriedade: z.string().min(2),
-    responsavel: z.string().min(2),
+    clienteNome: z.string().min(2, 'riego.validation.clientMin'),
+    propriedade: z.string().min(2, 'riego.validation.propertyMin'),
+    responsavel: z.string().min(2, 'riego.validation.responsibleMin'),
     segmento: z.enum(RIEGO_SEGMENTS),
     status: z.enum(RIEGO_STATUS),
     observacoes: z.string(),
@@ -33,7 +33,7 @@ export const riegoLevantamentoSchema = z
       if (!answer || !answer.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `Preencha: ${question.label}`,
+          message: 'riego.validation.required',
           path: ['questionnaire', question.key],
         })
       }

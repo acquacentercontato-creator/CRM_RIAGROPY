@@ -2,6 +2,7 @@ import { Grid, TextField } from '@mui/material'
 import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 import { RIEGO_SEGMENT_QUESTIONS } from '@/modules/riego/models/riegoModels'
 import type { RiegoLevantamentoForm, RiegoSegment } from '@/modules/riego/types/riegoTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type RiegoSegmentFormProps = {
   segment: RiegoSegment
@@ -10,6 +11,7 @@ type RiegoSegmentFormProps = {
 }
 
 export const RiegoSegmentForm = ({ segment, control, errors }: RiegoSegmentFormProps) => {
+  const ts = useTranslationService()
   const questions = RIEGO_SEGMENT_QUESTIONS[segment]
 
   return (
@@ -22,10 +24,10 @@ export const RiegoSegmentForm = ({ segment, control, errors }: RiegoSegmentFormP
             render={({ field }) => (
               <TextField
                 {...field}
-                label={question.label}
+                label={ts(`riego.questions.${question.key}`)}
                 fullWidth
                 error={Boolean(errors.questionnaire?.[question.key])}
-                helperText={errors.questionnaire?.[question.key]?.message}
+                helperText={errors.questionnaire?.[question.key]?.message ? ts(errors.questionnaire[question.key]?.message as string) : undefined}
               />
             )}
           />

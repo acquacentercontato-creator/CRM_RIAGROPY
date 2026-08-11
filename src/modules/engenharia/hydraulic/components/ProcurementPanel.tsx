@@ -424,7 +424,7 @@ export const ProcurementPanel = () => {
                         onClick={() => handleSelecionarFornecedor(idx, f.fornecedor)} />
                       <Typography variant="caption">
                         R$ {f.precoUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} · {f.prazoEntrega}d
-                        · Total: R$ {(f.precoUnitario * item.quantidade).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        · {ts('sup.cotacao.total')}: R$ {(f.precoUnitario * item.quantidade).toLocaleString(ts('crm.currency.locale'), { minimumFractionDigits: 2 })}
                       </Typography>
                     </Stack>
                   ))}

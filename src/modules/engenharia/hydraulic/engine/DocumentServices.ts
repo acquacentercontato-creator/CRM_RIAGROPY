@@ -5,6 +5,7 @@
 import type { HydraulicCalculationResult, HydraulicSystemParams, PumpData } from '../types/hydraulicTypes'
 import { HYDRAULIC_CATALOG } from '../data/componentLibrary'
 import type { HydraulicComponent } from '../types/hydraulicTypes'
+import { TranslationService } from '@/shared/services/TranslationService'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -68,7 +69,7 @@ export const MemorialService = {
    */
   gerar(input: MemorialInput): MemorialDescritivo {
     const { params, resultado, bomba } = input
-    const data = input.dataElaboracao ?? new Date().toLocaleDateString('pt-BR')
+    const data = input.dataElaboracao ?? new Date().toLocaleDateString(TranslationService.t('crm.currency.locale'))
 
     const material = this._nomeMaterial(params.materialTubulacao)
 
@@ -366,7 +367,7 @@ export const MaterialListService = {
       subtotal,
       reservaTecnica: reserva,
       total: subtotal + reserva,
-      dataGeracao: new Date().toLocaleDateString('pt-BR'),
+      dataGeracao: new Date().toLocaleDateString(TranslationService.t('crm.currency.locale')),
     }
   },
 }
@@ -378,12 +379,13 @@ export const PrintService = {
    * Imprime HTML como PDF via janela de impressão do browser
    */
   imprimirHtml(html: string, titulo: string): void {
+    const locale = TranslationService.t('crm.currency.locale')
     const janela = window.open('', '_blank')
     if (!janela) return
 
     janela.document.write(`
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="${locale}">
 <head>
   <meta charset="UTF-8">
   <title>${titulo}</title>
@@ -424,13 +426,14 @@ ${html}
    * Converte memorial para HTML
    */
   memorialToHtml(memorial: MemorialDescritivo): string {
+    const t = TranslationService.t
     const secoes = memorial.secoes
       .map((s) => `<h2>${s.titulo}</h2><pre>${s.conteudo}</pre>`)
       .join('\n')
 
     return `
 <h1>${memorial.titulo}</h1>
-<p style="text-align:right;font-size:9pt;color:#666">Data: ${memorial.data} | CREA: ${memorial.crea}</p>
+<p style="text-align:right;font-size:9pt;color:#666">${t('doc.print.date')}: ${memorial.data} | CREA: ${memorial.crea}</p>
 ${secoes}
 <div class="footer">${memorial.rodape}</div>`
   },
@@ -439,6 +442,8 @@ ${secoes}
    * Converte lista de materiais para HTML
    */
   materialListToHtml(lista: MaterialList, nomeProjeto: string, nomeCliente: string): string {
+    const t = TranslationService.t
+    const locale = t('crm.currency.locale')
     const linhas = lista.itens
       .map(
         (item) => `<tr>
@@ -447,24 +452,24 @@ ${secoes}
   <td>${item.fabricante ?? '—'}</td>
   <td style="text-align:center">${item.quantidade}</td>
   <td style="text-align:center">${item.unidade}</td>
-  <td style="text-align:right">R$ ${item.precoUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-  <td style="text-align:right">R$ ${item.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+  <td style="text-align:right">R$ ${item.precoUnitario.toLocaleString(locale, { minimumFractionDigits: 2 })}</td>
+  <td style="text-align:right">R$ ${item.total.toLocaleString(locale, { minimumFractionDigits: 2 })}</td>
 </tr>`
       )
       .join('\n')
 
     return `
-<h1>LISTA DE MATERIAIS</h1>
-<p><strong>Projeto:</strong> ${nomeProjeto} | <strong>Cliente:</strong> ${nomeCliente} | <strong>Data:</strong> ${lista.dataGeracao}</p>
+<h1>${t('doc.materiais.titulo')}</h1>
+<p><strong>${t('doc.print.project')}:</strong> ${nomeProjeto} | <strong>${t('doc.print.client')}:</strong> ${nomeCliente} | <strong>${t('doc.print.date')}:</strong> ${lista.dataGeracao}</p>
 <table>
-  <thead><tr><th>Código</th><th>Descrição</th><th>Fabricante</th><th>Qtd</th><th>Un</th><th>Pr. Unit.</th><th>Total</th></tr></thead>
+  <thead><tr><th>${t('doc.print.code')}</th><th>${t('doc.print.description')}</th><th>${t('doc.print.manufacturer')}</th><th>${t('doc.print.quantity')}</th><th>${t('doc.print.unit')}</th><th>${t('doc.print.unitPrice')}</th><th>${t('doc.print.total')}</th></tr></thead>
   <tbody>
     ${linhas}
   </tbody>
   <tfoot>
-    <tr class="total-row"><td colspan="6">Subtotal</td><td style="text-align:right">R$ ${lista.subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>
-    <tr class="total-row"><td colspan="6">Reserva técnica (5%)</td><td style="text-align:right">R$ ${lista.reservaTecnica.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td></tr>
-    <tr class="total-row"><td colspan="6"><strong>TOTAL GERAL</strong></td><td style="text-align:right"><strong>R$ ${lista.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td></tr>
+    <tr class="total-row"><td colspan="6">${t('doc.materiais.subtotal')}</td><td style="text-align:right">R$ ${lista.subtotal.toLocaleString(locale, { minimumFractionDigits: 2 })}</td></tr>
+    <tr class="total-row"><td colspan="6">${t('doc.materiais.reserve')}</td><td style="text-align:right">R$ ${lista.reservaTecnica.toLocaleString(locale, { minimumFractionDigits: 2 })}</td></tr>
+    <tr class="total-row"><td colspan="6"><strong>${t('doc.materiais.total')}</strong></td><td style="text-align:right"><strong>R$ ${lista.total.toLocaleString(locale, { minimumFractionDigits: 2 })}</strong></td></tr>
   </tfoot>
 </table>`
   },

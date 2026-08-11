@@ -204,7 +204,7 @@ export const AttachmentsPanel = ({
               variant="contained"
               onClick={() => handleDownload(anexoSelecionado)}
             >
-              Download
+              {ts('actions.download')}
             </Button>
           )}
         </DialogActions>

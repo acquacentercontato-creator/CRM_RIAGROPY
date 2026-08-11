@@ -2,6 +2,7 @@ import { Grid, TextField } from '@mui/material'
 import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 import { IMOTO_SEGMENT_QUESTIONS } from '@/modules/imoto/models/imotoModels'
 import type { ImotoLevantamentoForm, ImotoSegment } from '@/modules/imoto/types/imotoTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type ImotoSegmentFormProps = {
   segment: ImotoSegment
@@ -10,6 +11,7 @@ type ImotoSegmentFormProps = {
 }
 
 export const ImotoSegmentForm = ({ segment, control, errors }: ImotoSegmentFormProps) => {
+  const ts = useTranslationService()
   const questions = IMOTO_SEGMENT_QUESTIONS[segment]
 
   return (
@@ -22,10 +24,10 @@ export const ImotoSegmentForm = ({ segment, control, errors }: ImotoSegmentFormP
             render={({ field }) => (
               <TextField
                 {...field}
-                label={question.label}
+                label={ts(`imoto.questions.${question.key}`)}
                 fullWidth
                 error={Boolean(errors.questionnaire?.[question.key])}
-                helperText={errors.questionnaire?.[question.key]?.message}
+                helperText={errors.questionnaire?.[question.key]?.message ? ts(errors.questionnaire[question.key]?.message as string) : undefined}
               />
             )}
           />

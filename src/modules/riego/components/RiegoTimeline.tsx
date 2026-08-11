@@ -23,8 +23,8 @@ export const RiegoTimeline = ({ events }: RiegoTimelineProps) => {
         {events.map((event) => (
           <ListItem key={event.id} divider>
             <ListItemText
-              primary={`${event.message}`}
-              secondary={`${event.type} | ${new Date(event.createdAt).toLocaleString()} | ${event.actor}`}
+              primary={ts(`riego.timeline.events.${event.type}`)}
+              secondary={`${ts(`riego.timeline.types.${event.type}`)} | ${new Date(event.createdAt).toLocaleString(ts('riego.locale'))} | ${event.actor}`}
             />
           </ListItem>
         ))}

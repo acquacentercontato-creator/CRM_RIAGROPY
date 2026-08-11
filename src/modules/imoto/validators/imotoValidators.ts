@@ -14,9 +14,9 @@ const uploadedFileSchema = z.object({
 
 export const imotoLevantamentoSchema = z
   .object({
-    clienteNome: z.string().min(2),
-    unidadeIndustrial: z.string().min(2),
-    responsavelTecnico: z.string().min(2),
+    clienteNome: z.string().min(2, 'imoto.validation.clientMin'),
+    unidadeIndustrial: z.string().min(2, 'imoto.validation.unitMin'),
+    responsavelTecnico: z.string().min(2, 'imoto.validation.responsibleMin'),
     segmento: z.enum(IMOTO_SEGMENTS),
     status: z.enum(IMOTO_STATUS),
     observacoes: z.string(),
@@ -38,7 +38,7 @@ export const imotoLevantamentoSchema = z
       if (!answer || !answer.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `Preencha: ${question.label}`,
+          message: 'imoto.validation.required',
           path: ['questionnaire', question.key],
         })
       }

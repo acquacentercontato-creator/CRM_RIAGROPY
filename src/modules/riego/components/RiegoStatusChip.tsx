@@ -1,6 +1,6 @@
 import { Chip } from '@mui/material'
 import type { RiegoStatus } from '@/modules/riego/types/riegoTypes'
-import { statusLabel } from '@/modules/riego/utils/riegoUtils'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type RiegoStatusChipProps = {
   status: RiegoStatus
@@ -15,5 +15,6 @@ const statusColor: Record<RiegoStatus, 'default' | 'warning' | 'info' | 'success
 }
 
 export const RiegoStatusChip = ({ status }: RiegoStatusChipProps) => {
-  return <Chip size="small" color={statusColor[status]} label={statusLabel(status)} />
+  const ts = useTranslationService()
+  return <Chip size="small" color={statusColor[status]} label={ts(`riego.status.${status}`)} />
 }

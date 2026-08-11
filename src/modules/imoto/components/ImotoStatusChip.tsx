@@ -1,6 +1,6 @@
 import { Chip } from '@mui/material'
 import type { ImotoStatus } from '@/modules/imoto/types/imotoTypes'
-import { statusLabel } from '@/modules/imoto/utils/imotoUtils'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type ImotoStatusChipProps = {
   status: ImotoStatus
@@ -15,5 +15,6 @@ const statusColor: Record<ImotoStatus, 'default' | 'warning' | 'info' | 'success
 }
 
 export const ImotoStatusChip = ({ status }: ImotoStatusChipProps) => {
-  return <Chip size="small" color={statusColor[status]} label={statusLabel(status)} />
+  const ts = useTranslationService()
+  return <Chip size="small" color={statusColor[status]} label={ts(`imoto.status.${status}`)} />
 }

@@ -5,6 +5,7 @@
 import { NotificationService } from '@/shared/services/NotificationService'
 import { AutomationService } from '@/shared/crm-automation'
 import type { MaterialItem } from '../engine/DocumentServices'
+import { TranslationService } from '@/shared/services/TranslationService'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -452,37 +453,39 @@ export const PedidoService = {
 
   /** Imprime PDF do pedido via PrintService */
   imprimirPDF(pedido: Pedido): void {
+    const t = TranslationService.t
+    const locale = t('crm.currency.locale')
     const html = `
-<h1>PEDIDO DE COMPRA — ${pedido.numero}</h1>
-<p><strong>Projeto:</strong> ${pedido.nomeProjeto} | <strong>Cliente:</strong> ${pedido.nomeCliente}<br/>
-<strong>Data:</strong> ${new Date(pedido.criadoEm).toLocaleDateString('pt-BR')} | <strong>Prazo máx. entrega:</strong> ${pedido.prazoEntregaGeral} dias</p>
-${pedido.enderecoEntrega ? `<p><strong>Endereço de entrega:</strong> ${pedido.enderecoEntrega}</p>` : ''}
+<h1>${t('doc.purchase.title')} — ${pedido.numero}</h1>
+<p><strong>${t('doc.print.project')}:</strong> ${pedido.nomeProjeto} | <strong>${t('doc.print.client')}:</strong> ${pedido.nomeCliente}<br/>
+<strong>${t('doc.print.date')}:</strong> ${new Date(pedido.criadoEm).toLocaleDateString(locale)} | <strong>${t('doc.purchase.maxDelivery')}:</strong> ${pedido.prazoEntregaGeral} ${t('doc.common.days')}</p>
+${pedido.enderecoEntrega ? `<p><strong>${t('doc.purchase.deliveryAddress')}:</strong> ${pedido.enderecoEntrega}</p>` : ''}
 <table>
-  <thead><tr><th>Código</th><th>Descrição</th><th>Forn.</th><th>Qtd</th><th>Un</th><th>Pr. Unit.</th><th>Total</th><th>Prazo</th></tr></thead>
+  <thead><tr><th>${t('doc.print.code')}</th><th>${t('doc.print.description')}</th><th>${t('doc.purchase.supplierShort')}</th><th>${t('doc.print.quantity')}</th><th>${t('doc.print.unit')}</th><th>${t('doc.print.unitPrice')}</th><th>${t('doc.print.total')}</th><th>${t('doc.purchase.delivery')}</th></tr></thead>
   <tbody>
     ${pedido.itens.map((item) => `<tr>
       <td>${item.codigo}</td><td>${item.descricao}</td><td>${item.fornecedor}</td>
       <td style="text-align:center">${item.quantidade}</td><td style="text-align:center">${item.unidade}</td>
-      <td style="text-align:right">R$ ${item.precoUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-      <td style="text-align:right">R$ ${item.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+      <td style="text-align:right">R$ ${item.precoUnitario.toLocaleString(locale, { minimumFractionDigits: 2 })}</td>
+      <td style="text-align:right">R$ ${item.total.toLocaleString(locale, { minimumFractionDigits: 2 })}</td>
       <td style="text-align:center">${item.prazoEntrega}d</td>
     </tr>`).join('')}
   </tbody>
   <tfoot>
-    <tr class="total-row"><td colspan="6"><strong>TOTAL GERAL</strong></td>
-    <td style="text-align:right"><strong>R$ ${pedido.totalGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong></td><td></td></tr>
+    <tr class="total-row"><td colspan="6"><strong>${t('doc.materiais.total')}</strong></td>
+    <td style="text-align:right"><strong>R$ ${pedido.totalGeral.toLocaleString(locale, { minimumFractionDigits: 2 })}</strong></td><td></td></tr>
   </tfoot>
 </table>
-<p><strong>Condições de pagamento:</strong> ${pedido.condicoesPagamento}</p>
-${pedido.observacoes ? `<p><strong>Observações:</strong> ${pedido.observacoes}</p>` : ''}
+<p><strong>${t('doc.purchase.paymentTerms')}:</strong> ${pedido.condicoesPagamento}</p>
+${pedido.observacoes ? `<p><strong>${t('doc.purchase.notes')}:</strong> ${pedido.observacoes}</p>` : ''}
 <p style="margin-top:15mm;text-align:center">
-  ____________________________________<br/>Solicitante | ${new Date().toLocaleDateString('pt-BR')}
+  ____________________________________<br/>${t('doc.purchase.requester')} | ${new Date().toLocaleDateString(locale)}
 </p>`
 
     // Reuse PrintService from DocumentServices
     const janela = window.open('', '_blank')
     if (!janela) return
-    janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Pedido ${pedido.numero}</title>
+    janela.document.write(`<!DOCTYPE html><html lang="${locale}"><head><meta charset="UTF-8"><title>${t('doc.purchase.order')} ${pedido.numero}</title>
 <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11pt;line-height:1.6;padding:20mm 20mm 20mm 25mm}
 h1{font-size:14pt;text-align:center;margin-bottom:8mm;border-bottom:2px solid #1a5276;padding-bottom:4mm}
 h2{font-size:12pt;color:#1a5276;margin-top:6mm;margin-bottom:3mm}p{margin-bottom:3mm}

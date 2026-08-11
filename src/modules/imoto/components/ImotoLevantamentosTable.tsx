@@ -19,7 +19,6 @@ import { useMemo, useState } from 'react'
 import { ImotoStatusChip } from '@/modules/imoto/components/ImotoStatusChip'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import type { ImotoLevantamento } from '@/modules/imoto/types/imotoTypes'
-import { segmentoLabel } from '@/modules/imoto/utils/imotoUtils'
 
 type ImotoLevantamentosTableProps = {
   rows: ImotoLevantamento[]
@@ -79,12 +78,12 @@ export const ImotoLevantamentosTable = ({
               <TableRow key={row.id} hover>
                 <TableCell>{row.codigo}</TableCell>
                 <TableCell>{row.clienteNome}</TableCell>
-                <TableCell>{segmentoLabel(row.segmento)}</TableCell>
+                <TableCell>{ts(`imoto.segments.${row.segmento}`)}</TableCell>
                 <TableCell>
                   <ImotoStatusChip status={row.status} />
                 </TableCell>
                 <TableCell>{row.responsavelTecnico}</TableCell>
-                <TableCell>{new Date(row.updatedAt).toLocaleString()}</TableCell>
+                <TableCell>{new Date(row.updatedAt).toLocaleString(ts('imoto.locale'))}</TableCell>
                 <TableCell align="right">
                   <IconButton size="small" onClick={() => onEdit(row)}>
                     <EditIcon fontSize="small" />

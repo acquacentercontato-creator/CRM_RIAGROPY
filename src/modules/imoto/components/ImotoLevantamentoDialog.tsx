@@ -17,7 +17,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { GlobalFileUpload } from '@/shared/components/GlobalFileUpload'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
-import { IMOTO_MEDIA_KEYS, IMOTO_SEGMENT_LABELS } from '@/modules/imoto/models/imotoModels'
+import { IMOTO_MEDIA_KEYS } from '@/modules/imoto/models/imotoModels'
 import { useImotoDraft } from '@/modules/imoto/hooks/useImotoDraft'
 import { useImotoGps } from '@/modules/imoto/hooks/useImotoGps'
 import { ImotoService } from '@/modules/imoto/services/ImotoService'
@@ -130,7 +130,7 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -145,7 +145,7 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.unidadeIndustrial')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -160,7 +160,7 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.responsavelTecnico')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -176,7 +176,7 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.segmento')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                       onChange={(event) => {
                         const value = event.target.value as ImotoLevantamento['segmento']
                         field.onChange(value)
@@ -185,7 +185,7 @@ export const ImotoLevantamentoDialog = ({
                     >
                       {IMOTO_SEGMENTS.map((segment) => (
                         <MenuItem key={segment} value={segment}>
-                          {IMOTO_SEGMENT_LABELS[segment]}
+                          {ts(`imoto.segments.${segment}`)}
                         </MenuItem>
                       ))}
                     </TextField>
@@ -203,11 +203,11 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.status')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     >
                       {IMOTO_STATUS.map((status) => (
                         <MenuItem key={status} value={status}>
-                          {status}
+                          {ts(`imoto.status.${status}`)}
                         </MenuItem>
                       ))}
                     </TextField>
