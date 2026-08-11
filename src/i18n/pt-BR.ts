@@ -165,6 +165,10 @@ export const ptBR = {
     configuracoes: { title: 'Configuracoes' },
   },
   comercial: {
+    validation: {
+      required: 'Campo obrigatorio.',
+      minTwoCharacters: 'Informe pelo menos 2 caracteres.',
+    },
     status: {
       ATIVO: 'Ativo',
       PROSPECT: 'Prospect',
@@ -237,6 +241,7 @@ export const ptBR = {
     },
     visitas: {
       title: 'Visitas Comerciais',
+      loading: 'Carregando visitas...',
       new: 'Nova visita',
       edit: 'Editar visita',
       fields: {

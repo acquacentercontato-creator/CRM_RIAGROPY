@@ -99,7 +99,7 @@ export const VisitasCrud = () => {
       />
 
       {isLoading ? (
-        <Typography color="text.secondary" sx={{ py: 2 }}>{ts('comercial.visitas.title')}...</Typography>
+        <Typography color="text.secondary" sx={{ py: 2 }}>{ts('comercial.visitas.loading')}</Typography>
       ) : visitas.length === 0 ? (
         <Typography color="text.secondary" sx={{ py: 2 }}>{ts('common.emptyVisit')}</Typography>
       ) : (
@@ -180,7 +180,7 @@ export const VisitasCrud = () => {
                     fullWidth
                     slotProps={{ inputLabel: { shrink: true } }}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -197,7 +197,7 @@ export const VisitasCrud = () => {
                     fullWidth
                     slotProps={{ inputLabel: { shrink: true } }}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -213,7 +213,7 @@ export const VisitasCrud = () => {
                     label={ts('comercial.visitas.fields.cliente')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     onChange={(event) => {
                       field.onChange(event)
                       const selected = clientes.find((item) => item.id === event.target.value)
@@ -242,7 +242,7 @@ export const VisitasCrud = () => {
                     label={ts('comercial.visitas.fields.clienteNome')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -264,7 +264,7 @@ export const VisitasCrud = () => {
                       label={label}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -282,7 +282,7 @@ export const VisitasCrud = () => {
                     label={ts('comercial.visitas.fields.fotos')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -298,7 +298,7 @@ export const VisitasCrud = () => {
                     label={ts('comercial.visitas.fields.videos')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -314,7 +314,7 @@ export const VisitasCrud = () => {
                     label={ts('comercial.visitas.fields.audios')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -331,7 +331,7 @@ export const VisitasCrud = () => {
                     multiline
                     minRows={3}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />

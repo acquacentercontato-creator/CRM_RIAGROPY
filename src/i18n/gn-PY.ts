@@ -165,6 +165,10 @@ export const gnPY = {
     configuracoes: { title: 'Configuraciones' },
   },
   comercial: {
+    validation: {
+      required: 'Ko campo oñemyanyhy va era.',
+      minTwoCharacters: 'Ehai mokoi tai jepe.',
+    },
     status: {
       ATIVO: 'Activo',
       PROSPECT: 'Prospecto',
@@ -237,6 +241,7 @@ export const gnPY = {
     },
     visitas: {
       title: 'Visitas Comerciales',
+      loading: 'Oñemyanyhy hina visita kuera...',
       new: 'Nueva visita',
       edit: 'Editar visita',
       fields: {

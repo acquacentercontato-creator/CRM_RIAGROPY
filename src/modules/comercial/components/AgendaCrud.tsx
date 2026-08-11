@@ -101,7 +101,7 @@ export const AgendaCrud = () => {
             <ListItem key={item.id} divider>
               <ListItemText
                 primary={`${item.data} ${item.hora} | ${item.titulo}`}
-                secondary={`${item.clienteNome} | ${item.tipo} | ${item.status}`}
+                secondary={`${item.clienteNome} | ${ts(`comercial.agenda.tipos.${item.tipo}`)} | ${ts(`comercial.agenda.status.${item.status}`)}`}
               />
               <ListItemSecondaryAction>
                 <IconButton
@@ -138,7 +138,7 @@ export const AgendaCrud = () => {
             <ListItem key={item.id} divider>
               <ListItemText
                 primary={`${item.data} ${item.hora} | ${item.titulo}`}
-                secondary={`${item.clienteNome} | ${item.status}`}
+                secondary={`${item.clienteNome} | ${ts(`comercial.agenda.status.${item.status}`)}`}
               />
             </ListItem>
           ))}
@@ -171,7 +171,7 @@ export const AgendaCrud = () => {
                     label={ts('comercial.agenda.fields.titulo')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -187,7 +187,7 @@ export const AgendaCrud = () => {
                     label={ts('comercial.agenda.fields.cliente')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     onChange={(event) => {
                       field.onChange(event)
                       const selected = clientes.find((item) => item.id === event.target.value)
@@ -216,7 +216,7 @@ export const AgendaCrud = () => {
                     label={ts('comercial.agenda.fields.clienteNome')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -233,7 +233,7 @@ export const AgendaCrud = () => {
                     fullWidth
                     slotProps={{ inputLabel: { shrink: true } }}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -250,7 +250,7 @@ export const AgendaCrud = () => {
                     fullWidth
                     slotProps={{ inputLabel: { shrink: true } }}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />
@@ -266,7 +266,7 @@ export const AgendaCrud = () => {
                     label={ts('comercial.agenda.fields.tipo')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   >
                     <MenuItem value="LIGACAO">{ts('comercial.agenda.tipos.LIGACAO')}</MenuItem>
                     <MenuItem value="REUNIAO">{ts('comercial.agenda.tipos.REUNIAO')}</MenuItem>
@@ -287,7 +287,7 @@ export const AgendaCrud = () => {
                     label={ts('common.status')}
                     fullWidth
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   >
                     <MenuItem value="PENDENTE">{ts('comercial.agenda.status.PENDENTE')}</MenuItem>
                     <MenuItem value="CONCLUIDO">{ts('comercial.agenda.status.CONCLUIDO')}</MenuItem>
@@ -308,7 +308,7 @@ export const AgendaCrud = () => {
                     multiline
                     minRows={3}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   />
                 )}
               />

@@ -165,6 +165,10 @@ export const esPY = {
     configuracoes: { title: 'Configuraciones' },
   },
   comercial: {
+    validation: {
+      required: 'Campo obligatorio.',
+      minTwoCharacters: 'Ingrese al menos 2 caracteres.',
+    },
     status: {
       ATIVO: 'Activo',
       PROSPECT: 'Prospecto',
@@ -237,6 +241,7 @@ export const esPY = {
     },
     visitas: {
       title: 'Visitas Comerciales',
+      loading: 'Cargando visitas...',
       new: 'Nueva visita',
       edit: 'Editar visita',
       fields: {

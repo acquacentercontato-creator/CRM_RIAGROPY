@@ -24,24 +24,24 @@ export const clienteSchema = z.object({
 })
 
 export const agendaSchema = z.object({
-  titulo: z.string().min(2),
-  clienteId: z.string().min(1),
-  clienteNome: z.string().min(2),
-  data: z.string().min(1),
-  hora: z.string().min(1),
+  titulo: z.string().min(2, 'comercial.validation.minTwoCharacters'),
+  clienteId: z.string().min(1, 'comercial.validation.required'),
+  clienteNome: z.string().min(2, 'comercial.validation.minTwoCharacters'),
+  data: z.string().min(1, 'comercial.validation.required'),
+  hora: z.string().min(1, 'comercial.validation.required'),
   tipo: z.enum(['LIGACAO', 'REUNIAO', 'VISITA', 'FOLLOW_UP']),
   status: z.enum(['PENDENTE', 'CONCLUIDO', 'CANCELADO']),
   descricao: z.string(),
 })
 
 export const visitaSchema = z.object({
-  data: z.string().min(1),
-  hora: z.string().min(1),
-  clienteId: z.string().min(1),
-  clienteNome: z.string().min(2),
-  responsavel: z.string().min(2),
-  objetivo: z.string().min(2),
-  resultado: z.string().min(2),
+  data: z.string().min(1, 'comercial.validation.required'),
+  hora: z.string().min(1, 'comercial.validation.required'),
+  clienteId: z.string().min(1, 'comercial.validation.required'),
+  clienteNome: z.string().min(2, 'comercial.validation.minTwoCharacters'),
+  responsavel: z.string().min(2, 'comercial.validation.minTwoCharacters'),
+  objetivo: z.string().min(2, 'comercial.validation.minTwoCharacters'),
+  resultado: z.string().min(2, 'comercial.validation.minTwoCharacters'),
   fotos: z.array(z.string()),
   videos: z.array(z.string()),
   audios: z.array(z.string()),
