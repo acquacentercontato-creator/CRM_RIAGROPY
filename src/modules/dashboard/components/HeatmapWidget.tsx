@@ -27,7 +27,7 @@ export const HeatmapWidget = ({ title, cells }: HeatmapWidgetProps) => {
                 }}
               >
                 <Typography variant="caption" sx={{ display: 'block', lineHeight: 1 }} color="common.white">
-                  {cell.x}
+                  {ts(cell.x)}
                 </Typography>
                 <Typography variant="caption" sx={{ display: 'block', lineHeight: 1 }} color="common.white">
                   {cell.y}

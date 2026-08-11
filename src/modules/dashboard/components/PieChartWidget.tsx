@@ -60,7 +60,7 @@ export const PieChartWidget = ({ title, points }: PieChartWidgetProps) => {
           {slices.map((slice) => (
             <Stack key={slice.key} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <Box sx={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: slice.color }} />
-              <Typography variant="body2">{slice.label}</Typography>
+              <Typography variant="body2">{ts(slice.label)}</Typography>
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 {slice.value}
               </Typography>

@@ -18,7 +18,7 @@ export const BarChartWidget = ({ title, points }: BarChartWidgetProps) => {
         {points.map((point) => (
           <Box key={point.label}>
             <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-              <Typography variant="body2">{point.label}</Typography>
+              <Typography variant="body2">{ts(point.label)}</Typography>
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 {point.value}
               </Typography>
