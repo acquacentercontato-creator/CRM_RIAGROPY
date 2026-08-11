@@ -125,7 +125,15 @@ const toDepartment = (clienteNome: string, departmentsByCliente: Map<string, str
 }
 
 const buildHeatmap = (events: TimelineEvent[]): HeatmapCell[] => {
-  const days = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB']
+  const days = [
+    'dashboard.weekday.sun',
+    'dashboard.weekday.mon',
+    'dashboard.weekday.tue',
+    'dashboard.weekday.wed',
+    'dashboard.weekday.thu',
+    'dashboard.weekday.fri',
+    'dashboard.weekday.sat',
+  ]
   const buckets = new Map<string, number>()
 
   events.forEach((event) => {
@@ -438,19 +446,19 @@ export const DashboardService = {
     })
 
     const kpis = [
-      { key: 'clientes', label: 'Clientes', value: clientesFiltered.length },
-      { key: 'leads', label: 'Leads', value: oportunidadesFiltered.length },
-      { key: 'visitas', label: 'Visitas', value: visitasFiltered.length },
-      { key: 'levantamentos', label: 'Levantamentos', value: levantamentosFiltered.length },
-      { key: 'projetos', label: 'Projetos', value: engenhariaFiltered.length },
-      { key: 'projetosRevisao', label: 'Projetos em Revisao', value: projetosRevisao.length },
-      { key: 'projetosConcluidos', label: 'Projetos Concluidos', value: projetosConcluidos.length },
-      { key: 'obrasAndamento', label: 'Obras em Andamento', value: obrasAndamento.length },
-      { key: 'obrasFinalizadas', label: 'Obras Finalizadas', value: obrasFinalizadas.length },
-      { key: 'assistencias', label: 'Assistencias', value: assistencias.length },
-      { key: 'faturamentoPrevisto', label: 'Faturamento Previsto', value: toCurrency(faturamentoPrevisto) },
-      { key: 'negociacoes', label: 'Negociacoes', value: alta + media },
-      { key: 'conversaoComercial', label: 'Conversao Comercial', value: `${conversaoComercial}%` },
+      { key: 'clientes', label: 'dashboard.kpi.clients', value: clientesFiltered.length },
+      { key: 'leads', label: 'dashboard.kpi.leads', value: oportunidadesFiltered.length },
+      { key: 'visitas', label: 'dashboard.kpi.visits', value: visitasFiltered.length },
+      { key: 'levantamentos', label: 'dashboard.kpi.surveys', value: levantamentosFiltered.length },
+      { key: 'projetos', label: 'dashboard.kpi.projects', value: engenhariaFiltered.length },
+      { key: 'projetosRevisao', label: 'dashboard.kpi.projectsInReview', value: projetosRevisao.length },
+      { key: 'projetosConcluidos', label: 'dashboard.kpi.completedProjects', value: projetosConcluidos.length },
+      { key: 'obrasAndamento', label: 'dashboard.kpi.worksInProgress', value: obrasAndamento.length },
+      { key: 'obrasFinalizadas', label: 'dashboard.kpi.completedWorks', value: obrasFinalizadas.length },
+      { key: 'assistencias', label: 'dashboard.kpi.assistance', value: assistencias.length },
+      { key: 'faturamentoPrevisto', label: 'dashboard.kpi.expectedRevenue', value: toCurrency(faturamentoPrevisto) },
+      { key: 'negociacoes', label: 'dashboard.kpi.negotiations', value: alta + media },
+      { key: 'conversaoComercial', label: 'dashboard.kpi.commercialConversion', value: `${conversaoComercial}%` },
     ]
 
     const responsaveis = Array.from(
@@ -476,17 +484,17 @@ export const DashboardService = {
       charts: {
         line: Array.from(lineMap.entries()).map(([label, value]) => ({ label, value })),
         bar: [
-          { label: 'Projetos', value: engenhariaFiltered.length },
-          { label: 'Revisao', value: projetosRevisao.length },
-          { label: 'Concluidos', value: projetosConcluidos.length },
-          { label: 'Obras', value: obrasFiltered.length },
-          { label: 'Andamento', value: obrasAndamento.length },
-          { label: 'Finalizadas', value: obrasFinalizadas.length },
+          { label: 'dashboard.chart.projects', value: engenhariaFiltered.length },
+          { label: 'dashboard.chart.review', value: projetosRevisao.length },
+          { label: 'dashboard.chart.completed', value: projetosConcluidos.length },
+          { label: 'dashboard.chart.works', value: obrasFiltered.length },
+          { label: 'dashboard.chart.inProgress', value: obrasAndamento.length },
+          { label: 'dashboard.chart.finalized', value: obrasFinalizadas.length },
         ],
         pie: [
-          { label: 'Leads Alta', value: alta },
-          { label: 'Leads Media', value: media },
-          { label: 'Leads Baixa', value: baixa },
+          { label: 'dashboard.chart.highLeads', value: alta },
+          { label: 'dashboard.chart.mediumLeads', value: media },
+          { label: 'dashboard.chart.lowLeads', value: baixa },
         ],
         area: Array.from(areaMap.entries()).map(([label, value]) => ({ label, value })),
         heatmap: buildHeatmap(timelineFiltered),
