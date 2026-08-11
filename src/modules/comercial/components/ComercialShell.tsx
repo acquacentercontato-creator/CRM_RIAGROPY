@@ -1,8 +1,8 @@
 import { Box, Tab, Tabs } from '@mui/material'
 import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type TabItem = {
   key: string
@@ -15,19 +15,19 @@ type ComercialShellProps = {
 }
 
 export const ComercialShell = ({ children }: ComercialShellProps) => {
-  const { t } = useTranslation()
+  const ts = useTranslationService()
   const navigate = useNavigate()
   const location = useLocation()
   const [value, setValue] = useState(location.pathname)
 
   const tabs = useMemo<TabItem[]>(
     () => [
-      { key: 'clientes', label: t('menu.clientes'), path: '/clientes' },
-      { key: 'agenda', label: t('menu.agenda'), path: '/agenda' },
-      { key: 'visitas', label: t('menu.visitas'), path: '/visitas' },
-      { key: 'oportunidades', label: t('menu.oportunidades'), path: '/oportunidades' },
+      { key: 'clientes', label: ts('menu.clientes'), path: '/clientes' },
+      { key: 'agenda', label: ts('menu.agenda'), path: '/agenda' },
+      { key: 'visitas', label: ts('menu.visitas'), path: '/visitas' },
+      { key: 'oportunidades', label: ts('menu.oportunidades'), path: '/oportunidades' },
     ],
-    [t]
+    [ts]
   )
 
   return (

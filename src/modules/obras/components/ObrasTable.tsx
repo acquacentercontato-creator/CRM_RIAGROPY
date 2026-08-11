@@ -12,12 +12,14 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Tooltip,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import ConstructionIcon from '@mui/icons-material/Construction'
 import { useMemo, useState } from 'react'
 import { OBRAS_STATUS } from '@/modules/obras/types/obrasTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import type { Obra, ObraStatus } from '@/modules/obras/types/obrasTypes'
 import { ObrasStatusChip } from '@/modules/obras/components/ObrasStatusChip'
 
@@ -30,6 +32,7 @@ type ObrasTableProps = {
 }
 
 export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: ObrasTableProps) => {
+  const ts = useTranslationService()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<'TODOS' | ObraStatus>('TODOS')
   const [page, setPage] = useState(0)
@@ -51,10 +54,10 @@ export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: O
   return (
     <Paper sx={{ p: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 2 }}>
-        <TextField label="Pesquisa" value={search} onChange={(event) => setSearch(event.target.value)} fullWidth />
+        <TextField label={ts('obras.table.search')} value={search} onChange={(event) => setSearch(event.target.value)} fullWidth />
         <TextField
           select
-          label="Status"
+          label={ts('obras.table.status')}
           value={status}
           sx={{ minWidth: 220 }}
           onChange={(event) => {
@@ -62,15 +65,15 @@ export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: O
             setPage(0)
           }}
         >
-          <MenuItem value="TODOS">Todos</MenuItem>
+          <MenuItem value="TODOS">{ts('obras.table.all')}</MenuItem>
           {OBRAS_STATUS.map((item) => (
             <MenuItem key={item} value={item}>
-              {item.replaceAll('_', ' ')}
+              {ts(`obras.tabs.${item.toLowerCase()}` as Parameters<typeof ts>[0]) || item.replaceAll('_', ' ')}
             </MenuItem>
           ))}
         </TextField>
         <Button variant="contained" onClick={onCreate}>
-          Nova obra
+          {ts('obras.newWork')}
         </Button>
       </Stack>
 
@@ -78,13 +81,13 @@ export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: O
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Codigo</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Projeto</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Inicio</TableCell>
-              <TableCell>Prevista</TableCell>
-              <TableCell align="right">Acoes</TableCell>
+              <TableCell>{ts('obras.table.codigo')}</TableCell>
+              <TableCell>{ts('obras.table.cliente')}</TableCell>
+              <TableCell>{ts('obras.table.projeto')}</TableCell>
+              <TableCell>{ts('obras.table.status')}</TableCell>
+              <TableCell>{ts('obras.table.inicio')}</TableCell>
+              <TableCell>{ts('obras.table.prevista')}</TableCell>
+              <TableCell align="right">{ts('obras.table.acoes')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -114,7 +117,7 @@ export const ObrasTable = ({ rows, onCreate, onEdit, onDelete, onNextStatus }: O
             {paginated.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  Nenhuma obra encontrada.
+                  {ts('obras.table.empty')}
                 </TableCell>
               </TableRow>
             )}

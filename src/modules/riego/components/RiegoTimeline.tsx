@@ -1,15 +1,18 @@
 import { List, ListItem, ListItemText, Paper, Typography } from '@mui/material'
 import type { RiegoTimelineEvent } from '@/modules/riego/types/riegoTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type RiegoTimelineProps = {
   events: RiegoTimelineEvent[]
 }
 
 export const RiegoTimeline = ({ events }: RiegoTimelineProps) => {
+  const ts = useTranslationService()
+
   if (events.length === 0) {
     return (
       <Paper sx={{ p: 2 }}>
-        <Typography color="text.secondary">Nenhum evento de timeline.</Typography>
+        <Typography color="text.secondary">{ts('timeline.empty')}</Typography>
       </Paper>
     )
   }

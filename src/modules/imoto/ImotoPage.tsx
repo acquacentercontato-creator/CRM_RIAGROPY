@@ -11,12 +11,14 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import { ImotoLevantamentoDialog } from '@/modules/imoto/components/ImotoLevantamentoDialog'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { ImotoLevantamentosTable } from '@/modules/imoto/components/ImotoLevantamentosTable'
 import { useImotoLevantamentos, useImotoMutations } from '@/modules/imoto/hooks/useImotoData'
 import type { ImotoLevantamento } from '@/modules/imoto/types/imotoTypes'
 
 export const ImotoPage = () => {
   const { data = [], isLoading } = useImotoLevantamentos()
+  const ts = useTranslationService()
   const { create, update, remove, sendToEngineering, uploadMedia } = useImotoMutations()
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -26,13 +28,10 @@ export const ImotoPage = () => {
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">RIAGRO IMOTO</Typography>
+        <Typography variant="h4">{ts('imoto.title')}</Typography>
       </Stack>
 
-      <Alert severity="info">
-        Modulo industrial com CRUD de levantamentos, questionarios dinamicos por segmento, uploads,
-        GPS, status, historico, timeline e integracao com workflow.
-      </Alert>
+      <Alert severity="info">{ts('imoto.info')}</Alert>
 
       <ImotoLevantamentosTable
         rows={data}
@@ -69,14 +68,14 @@ export const ImotoPage = () => {
       />
 
       <Dialog open={Boolean(removeTarget)} onClose={() => setRemoveTarget(null)}>
-        <DialogTitle>Excluir levantamento</DialogTitle>
+        <DialogTitle>{ts('imoto.deleteSurvey')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirma exclusao do levantamento {removeTarget?.codigo}?
+            {ts('imoto.deleteDescription', { codigo: removeTarget?.codigo || '' })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRemoveTarget(null)}>Cancelar</Button>
+          <Button onClick={() => setRemoveTarget(null)}>{ts('actions.cancel')}</Button>
           <Button
             variant="contained"
             color="error"
@@ -86,12 +85,12 @@ export const ImotoPage = () => {
               setRemoveTarget(null)
             }}
           >
-            Excluir
+            {ts('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {isLoading && <Typography color="text.secondary">Carregando levantamentos...</Typography>}
+      {isLoading && <Typography color="text.secondary">{ts('imoto.loading')}</Typography>}
     </Stack>
   )
 }

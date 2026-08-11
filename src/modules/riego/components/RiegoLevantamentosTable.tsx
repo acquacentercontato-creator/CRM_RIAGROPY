@@ -17,6 +17,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import SendIcon from '@mui/icons-material/Send'
 import { useMemo, useState } from 'react'
 import type { RiegoLevantamento } from '@/modules/riego/types/riegoTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { RiegoStatusChip } from './RiegoStatusChip'
 import { segmentoLabel } from '@/modules/riego/utils/riegoUtils'
 
@@ -35,6 +36,7 @@ export const RiegoLevantamentosTable = ({
   onDelete,
   onSend,
 }: RiegoLevantamentosTableProps) => {
+  const ts = useTranslationService()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -53,9 +55,9 @@ export const RiegoLevantamentosTable = ({
   return (
     <Paper sx={{ p: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 2 }}>
-        <TextField label="Pesquisa" value={search} onChange={(e) => setSearch(e.target.value)} fullWidth />
+        <TextField label={ts('riego.table.search')} value={search} onChange={(e) => setSearch(e.target.value)} fullWidth />
         <Button variant="contained" onClick={onCreate}>
-          Novo levantamento
+          {ts('riego.newSurvey')}
         </Button>
       </Stack>
 
@@ -63,13 +65,13 @@ export const RiegoLevantamentosTable = ({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Codigo</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Segmento</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Responsavel</TableCell>
-              <TableCell>Atualizado</TableCell>
-              <TableCell align="right">Acoes</TableCell>
+              <TableCell>{ts('riego.table.codigo')}</TableCell>
+              <TableCell>{ts('riego.table.cliente')}</TableCell>
+              <TableCell>{ts('riego.table.segmento')}</TableCell>
+              <TableCell>{ts('riego.table.status')}</TableCell>
+              <TableCell>{ts('riego.table.responsavel')}</TableCell>
+              <TableCell>{ts('riego.table.atualizado')}</TableCell>
+              <TableCell align="right">{ts('riego.table.acoes')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -104,7 +106,7 @@ export const RiegoLevantamentosTable = ({
             {paginated.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  Nenhum levantamento encontrado.
+                  {ts('riego.table.empty')}
                 </TableCell>
               </TableRow>
             )}

@@ -14,10 +14,10 @@ import {
   Typography,
 } from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { useAuth } from './AuthContext'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -28,7 +28,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 export const LoginPage = () => {
-  const { t } = useTranslation()
+  const ts = useTranslationService()
   const navigate = useNavigate()
   const { login, roles } = useAuth()
 
@@ -60,9 +60,9 @@ export const LoginPage = () => {
       <Card sx={{ width: '100%', maxWidth: 460 }}>
         <CardContent sx={{ p: 4 }}>
           <Stack spacing={2.5} component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Typography variant="h4">{t('auth.welcome')}</Typography>
-            <Typography color="text.secondary">{t('auth.subtitle')}</Typography>
-            <Alert severity="info">{t('auth.helper')}</Alert>
+            <Typography variant="h4">{ts('auth.welcome')}</Typography>
+            <Typography color="text.secondary">{ts('auth.subtitle')}</Typography>
+            <Alert severity="info">{ts('auth.helper')}</Alert>
 
             <Controller
               name="email"
@@ -70,7 +70,7 @@ export const LoginPage = () => {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  label={t('auth.email')}
+                  label={ts('auth.email')}
                   error={Boolean(fieldState.error)}
                   helperText={fieldState.error?.message}
                   fullWidth
@@ -85,7 +85,7 @@ export const LoginPage = () => {
                 <TextField
                   {...field}
                   type="password"
-                  label={t('auth.password')}
+                  label={ts('auth.password')}
                   error={Boolean(fieldState.error)}
                   helperText={fieldState.error?.message}
                   fullWidth
@@ -98,11 +98,11 @@ export const LoginPage = () => {
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth>
-                  <InputLabel>{t('auth.selectRole')}</InputLabel>
-                  <Select {...field} label={t('auth.selectRole')}>
+                  <InputLabel>{ts('auth.selectRole')}</InputLabel>
+                  <Select {...field} label={ts('auth.selectRole')}>
                     {roles.map((role) => (
                       <MenuItem key={role} value={role}>
-                        {t(`auth.roles.${role}`)}
+                        {ts(`auth.roles.${role}`)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -111,7 +111,7 @@ export const LoginPage = () => {
             />
 
             <Button type="submit" variant="contained" size="large">
-              {t('actions.login')}
+              {ts('actions.login')}
             </Button>
           </Stack>
         </CardContent>

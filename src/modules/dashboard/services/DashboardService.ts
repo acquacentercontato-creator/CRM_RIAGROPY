@@ -20,6 +20,7 @@ import {
 } from '@/modules/dashboard/utils/dashboardUtils'
 import { NotificationService } from '@/shared/services/NotificationService'
 import { TimelineService } from '@/shared/services/TimelineService'
+import { PermissionService } from '@/shared/auth/PermissionService'
 import type { AppRole } from '@/shared/types/auth'
 import type { TimelineEvent } from '@/shared/types/core'
 import { WorkflowRepository } from '@/shared/workflow/WorkflowRepository'
@@ -60,6 +61,10 @@ const roleWidgets: Record<AppRole, string[]> = {
     'aguardandoAcao',
     'projetosParados',
     'obrasAtrasadas',
+    'workflowPipeline',
+    'bpeMetrics',
+    'automationMetrics',
+    'technicalKpis',
   ],
   GERENTE: [
     'kpis',
@@ -79,6 +84,10 @@ const roleWidgets: Record<AppRole, string[]> = {
     'aguardandoAcao',
     'projetosParados',
     'obrasAtrasadas',
+    'workflowPipeline',
+    'bpeMetrics',
+    'automationMetrics',
+    'technicalKpis',
   ],
   PROJETISTA: [
     'kpis',
@@ -375,7 +384,8 @@ export const DashboardService = {
       .filter((item) => item.diasParado >= 3 || (item.prazo && daysLate(item.prazo) > 0))
       .slice(0, 20)
 
-    const responsavelAtual = role === 'COMERCIAL' ? 'COMERCIAL' : role
+    const resolvedRole = PermissionService.resolveRole(role)
+    const responsavelAtual = resolvedRole ? resolvedRole.toUpperCase() : role
 
     const minhaFila = workflowQueue
       .filter((item) => normalize(item.responsavel).includes(normalize(responsavelAtual)))

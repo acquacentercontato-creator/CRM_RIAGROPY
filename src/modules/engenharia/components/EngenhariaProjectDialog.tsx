@@ -17,6 +17,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { GlobalFileUpload } from '@/shared/components/GlobalFileUpload'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { ENGENHARIA_TYPE_OPTIONS } from '@/modules/engenharia/models/engenhariaModels'
 import { useEngenhariaDraft } from '@/modules/engenharia/hooks/useEngenhariaDraft'
 import { EngenhariaService } from '@/modules/engenharia/services/EngenhariaService'
@@ -29,6 +30,12 @@ import { ENGENHARIA_STATUS } from '@/modules/engenharia/types/engenhariaTypes'
 import { createEmptyProjectForm } from '@/modules/engenharia/utils/engenhariaUtils'
 import { engenhariaProjectSchema } from '@/modules/engenharia/validators/engenhariaValidators'
 import { EngenhariaTimeline } from '@/modules/engenharia/components/EngenhariaTimeline'
+import { ModuleAttachmentsTab } from '@/shared/attachments'
+import { WorkflowPipelinePanel } from '@/shared/workflow/pipeline/components/WorkflowPipelinePanel'
+import { useWorkflowPipeline } from '@/shared/workflow/pipeline/hooks/useWorkflowPipeline'
+import { ApprovalPanel } from '@/shared/bpe/components/ApprovalPanel'
+import { UniversalChecklist, type ChecklistItem } from '@/shared/components/UniversalChecklist'
+import { AutomationService } from '@/shared/crm-automation'
 import { WORKFLOW_TYPE_MAP } from '@/shared/workflow/WorkflowTypes'
 
 type EngenhariaProjectDialogProps = {
@@ -56,9 +63,17 @@ export const EngenhariaProjectDialog = ({
   onSaveMemorial,
   onApproval,
 }: EngenhariaProjectDialogProps) => {
+  const ts = useTranslationService()
   const [tab, setTab] = useState(0)
   const [feedback, setFeedback] = useState('')
   const [approvalNote, setApprovalNote] = useState('')
+
+  const pipelineId = editing?.id ?? '__novo__'
+  const { stepsStatus, updateChecklist } = useWorkflowPipeline(
+    pipelineId,
+    editing?.codigoProjeto ?? '',
+    editing?.clienteNome ?? ''
+  )
 
   const initial = useMemo<EngenhariaProjectForm>(() => {
     if (editing) {
@@ -100,7 +115,7 @@ export const EngenhariaProjectDialog = ({
 
   const handleUpload = async (category: EngenhariaUploadCategory, files: File[]) => {
     if (!editing) {
-      setFeedback('Salve o projeto antes de realizar uploads.')
+      setFeedback(ts('engenharia.feedback.saveBeforeUpload'))
       return
     }
 
@@ -116,14 +131,18 @@ export const EngenhariaProjectDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle>{editing ? `Projeto ${editing.codigoProjeto}` : 'Novo Projeto de Engenharia'}</DialogTitle>
+      <DialogTitle>{editing ? ts('engenharia.projectCode', { codigo: editing.codigoProjeto }) : ts('engenharia.newProject')}</DialogTitle>
       <DialogContent>
         <Tabs value={tab} onChange={(_, value) => setTab(value)} sx={{ mb: 2 }}>
-          <Tab label="Dados" />
-          <Tab label="Arquivos" />
-          <Tab label="Memorial" />
-          <Tab label="Timeline" />
-          <Tab label="Aprovacao" />
+          <Tab label={ts('engenharia.tabs.dados')} />
+          <Tab label={ts('engenharia.tabs.arquivos')} />
+          <Tab label={ts('engenharia.tabs.memorial')} />
+          <Tab label={ts('engenharia.tabs.timeline')} />
+          <Tab label={ts('engenharia.tabs.aprovacao')} />
+          <Tab label={ts('attachments.tab')} disabled={!editing} />
+          <Tab label={ts('workflow.pipeline')} disabled={!editing} />
+          <Tab label={ts('bpe.aprovacoes')} disabled={!editing} />
+          <Tab label={ts('technical.checklist.title')} disabled={!editing} />
         </Tabs>
 
         {feedback && <Alert severity="info" sx={{ mb: 2 }}>{feedback}</Alert>}
@@ -138,7 +157,7 @@ export const EngenhariaProjectDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Cliente"
+                      label={ts('engenharia.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -153,7 +172,7 @@ export const EngenhariaProjectDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Titulo do Projeto"
+                      label={ts('engenharia.fields.tituloProjeto')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -166,7 +185,7 @@ export const EngenhariaProjectDialog = ({
                   name="tipoProjeto"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} select label="Tipo" fullWidth>
+                    <TextField {...field} select label={ts('engenharia.fields.tipo')} fullWidth>
                       {ENGENHARIA_TYPE_OPTIONS.map((typeCode) => (
                         <MenuItem key={typeCode} value={typeCode}>
                           {typeCode} - {WORKFLOW_TYPE_MAP[typeCode]}
@@ -181,7 +200,7 @@ export const EngenhariaProjectDialog = ({
                   name="origem"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} select label="Origem" fullWidth>
+                    <TextField {...field} select label={ts('engenharia.fields.origem')} fullWidth>
                       <MenuItem value="RIEGO">RIEGO</MenuItem>
                       <MenuItem value="IMOTO">IMOTO</MenuItem>
                       <MenuItem value="OUTRO">OUTRO</MenuItem>
@@ -194,7 +213,7 @@ export const EngenhariaProjectDialog = ({
                   name="status"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} select label="Status" fullWidth>
+                    <TextField {...field} select label={ts('engenharia.fields.status')} fullWidth>
                       {ENGENHARIA_STATUS.map((status) => (
                         <MenuItem key={status} value={status}>
                           {status}
@@ -209,7 +228,7 @@ export const EngenhariaProjectDialog = ({
             <Controller
               name="observacoes"
               control={control}
-              render={({ field }) => <TextField {...field} label="Observacoes" multiline minRows={3} fullWidth />}
+              render={({ field }) => <TextField {...field} label={ts('engenharia.fields.observacoes')} multiline minRows={3} fullWidth />}
             />
           </Stack>
         )}
@@ -218,7 +237,7 @@ export const EngenhariaProjectDialog = ({
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 4 }}>
               <GlobalFileUpload
-                title="Planta PDF"
+                title={ts('engenharia.uploads.plantaPdf')}
                 category="PDF"
                 files={watchedValues.plantaPdf}
                 onUpload={async (files) => handleUpload('PDF', files)}
@@ -226,7 +245,7 @@ export const EngenhariaProjectDialog = ({
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <GlobalFileUpload
-                title="DWG"
+                title={ts('engenharia.uploads.dwg')}
                 category="DWG"
                 files={watchedValues.dwg}
                 onUpload={async (files) => handleUpload('DWG', files)}
@@ -234,7 +253,7 @@ export const EngenhariaProjectDialog = ({
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <GlobalFileUpload
-                title="DXF"
+                title={ts('engenharia.uploads.dxf')}
                 category="DXF"
                 files={watchedValues.dxf}
                 onUpload={async (files) => handleUpload('DXF', files)}
@@ -242,7 +261,7 @@ export const EngenhariaProjectDialog = ({
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <GlobalFileUpload
-                title="KMZ"
+                title={ts('engenharia.uploads.kmz')}
                 category="KMZ"
                 files={watchedValues.kmz}
                 onUpload={async (files) => handleUpload('KMZ', files)}
@@ -250,7 +269,7 @@ export const EngenhariaProjectDialog = ({
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <GlobalFileUpload
-                title="Fotos"
+                title={ts('engenharia.uploads.fotos')}
                 category="FOTO"
                 files={watchedValues.fotos}
                 onUpload={async (files) => handleUpload('FOTO', files)}
@@ -258,7 +277,7 @@ export const EngenhariaProjectDialog = ({
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <GlobalFileUpload
-                title="Videos"
+                title={ts('engenharia.uploads.videos')}
                 category="VIDEO"
                 files={watchedValues.videos}
                 onUpload={async (files) => handleUpload('VIDEO', files)}
@@ -266,7 +285,7 @@ export const EngenhariaProjectDialog = ({
             </Grid>
             <Grid size={{ xs: 12 }}>
               <GlobalFileUpload
-                title="Lista de materiais"
+                title={ts('engenharia.uploads.materiais')}
                 category="OUTRO"
                 files={watchedValues.materiais}
                 onUpload={async (files) => handleUpload('OUTRO', files)}
@@ -281,7 +300,7 @@ export const EngenhariaProjectDialog = ({
               name="memorialDescritivo"
               control={control}
               render={({ field }) => (
-                <TextField {...field} label="Memorial Descritivo" multiline minRows={8} fullWidth />
+                <TextField {...field} label={ts('engenharia.fields.memorial')} multiline minRows={8} fullWidth />
               )}
             />
             {editing && (
@@ -289,10 +308,10 @@ export const EngenhariaProjectDialog = ({
                 variant="outlined"
                 onClick={async () => {
                   await onSaveMemorial(editing.id, watchedValues.memorialDescritivo)
-                  setFeedback('Memorial atualizado com sucesso.')
+                  setFeedback(ts('engenharia.feedback.memorialUpdated'))
                 }}
               >
-                Atualizar memorial
+                {ts('engenharia.actions.updateMemorial')}
               </Button>
             )}
           </Stack>
@@ -303,10 +322,10 @@ export const EngenhariaProjectDialog = ({
         {tab === 4 && (
           <Stack spacing={2}>
             <Typography variant="body2" color="text.secondary">
-              Aprovacao do gerente para liberar o projeto completo ou solicitar revisao.
+              {ts('engenharia.approvalInfo')}
             </Typography>
             <TextField
-              label="Observacao"
+              label={ts('engenharia.fields.observacao')}
               value={approvalNote}
               onChange={(event) => setApprovalNote(event.target.value)}
               multiline
@@ -320,10 +339,10 @@ export const EngenhariaProjectDialog = ({
                 onClick={async () => {
                   if (!editing) return
                   await onApproval(editing.id, 'APROVAR', approvalNote)
-                  setFeedback('Projeto aprovado pelo gerente.')
+                  setFeedback(ts('engenharia.feedback.approved'))
                 }}
               >
-                Aprovar
+                {ts('engenharia.actions.approve')}
               </Button>
               <Button
                 variant="outlined"
@@ -332,19 +351,72 @@ export const EngenhariaProjectDialog = ({
                 onClick={async () => {
                   if (!editing) return
                   await onApproval(editing.id, 'SOLICITAR_REVISAO', approvalNote)
-                  setFeedback('Revisao solicitada pelo gerente.')
+                  setFeedback(ts('engenharia.feedback.revisionRequested'))
                 }}
               >
-                Solicitar revisao
+                {ts('engenharia.actions.requestRevision')}
               </Button>
             </Stack>
           </Stack>
         )}
+
+        {tab === 5 && (
+          <ModuleAttachmentsTab
+            entityId={editing?.id ?? ''}
+            entityNome={editing?.clienteNome ?? ''}
+            moduloContext="ENGENHARIA"
+            projetoId={editing?.id}
+          />
+        )}
+
+        {tab === 6 && editing && (
+          <WorkflowPipelinePanel
+            projetoId={editing.id}
+            stepsStatus={stepsStatus}
+            onChecklistChange={updateChecklist}
+          />
+        )}
+
+        {tab === 7 && editing && (
+          <ApprovalPanel
+            projetoId={editing.id}
+            codigoOficial={editing.codigoProjeto}
+            clienteNome={editing.clienteNome}
+            tiposRequeridos={['ENGENHARIA', 'GERENCIA']}
+          />
+        )}
+
+        {tab === 8 && editing && (
+          <UniversalChecklist
+            title={ts('technical.checklist.title')}
+            items={[
+              { id: 'levantamento', label: 'technical.checklist.eng.levantamento', done: editing.status !== 'AGUARDANDO ENGENHARIA', obrigatorio: true },
+              { id: 'planta', label: 'technical.checklist.eng.planta', done: Boolean(editing.plantaPdf?.length), obrigatorio: true },
+              { id: 'dwg', label: 'technical.checklist.eng.dwg', done: Boolean(editing.dwg?.length), obrigatorio: false },
+              { id: 'dxf', label: 'technical.checklist.eng.dxf', done: Boolean(editing.dxf?.length), obrigatorio: false },
+              { id: 'kmz', label: 'technical.checklist.eng.kmz', done: Boolean(editing.kmz?.length), obrigatorio: false },
+              { id: 'memorial', label: 'technical.checklist.eng.memorial', done: Boolean(editing.memorialDescritivo), obrigatorio: true },
+              { id: 'materiais', label: 'technical.checklist.eng.materiais', done: Boolean(editing.materiais?.length), obrigatorio: true },
+              { id: 'aprovacao', label: 'technical.checklist.eng.aprovacaoGerente', done: editing.aprovadoGerente === 'APROVADO', obrigatorio: true },
+            ] as ChecklistItem[]}
+            onChange={() => {
+              AutomationService.notifyStatusChanged({
+                entityId: editing.id,
+                entityType: 'PROJETO',
+                statusAnterior: editing.status,
+                statusNovo: editing.status,
+                clienteNome: editing.clienteNome,
+                codigoInterno: editing.codigoProjeto,
+                timestamp: new Date().toISOString(),
+              })
+            }}
+          />
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={onClose}>{ts('actions.cancel')}</Button>
         <Button variant="contained" disabled={loading} onClick={handleSubmit(onSubmit)}>
-          Salvar
+          {ts('actions.save')}
         </Button>
       </DialogActions>
     </Dialog>

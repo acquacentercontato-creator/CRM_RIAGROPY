@@ -3,6 +3,7 @@ import { Box, CircularProgress } from '@mui/material'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '@/auth/ProtectedRoute'
 import { MainLayout } from '@/layouts/MainLayout'
+import { PermissionRoute } from '@/routes/PermissionRoute'
 
 const LoginPage = lazy(() => import('@/auth/LoginPage').then((module) => ({ default: module.LoginPage })))
 const DashboardPage = lazy(() =>
@@ -22,6 +23,9 @@ const RiegoPage = lazy(() => import('@/modules/riego/RiegoPage').then((module) =
 const ImotoPage = lazy(() => import('@/modules/imoto/ImotoPage').then((module) => ({ default: module.ImotoPage })))
 const EngenhariaPage = lazy(() =>
   import('@/modules/engenharia/EngenhariaPage').then((module) => ({ default: module.EngenhariaPage }))
+)
+const HydraulicPage = lazy(() =>
+  import('@/modules/engenharia/hydraulic/HydraulicPage').then((module) => ({ default: module.HydraulicPage }))
 )
 const ObrasPage = lazy(() => import('@/modules/obras/ObrasPage').then((module) => ({ default: module.ObrasPage })))
 const AssistenciaPage = lazy(() =>
@@ -51,19 +55,58 @@ export const AppRouter = () => {
 
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/clientes" element={<ClientesPage />} />
-            <Route path="/agenda" element={<AgendaPage />} />
-            <Route path="/visitas" element={<VisitasPage />} />
-            <Route path="/oportunidades" element={<OportunidadesPage />} />
-            <Route path="/riego" element={<RiegoPage />} />
-            <Route path="/imoto" element={<ImotoPage />} />
-            <Route path="/engenharia" element={<EngenhariaPage />} />
-            <Route path="/obras" element={<ObrasPage />} />
-            <Route path="/assistencia" element={<AssistenciaPage />} />
-            <Route path="/relatorios" element={<RelatoriosPage />} />
-            <Route path="/administracao" element={<AdministracaoPage />} />
-            <Route path="/configuracoes" element={<ConfiguracoesPage />} />
+            <Route element={<PermissionRoute permission="dashboard" />}>
+              <Route path="/" element={<DashboardPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="clientes" />}>
+              <Route path="/clientes" element={<ClientesPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="agenda" />}>
+              <Route path="/agenda" element={<AgendaPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="visitas" />}>
+              <Route path="/visitas" element={<VisitasPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="oportunidades" />}>
+              <Route path="/oportunidades" element={<OportunidadesPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="riego" />}>
+              <Route path="/riego" element={<RiegoPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="imoto" />}>
+              <Route path="/imoto" element={<ImotoPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="engenharia" />}>
+              <Route path="/engenharia" element={<EngenhariaPage />} />
+              <Route path="/engenharia/hidraulica" element={<HydraulicPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="obras" />}>
+              <Route path="/obras" element={<ObrasPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="assistencia" />}>
+              <Route path="/assistencia" element={<AssistenciaPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="relatorios" />}>
+              <Route path="/relatorios" element={<RelatoriosPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="administracao" />}>
+              <Route path="/administracao" element={<AdministracaoPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="configuracoes" />}>
+              <Route path="/configuracoes" element={<ConfiguracoesPage />} />
+            </Route>
           </Route>
         </Route>
 

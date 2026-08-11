@@ -1,16 +1,22 @@
 import { Chip, List, ListItem, ListItemText, Stack, Typography } from '@mui/material'
 import type { NotificationRecord } from '@/shared/services/NotificationService'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type NotificationsPanelProps = {
   items: NotificationRecord[]
 }
 
 export const NotificationsPanel = ({ items }: NotificationsPanelProps) => {
+  const ts = useTranslationService()
+
   return (
-    <DashboardWidgetCard title="Painel de Notificacoes" subtitle="Alertas e comunicados do sistema">
+    <DashboardWidgetCard
+      title={ts('dashboard.panels.notificationsTitle')}
+      subtitle={ts('dashboard.panels.notificationsSubtitle')}
+    >
       {items.length === 0 ? (
-        <Typography color="text.secondary">Nenhuma notificacao.</Typography>
+        <Typography color="text.secondary">{ts('dashboard.panels.noNotifications')}</Typography>
       ) : (
         <List dense>
           {items.slice(0, 20).map((item) => (

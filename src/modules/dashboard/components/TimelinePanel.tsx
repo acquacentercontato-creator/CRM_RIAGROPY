@@ -1,16 +1,19 @@
 import { List, ListItem, ListItemText, Typography } from '@mui/material'
 import type { TimelineEvent } from '@/shared/types/core'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type TimelinePanelProps = {
   items: TimelineEvent[]
 }
 
 export const TimelinePanel = ({ items }: TimelinePanelProps) => {
+  const ts = useTranslationService()
+
   return (
-    <DashboardWidgetCard title="Timeline Geral" subtitle="Eventos consolidados do sistema">
+    <DashboardWidgetCard title={ts('dashboard.panels.timelineTitle')} subtitle={ts('dashboard.panels.timelineSubtitle')}>
       {items.length === 0 ? (
-        <Typography color="text.secondary">Sem eventos no periodo.</Typography>
+        <Typography color="text.secondary">{ts('dashboard.panels.noTimeline')}</Typography>
       ) : (
         <List dense>
           {items.slice(0, 20).map((item) => (

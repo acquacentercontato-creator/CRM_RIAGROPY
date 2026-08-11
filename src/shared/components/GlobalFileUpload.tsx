@@ -1,5 +1,6 @@
 import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material'
 import type { UploadedFile, UploadFileCategory } from '@/shared/types/core'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type GlobalFileUploadProps = {
   title: string
@@ -19,12 +20,14 @@ const acceptMap: Record<UploadFileCategory, string> = {
 }
 
 export const GlobalFileUpload = ({ title, category, files, onUpload }: GlobalFileUploadProps) => {
+  const ts = useTranslationService()
+
   return (
     <Paper variant="outlined" sx={{ p: 1.5 }}>
       <Stack spacing={1}>
         <Typography variant="subtitle2">{title}</Typography>
         <Button component="label" size="small" variant="outlined">
-          Upload
+          {ts('actions.upload')}
           <input
             hidden
             type="file"

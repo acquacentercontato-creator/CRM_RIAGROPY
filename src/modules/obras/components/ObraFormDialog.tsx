@@ -18,6 +18,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { GlobalFileUpload } from '@/shared/components/GlobalFileUpload'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { WORKFLOW_TYPE_MAP } from '@/shared/workflow/WorkflowTypes'
 import { useObrasDraft } from '@/modules/obras/hooks/useObrasDraft'
 import { OBRAS_TIPO_OPTIONS } from '@/modules/obras/models/obrasModels'
@@ -27,6 +28,12 @@ import { OBRAS_STATUS } from '@/modules/obras/types/obrasTypes'
 import { createEmptyObraForm } from '@/modules/obras/utils/obrasUtils'
 import { obraSchema } from '@/modules/obras/validators/obrasValidators'
 import { ObrasTimeline } from '@/modules/obras/components/ObrasTimeline'
+import { ModuleAttachmentsTab } from '@/shared/attachments'
+import { WorkflowPipelinePanel } from '@/shared/workflow/pipeline/components/WorkflowPipelinePanel'
+import { useWorkflowPipeline } from '@/shared/workflow/pipeline/hooks/useWorkflowPipeline'
+import { ApprovalPanel } from '@/shared/bpe/components/ApprovalPanel'
+import { UniversalChecklist, type ChecklistItem } from '@/shared/components/UniversalChecklist'
+import { AutomationService } from '@/shared/crm-automation'
 
 type ObraFormDialogProps = {
   open: boolean
@@ -47,8 +54,15 @@ const parseJsonSafe = <T,>(value: string, fallback: T): T => {
 }
 
 export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUpload }: ObraFormDialogProps) => {
+  const ts = useTranslationService()
   const [tab, setTab] = useState(0)
   const [info, setInfo] = useState('')
+
+  const { stepsStatus, updateChecklist } = useWorkflowPipeline(
+    editing?.id ?? '__novo__',
+    editing?.codigoObra ?? editing?.projetoNome ?? '',
+    editing?.clienteNome ?? ''
+  )
 
   const initial = useMemo<ObraForm>(() => {
     if (editing) {
@@ -97,7 +111,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
 
   const handleUpload = async (category: ObrasUploadCategory, files: File[]) => {
     if (!editing) {
-      setInfo('Salve a obra antes de enviar arquivos.')
+      setInfo(ts('obras.feedback.saveBeforeUpload'))
       return
     }
 
@@ -110,16 +124,20 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle>{editing ? `Editar obra ${editing.codigoObra}` : 'Nova obra'}</DialogTitle>
+      <DialogTitle>{editing ? ts('obras.editWork', { codigo: editing.codigoObra }) : ts('obras.newWork')}</DialogTitle>
       <DialogContent>
         <Tabs value={tab} onChange={(_, value) => setTab(value)} sx={{ mb: 2 }}>
-          <Tab label="Cadastro" />
-          <Tab label="Planejamento" />
-          <Tab label="Equipes/Cronograma" />
-          <Tab label="Diario/Checklist" />
-          <Tab label="Entrega Tecnica" />
-          <Tab label="Uploads" />
-          <Tab label="Timeline" />
+          <Tab label={ts('obras.tabs.cadastro')} />
+          <Tab label={ts('obras.tabs.planejamento')} />
+          <Tab label={ts('obras.tabs.equipesCronograma')} />
+          <Tab label={ts('obras.tabs.diarioChecklist')} />
+          <Tab label={ts('obras.tabs.entregaTecnica')} />
+          <Tab label={ts('obras.tabs.uploads')} />
+          <Tab label={ts('obras.tabs.timeline')} />
+          <Tab label={ts('attachments.tab')} disabled={!editing} />
+          <Tab label={ts('workflow.pipeline')} disabled={!editing} />
+          <Tab label={ts('bpe.aprovacoes')} disabled={!editing} />
+          <Tab label={ts('technical.checklist.title')} disabled={!editing} />
         </Tabs>
 
         {info && <Alert severity="info" sx={{ mb: 2 }}>{info}</Alert>}
@@ -133,7 +151,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
-                    label="Cliente"
+                    label={ts('obras.fields.cliente')}
                     fullWidth
                     error={Boolean(fieldState.error)}
                     helperText={fieldState.error?.message}
@@ -148,7 +166,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
-                    label="Responsavel"
+                    label={ts('obras.fields.responsavel')}
                     fullWidth
                     error={Boolean(fieldState.error)}
                     helperText={fieldState.error?.message}
@@ -163,7 +181,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
-                    label="Projeto Relacionado (ID)"
+                    label={ts('obras.fields.projetoId')}
                     fullWidth
                     error={Boolean(fieldState.error)}
                     helperText={fieldState.error?.message}
@@ -178,7 +196,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 render={({ field, fieldState }) => (
                   <TextField
                     {...field}
-                    label="Projeto Relacionado"
+                    label={ts('obras.fields.projetoNome')}
                     fullWidth
                     error={Boolean(fieldState.error)}
                     helperText={fieldState.error?.message}
@@ -191,7 +209,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="projetoTipo"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} select label="Tipo do Projeto" fullWidth>
+                  <TextField {...field} select label={ts('obras.fields.tipoProjeto')} fullWidth>
                     {OBRAS_TIPO_OPTIONS.map((type) => (
                       <MenuItem key={type} value={type}>
                         {type} - {WORKFLOW_TYPE_MAP[type]}
@@ -211,7 +229,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="dataCriacaoObra"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} type="date" label="Data criacao" fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+                  <TextField {...field} type="date" label={ts('obras.fields.dataCriacao')} fullWidth slotProps={{ inputLabel: { shrink: true } }} />
                 )}
               />
             </Grid>
@@ -220,7 +238,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="dataInicio"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} type="date" label="Data inicio" fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+                  <TextField {...field} type="date" label={ts('obras.fields.dataInicio')} fullWidth slotProps={{ inputLabel: { shrink: true } }} />
                 )}
               />
             </Grid>
@@ -229,7 +247,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="dataPrevista"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} type="date" label="Data prevista" fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+                  <TextField {...field} type="date" label={ts('obras.fields.dataPrevista')} fullWidth slotProps={{ inputLabel: { shrink: true } }} />
                 )}
               />
             </Grid>
@@ -238,7 +256,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="dataEntrega"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} type="date" label="Data entrega" fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+                  <TextField {...field} type="date" label={ts('obras.fields.dataEntrega')} fullWidth slotProps={{ inputLabel: { shrink: true } }} />
                 )}
               />
             </Grid>
@@ -247,11 +265,11 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="prioridade"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} select label="Prioridade" fullWidth>
-                    <MenuItem value="BAIXA">Baixa</MenuItem>
-                    <MenuItem value="MEDIA">Media</MenuItem>
-                    <MenuItem value="ALTA">Alta</MenuItem>
-                    <MenuItem value="CRITICA">Critica</MenuItem>
+                  <TextField {...field} select label={ts('obras.fields.prioridade')} fullWidth>
+                    <MenuItem value="BAIXA">{ts('obras.priorities.BAIXA')}</MenuItem>
+                    <MenuItem value="MEDIA">{ts('obras.priorities.MEDIA')}</MenuItem>
+                    <MenuItem value="ALTA">{ts('obras.priorities.ALTA')}</MenuItem>
+                    <MenuItem value="CRITICA">{ts('obras.priorities.CRITICA')}</MenuItem>
                   </TextField>
                 )}
               />
@@ -261,7 +279,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="status"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} select label="Status" fullWidth>
+                  <TextField {...field} select label={ts('obras.fields.status')} fullWidth>
                     {OBRAS_STATUS.map((status) => (
                       <MenuItem key={status} value={status}>
                         {status.replaceAll('_', ' ')}
@@ -275,7 +293,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
               <Controller
                 name="observacoesPlanejamento"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Observacoes" multiline minRows={3} fullWidth />}
+                render={({ field }) => <TextField {...field} label={ts('obras.fields.observacoes')} multiline minRows={3} fullWidth />}
               />
             </Grid>
           </Grid>
@@ -288,7 +306,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="Equipes (JSON)"
+                  label={ts('obras.fields.equipesJson')}
                   multiline
                   minRows={6}
                   fullWidth
@@ -302,7 +320,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="Cronograma (JSON)"
+                  label={ts('obras.fields.cronogramaJson')}
                   multiline
                   minRows={6}
                   fullWidth
@@ -321,7 +339,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="Diario de obra (JSON)"
+                  label={ts('obras.fields.diarioJson')}
                   multiline
                   minRows={6}
                   fullWidth
@@ -338,7 +356,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   render={({ field }) => (
                     <FormControlLabel
                       control={<Checkbox checked={field.value} onChange={(event) => field.onChange(event.target.checked)} />}
-                      label="Materiais"
+                      label={ts('obras.fields.materiais')}
                     />
                   )}
                 />
@@ -350,7 +368,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   render={({ field }) => (
                     <FormControlLabel
                       control={<Checkbox checked={field.value} onChange={(event) => field.onChange(event.target.checked)} />}
-                      label="Equipamentos"
+                      label={ts('obras.fields.equipamentos')}
                     />
                   )}
                 />
@@ -362,7 +380,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   render={({ field }) => (
                     <FormControlLabel
                       control={<Checkbox checked={field.value} onChange={(event) => field.onChange(event.target.checked)} />}
-                      label="Seguranca"
+                      label={ts('obras.fields.seguranca')}
                     />
                   )}
                 />
@@ -374,7 +392,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   render={({ field }) => (
                     <FormControlLabel
                       control={<Checkbox checked={field.value} onChange={(event) => field.onChange(event.target.checked)} />}
-                      label="Testes"
+                      label={ts('obras.fields.testes')}
                     />
                   )}
                 />
@@ -386,7 +404,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                   render={({ field }) => (
                     <FormControlLabel
                       control={<Checkbox checked={field.value} onChange={(event) => field.onChange(event.target.checked)} />}
-                      label="Entrega"
+                      label={ts('obras.fields.entrega')}
                     />
                   )}
                 />
@@ -402,7 +420,7 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
                 name="entregaTecnica.data"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} type="date" label="Data" fullWidth slotProps={{ inputLabel: { shrink: true } }} />
+                  <TextField {...field} type="date" label={ts('obras.fields.data')} fullWidth slotProps={{ inputLabel: { shrink: true } }} />
                 )}
               />
             </Grid>
@@ -410,21 +428,21 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
               <Controller
                 name="entregaTecnica.responsavel"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Responsavel" fullWidth />}
+                render={({ field }) => <TextField {...field} label={ts('obras.fields.responsavel')} fullWidth />}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
               <Controller
                 name="entregaTecnica.assinatura"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Assinatura" fullWidth />}
+                render={({ field }) => <TextField {...field} label={ts('obras.fields.assinatura')} fullWidth />}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 12 }}>
               <Controller
                 name="entregaTecnica.observacoes"
                 control={control}
-                render={({ field }) => <TextField {...field} label="Observacoes" multiline minRows={3} fullWidth />}
+                render={({ field }) => <TextField {...field} label={ts('obras.fields.observacoes')} multiline minRows={3} fullWidth />}
               />
             </Grid>
           </Grid>
@@ -433,17 +451,17 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
         {tab === 5 && (
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, md: 3 }}>
-              <GlobalFileUpload title="Fotos" category="FOTO" files={watched.fotos} onUpload={async (files) => handleUpload('FOTO', files)} />
+              <GlobalFileUpload title={ts('engenharia.uploads.fotos')} category="FOTO" files={watched.fotos} onUpload={async (files) => handleUpload('FOTO', files)} />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
-              <GlobalFileUpload title="Videos" category="VIDEO" files={watched.videos} onUpload={async (files) => handleUpload('VIDEO', files)} />
+              <GlobalFileUpload title={ts('engenharia.uploads.videos')} category="VIDEO" files={watched.videos} onUpload={async (files) => handleUpload('VIDEO', files)} />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
-              <GlobalFileUpload title="PDFs" category="PDF" files={watched.pdfs} onUpload={async (files) => handleUpload('PDF', files)} />
+              <GlobalFileUpload title={ts('engenharia.uploads.pdfs')} category="PDF" files={watched.pdfs} onUpload={async (files) => handleUpload('PDF', files)} />
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
               <GlobalFileUpload
-                title="Documentos"
+                title={ts('obras.fields.documentos')}
                 category="OUTRO"
                 files={watched.documentos}
                 onUpload={async (files) => handleUpload('OUTRO', files)}
@@ -453,11 +471,63 @@ export const ObraFormDialog = ({ open, editing, loading, onClose, onSubmit, onUp
         )}
 
         {tab === 6 && <ObrasTimeline events={editing?.timeline ?? []} />}
+
+        {tab === 7 && (
+          <ModuleAttachmentsTab
+            entityId={editing?.id ?? ''}
+            entityNome={editing?.clienteNome ?? ''}
+            moduloContext="OBRAS"
+            projetoId={editing?.projetoId}
+          />
+        )}
+
+        {tab === 8 && editing && (
+          <WorkflowPipelinePanel
+            projetoId={editing.id}
+            stepsStatus={stepsStatus}
+            onChecklistChange={updateChecklist}
+          />
+        )}
+
+        {tab === 9 && editing && (
+          <ApprovalPanel
+            projetoId={editing.id}
+            codigoOficial={editing.codigoObra}
+            clienteNome={editing.clienteNome}
+            tiposRequeridos={['OBRAS', 'FINANCEIRO', 'GERENCIA']}
+          />
+        )}
+
+        {tab === 10 && editing && (
+          <UniversalChecklist
+            title={ts('technical.checklist.title')}
+            items={[
+              { id: 'equipe', label: 'technical.checklist.obra.equipe', done: Boolean(editing.equipes), obrigatorio: true },
+              { id: 'materiais', label: 'technical.checklist.obra.materiais', done: Boolean(editing.checklist?.materiais), obrigatorio: true },
+              { id: 'seguranca', label: 'technical.checklist.obra.seguranca', done: Boolean(editing.checklist?.seguranca), obrigatorio: true },
+              { id: 'testes', label: 'technical.checklist.obra.testes', done: Boolean(editing.checklist?.testes), obrigatorio: true },
+              { id: 'assinatura', label: 'technical.checklist.obra.assinatura', done: Boolean(editing.entregaTecnica?.assinatura), obrigatorio: true },
+              { id: 'fotos', label: 'technical.checklist.obra.fotosFinais', done: Boolean(editing.fotos?.length), obrigatorio: true },
+              { id: 'documentos', label: 'technical.checklist.obra.documentos', done: Boolean(editing.documentos?.length), obrigatorio: false },
+            ] as ChecklistItem[]}
+            onChange={() => {
+              AutomationService.notifyStatusChanged({
+                entityId: editing.id,
+                entityType: 'OBRA',
+                statusAnterior: editing.status,
+                statusNovo: editing.status,
+                clienteNome: editing.clienteNome,
+                codigoInterno: editing.codigoObra,
+                timestamp: new Date().toISOString(),
+              })
+            }}
+          />
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={onClose}>{ts('actions.cancel')}</Button>
         <Button variant="contained" disabled={loading} onClick={handleSubmit(onSubmit)}>
-          Salvar
+          {ts('actions.save')}
         </Button>
       </DialogActions>
     </Dialog>

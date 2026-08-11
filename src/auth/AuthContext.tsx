@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import type { PropsWithChildren } from 'react'
 import type { AppRole, AuthUser } from '@/shared/types/auth'
 import { APP_ROLES } from '@/shared/types/auth'
+import { TranslationService } from '@/shared/services/TranslationService'
 
 type LoginPayload = {
   role: AppRole
@@ -46,11 +47,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const normalizedEmail = sanitizeEmail(email)
 
     if (!APP_ROLES.includes(role)) {
-      throw new Error('Perfil invalido para autenticacao')
+      throw new Error(TranslationService.t('errors.invalidRole'))
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      throw new Error('Email invalido para autenticacao')
+      throw new Error(TranslationService.t('errors.invalidEmail'))
     }
 
     const session: AuthUser = {

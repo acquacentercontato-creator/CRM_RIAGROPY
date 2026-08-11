@@ -1,9 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { AgendaCompromisso, Cliente, Oportunidade, Visita } from '@/modules/comercial/types'
+import { useAuth } from '@/auth/AuthContext'
+import type { AgendaCompromisso, Cliente, FollowUp, Oportunidade, Visita } from '@/modules/comercial/types'
 import { ComercialService } from '@/modules/comercial/services/ComercialService'
 import type {
   AgendaFormInput,
   ClienteFormInput,
+  FollowUpFormInput,
+  OportunidadeFormInput,
   VisitaFormInput,
 } from '@/modules/comercial/validators/comercialValidators'
 
@@ -12,6 +15,7 @@ const keys = {
   agenda: ['comercial', 'agenda'] as const,
   visitas: ['comercial', 'visitas'] as const,
   oportunidades: ['comercial', 'oportunidades'] as const,
+  followups: ['comercial', 'followups'] as const,
 }
 
 export const useClientes = () =>
@@ -107,6 +111,62 @@ export const useVisitaMutations = () => {
     }),
     deleteVisita: useMutation({
       mutationFn: (id: string) => ComercialService.deleteVisita(id),
+      onSuccess: refresh,
+    }),
+  }
+}
+
+export const useOportunidadeMutations = () => {
+  const queryClient = useQueryClient()
+
+  const refresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: keys.oportunidades })
+  }
+
+  return {
+    createOportunidade: useMutation({
+      mutationFn: (payload: OportunidadeFormInput) => ComercialService.createOportunidade(payload),
+      onSuccess: refresh,
+    }),
+    updateOportunidade: useMutation({
+      mutationFn: ({ id, payload }: { id: string; payload: Partial<OportunidadeFormInput> & { etapaFunil?: Oportunidade['etapaFunil'] } }) =>
+        ComercialService.updateOportunidade(id, payload),
+      onSuccess: refresh,
+    }),
+    deleteOportunidade: useMutation({
+      mutationFn: (id: string) => ComercialService.deleteOportunidade(id),
+      onSuccess: refresh,
+    }),
+  }
+}
+
+export const useFollowUps = () =>
+  useQuery<FollowUp[]>({
+    queryKey: keys.followups,
+    queryFn: () => ComercialService.listFollowUps(),
+  })
+
+export const useFollowUpMutations = () => {
+  const queryClient = useQueryClient()
+  const { user } = useAuth()
+
+  const refresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: keys.followups })
+  }
+
+  return {
+    createFollowUp: useMutation({
+      mutationFn: (payload: FollowUpFormInput) =>
+        ComercialService.createFollowUp(payload, user?.name ?? 'Sistema'),
+      onSuccess: refresh,
+    }),
+    updateFollowUp: useMutation({
+      mutationFn: ({ id, payload }: { id: string; payload: Partial<FollowUpFormInput> }) =>
+        ComercialService.updateFollowUp(id, payload),
+      onSuccess: refresh,
+    }),
+    deleteFollowUp: useMutation({
+      mutationFn: (id: string) => ComercialService.deleteFollowUp(id),
       onSuccess: refresh,
     }),
   }

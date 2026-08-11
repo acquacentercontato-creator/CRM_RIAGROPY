@@ -1,4 +1,5 @@
 import { TextField } from '@mui/material'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type GlobalSearchInputProps = {
   value: string
@@ -7,10 +8,12 @@ type GlobalSearchInputProps = {
 }
 
 export const GlobalSearchInput = ({ value, onChange, placeholder }: GlobalSearchInputProps) => {
+  const ts = useTranslationService()
+
   return (
     <TextField
       fullWidth
-      label="Busca"
+      label={ts('common.search')}
       placeholder={placeholder}
       value={value}
       onChange={(event) => onChange(event.target.value)}

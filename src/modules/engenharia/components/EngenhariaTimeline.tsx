@@ -1,15 +1,18 @@
 import { List, ListItem, ListItemText, Paper, Typography } from '@mui/material'
 import type { TimelineEvent } from '@/shared/types/core'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type EngenhariaTimelineProps = {
   events: TimelineEvent[]
 }
 
 export const EngenhariaTimeline = ({ events }: EngenhariaTimelineProps) => {
+  const ts = useTranslationService()
+
   if (events.length === 0) {
     return (
       <Paper sx={{ p: 2 }}>
-        <Typography color="text.secondary">Nenhum evento de timeline.</Typography>
+        <Typography color="text.secondary">{ts('timeline.empty')}</Typography>
       </Paper>
     )
   }

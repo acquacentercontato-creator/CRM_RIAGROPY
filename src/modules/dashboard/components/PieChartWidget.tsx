@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material'
 import type { ChartPoint } from '@/modules/dashboard/types/dashboardTypes'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type PieChartWidgetProps = {
   title: string
@@ -10,6 +11,7 @@ type PieChartWidgetProps = {
 const palette = ['#00695c', '#f57c00', '#6a1b9a', '#0277bd', '#2e7d32', '#d32f2f']
 
 export const PieChartWidget = ({ title, points }: PieChartWidgetProps) => {
+  const ts = useTranslationService()
   const total = Math.max(1, points.reduce((acc, item) => acc + item.value, 0))
 
   const slices = points.reduce<{
@@ -47,7 +49,7 @@ export const PieChartWidget = ({ title, points }: PieChartWidgetProps) => {
   ).items
 
   return (
-    <DashboardWidgetCard title={title} subtitle="Grafico Pizza">
+    <DashboardWidgetCard title={title} subtitle={ts('dashboard.charts.pieSubtitle')}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ alignItems: 'center' }}>
         <Box component="svg" viewBox="0 0 160 160" sx={{ width: 160, height: 160 }}>
           {slices.map((slice) => (

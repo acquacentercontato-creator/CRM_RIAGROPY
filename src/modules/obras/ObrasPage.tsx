@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { ObraFormDialog } from '@/modules/obras/components/ObraFormDialog'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { ObrasDashboard } from '@/modules/obras/components/ObrasDashboard'
 import { ObrasTable } from '@/modules/obras/components/ObrasTable'
 import { useObrasDashboard, useObrasMutations } from '@/modules/obras/hooks/useObrasData'
@@ -19,6 +20,7 @@ import { OBRAS_STATUS, type ObraStatus } from '@/modules/obras/types/obrasTypes'
 
 export const ObrasPage = () => {
   const { data = [], dashboard, isLoading } = useObrasDashboard()
+  const ts = useTranslationService()
   const { create, update, remove, changeStatus, uploadFiles } = useObrasMutations()
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -38,18 +40,15 @@ export const ObrasPage = () => {
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">RIAGRO OBRAS</Typography>
+        <Typography variant="h4">{ts('obras.title')}</Typography>
       </Stack>
 
-      <Alert severity="info">
-        Fluxo de obra: Projeto Aprovado -&gt; Obra Criada -&gt; Planejamento -&gt; Execucao -&gt;
-        Acompanhamento -&gt; Entrega -&gt; Encerramento.
-      </Alert>
+      <Alert severity="info">{ts('obras.info')}</Alert>
 
       <ObrasDashboard metrics={dashboard} />
 
-      <Typography variant="h6">Acompanhamento de Obras</Typography>
-      <Typography color="text.secondary">Obras em campo: {obrasExecucao}</Typography>
+      <Typography variant="h6">{ts('obras.tracking')}</Typography>
+      <Typography color="text.secondary">{ts('obras.inField', { count: obrasExecucao })}</Typography>
 
       <ObrasTable
         rows={data}
@@ -88,14 +87,14 @@ export const ObrasPage = () => {
       />
 
       <Dialog open={Boolean(removeTarget)} onClose={() => setRemoveTarget(null)}>
-        <DialogTitle>Excluir obra</DialogTitle>
+        <DialogTitle>{ts('obras.deleteWork')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirma exclusao da obra {removeTarget?.codigoObra}?
+            {ts('obras.deleteDescription', { codigo: removeTarget?.codigoObra || '' })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRemoveTarget(null)}>Cancelar</Button>
+          <Button onClick={() => setRemoveTarget(null)}>{ts('actions.cancel')}</Button>
           <Button
             variant="contained"
             color="error"
@@ -105,12 +104,12 @@ export const ObrasPage = () => {
               setRemoveTarget(null)
             }}
           >
-            Excluir
+            {ts('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {isLoading && <Typography color="text.secondary">Carregando obras...</Typography>}
+      {isLoading && <Typography color="text.secondary">{ts('obras.loading')}</Typography>}
     </Stack>
   )
 }

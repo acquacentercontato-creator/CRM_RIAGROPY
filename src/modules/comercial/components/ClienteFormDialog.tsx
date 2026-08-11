@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,6 +13,7 @@ import {
 import { Controller, useForm } from 'react-hook-form'
 import { clienteSchema, type ClienteFormInput } from '@/modules/comercial/validators/comercialValidators'
 import type { Cliente } from '@/modules/comercial/types'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type ClienteFormDialogProps = {
   open: boolean
@@ -38,6 +40,9 @@ const emptyValues: ClienteFormInput = {
   observacoes: '',
   status: 'PROSPECT',
   responsavelComercial: '',
+  classificacao: undefined,
+  origem: undefined,
+  temperatura: undefined,
 }
 
 export const ClienteFormDialog = ({
@@ -47,6 +52,8 @@ export const ClienteFormDialog = ({
   loading,
   initialData,
 }: ClienteFormDialogProps) => {
+  const ts = useTranslationService()
+
   const { control, handleSubmit, reset } = useForm<ClienteFormInput>({
     resolver: zodResolver(clienteSchema),
     defaultValues: initialData
@@ -67,6 +74,9 @@ export const ClienteFormDialog = ({
           observacoes: initialData.observacoes,
           status: initialData.status,
           responsavelComercial: initialData.responsavelComercial,
+          classificacao: initialData.classificacao,
+          origem: initialData.origem,
+          temperatura: initialData.temperatura,
         }
       : emptyValues,
   })
@@ -75,30 +85,32 @@ export const ClienteFormDialog = ({
     <Dialog
       open={open}
       onClose={() => {
-        reset(initialData ? undefined : emptyValues)
-        onClose()
+        if (!loading) {
+          reset(emptyValues)
+          onClose()
+        }
       }}
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle>{initialData ? 'Editar cliente' : 'Novo cliente'}</DialogTitle>
+      <DialogTitle>{initialData ? ts('comercial.clientes.edit') : ts('comercial.clientes.newLower')}</DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 0.5 }}>
           {[
-            ['razaoSocial', 'Razao Social'],
-            ['nomeFantasia', 'Nome Fantasia'],
-            ['rucCnpj', 'RUC/CNPJ'],
-            ['contatoPrincipal', 'Contato Principal'],
-            ['telefone', 'Telefone'],
-            ['whatsapp', 'WhatsApp'],
-            ['email', 'Email'],
-            ['pais', 'Pais'],
-            ['departamento', 'Departamento'],
-            ['cidade', 'Cidade'],
-            ['endereco', 'Endereco'],
-            ['latitude', 'Latitude'],
-            ['longitude', 'Longitude'],
-            ['responsavelComercial', 'Responsavel Comercial'],
+            ['razaoSocial', ts('comercial.clientes.razaoSocial')],
+            ['nomeFantasia', ts('comercial.clientes.nomeFantasia')],
+            ['rucCnpj', ts('comercial.clientes.rucCnpj')],
+            ['contatoPrincipal', ts('comercial.fields.contatoPrincipal')],
+            ['telefone', ts('comercial.fields.telefone')],
+            ['whatsapp', ts('comercial.fields.whatsapp')],
+            ['email', ts('comercial.fields.email')],
+            ['pais', ts('comercial.fields.pais')],
+            ['departamento', ts('comercial.fields.departamento')],
+            ['cidade', ts('comercial.fields.cidade')],
+            ['endereco', ts('comercial.fields.endereco')],
+            ['latitude', ts('comercial.fields.latitude')],
+            ['longitude', ts('comercial.fields.longitude')],
+            ['responsavelComercial', ts('comercial.fields.responsavelComercial')],
           ].map(([name, label]) => (
             <Grid key={name} size={{ xs: 12, md: 6 }}>
               <Controller
@@ -125,14 +137,60 @@ export const ClienteFormDialog = ({
                 <TextField
                   {...field}
                   select
-                  label="Status"
+                  label={ts('common.status')}
                   error={Boolean(fieldState.error)}
                   helperText={fieldState.error?.message}
                   fullWidth
                 >
-                  <MenuItem value="PROSPECT">Prospect</MenuItem>
-                  <MenuItem value="ATIVO">Ativo</MenuItem>
-                  <MenuItem value="INATIVO">Inativo</MenuItem>
+                  <MenuItem value="PROSPECT">{ts('comercial.status.PROSPECT')}</MenuItem>
+                  <MenuItem value="ATIVO">{ts('comercial.status.ATIVO')}</MenuItem>
+                  <MenuItem value="INATIVO">{ts('comercial.status.INATIVO')}</MenuItem>
+                </TextField>
+              )}
+            />
+          </Grid>
+
+          {/* CRM fields */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Controller
+              name="classificacao"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} select fullWidth label={ts('crm.cliente.classificacao')} value={field.value ?? ''}>
+                  <MenuItem value="">{ts('common.noSelection')}</MenuItem>
+                  {(['LEAD', 'PROSPECT', 'CLIENTE', 'VIP'] as const).map((v) => (
+                    <MenuItem key={v} value={v}>{ts(`crm.cliente.classificacoes.${v}`)}</MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Controller
+              name="origem"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} select fullWidth label={ts('crm.cliente.origem')} value={field.value ?? ''}>
+                  <MenuItem value="">{ts('common.noSelection')}</MenuItem>
+                  {(['INSTAGRAM', 'FACEBOOK', 'YOUTUBE', 'INDICACAO', 'SITE', 'FEIRA', 'WHATSAPP', 'LIGACAO', 'OUTRO'] as const).map((v) => (
+                    <MenuItem key={v} value={v}>{ts(`crm.cliente.origens.${v}`)}</MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Controller
+              name="temperatura"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} select fullWidth label={ts('crm.cliente.temperatura')} value={field.value ?? ''}>
+                  <MenuItem value="">{ts('common.noSelection')}</MenuItem>
+                  {(['FRIO', 'MORNO', 'QUENTE', 'URGENTE'] as const).map((v) => (
+                    <MenuItem key={v} value={v}>{ts(`crm.cliente.temperaturas.${v}`)}</MenuItem>
+                  ))}
                 </TextField>
               )}
             />
@@ -145,7 +203,7 @@ export const ClienteFormDialog = ({
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
-                  label="Observacoes"
+                  label={ts('comercial.fields.observacoes')}
                   error={Boolean(fieldState.error)}
                   helperText={fieldState.error?.message}
                   fullWidth
@@ -158,16 +216,18 @@ export const ClienteFormDialog = ({
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={onClose} disabled={loading}>{ts('actions.cancel')}</Button>
         <Button
           onClick={handleSubmit(async (payload) => {
             await onSubmit(payload)
+            reset(emptyValues)
             onClose()
           })}
           disabled={loading}
+          startIcon={loading ? <CircularProgress size={16} color="inherit" /> : undefined}
           variant="contained"
         >
-          Salvar
+          {ts('actions.save')}
         </Button>
       </DialogActions>
     </Dialog>

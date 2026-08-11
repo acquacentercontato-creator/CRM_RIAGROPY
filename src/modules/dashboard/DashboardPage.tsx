@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Alert, Grid, Stack, Typography } from '@mui/material'
+import { Alert, Grid, Paper, Stack, Typography } from '@mui/material'
 import { DashboardFiltersBar } from '@/modules/dashboard/components/DashboardFiltersBar'
 import { KpiGrid } from '@/modules/dashboard/components/KpiGrid'
 import { LineChartWidget } from '@/modules/dashboard/components/LineChartWidget'
@@ -15,9 +15,21 @@ import { DeliveriesPanel } from '@/modules/dashboard/components/DeliveriesPanel'
 import { LateItemsPanel } from '@/modules/dashboard/components/LateItemsPanel'
 import { QueuePanel } from '@/modules/dashboard/components/QueuePanel'
 import { useExecutiveDashboard } from '@/modules/dashboard/hooks/useExecutiveDashboard'
+import { PermissionService } from '@/shared/auth/PermissionService'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
+import { WorkflowPipelineMetrics } from '@/shared/workflow/pipeline/components/WorkflowPipelineMetrics'
+import { WorkflowPipelineService } from '@/shared/workflow/pipeline/WorkflowPipelineService'
+import { BPEDashboardWidget } from '@/shared/bpe/components/BPEDashboardWidget'
+import { BPEOrchestrator } from '@/shared/bpe'
+import { AutomationMetricsWidget } from '@/shared/crm-automation/components/AutomationMetricsWidget'
+import { AutomationService } from '@/shared/crm-automation'
+import { TechnicalKpiPanel } from '@/shared/components/TechnicalKpiPanel'
+import { AssistenciaService } from '@/modules/assistencia/services/AssistenciaService'
 
 export const DashboardPage = () => {
   const { data, isLoading, role, filters, setFilters, widgets } = useExecutiveDashboard()
+  const canSeeDashboard = PermissionService.canSeeDashboard(role)
+  const ts = useTranslationService()
 
   const widgetSet = useMemo(() => new Set(widgets), [widgets])
 
@@ -26,8 +38,17 @@ export const DashboardPage = () => {
   if (!data) {
     return (
       <Stack spacing={2}>
-        <Typography variant="h4">Dashboard Executivo</Typography>
-        <Typography color="text.secondary">{isLoading ? 'Carregando dados executivos...' : 'Sem dados para exibir.'}</Typography>
+        <Typography variant="h4">{ts('dashboard.title')}</Typography>
+        <Typography color="text.secondary">{isLoading ? ts('dashboard.loading') : ts('dashboard.noData')}</Typography>
+      </Stack>
+    )
+  }
+
+  if (!canSeeDashboard) {
+    return (
+      <Stack spacing={2}>
+        <Typography variant="h4">{ts('dashboard.title')}</Typography>
+        <Typography color="text.secondary">{ts('dashboard.noAccess')}</Typography>
       </Stack>
     )
   }
@@ -35,13 +56,11 @@ export const DashboardPage = () => {
   return (
     <Stack spacing={3}>
       <Stack spacing={0.5}>
-        <Typography variant="h4">Dashboard Executivo</Typography>
-        <Typography color="text.secondary">Visao empresarial consolidada por perfil: {role}</Typography>
+        <Typography variant="h4">{ts('dashboard.title')}</Typography>
+        <Typography color="text.secondary">{ts('dashboard.byRole', { role })}</Typography>
       </Stack>
 
-      <Alert severity="info">
-        KPIs em tempo real, graficos analiticos, timeline geral, feed de atividades, agenda, atrasos e filtros multi-criterio.
-      </Alert>
+      <Alert severity="info">{ts('dashboard.info')}</Alert>
 
       {hasWidget('filters') && (
         <DashboardFiltersBar value={filters} options={data.filters} onChange={setFilters} />
@@ -52,31 +71,31 @@ export const DashboardPage = () => {
       <Grid container spacing={2}>
         {hasWidget('lineChart') && (
           <Grid size={{ xs: 12, lg: 6 }}>
-            <LineChartWidget title="Tendencia de Visitas" points={data.charts.line} />
+            <LineChartWidget title={ts('dashboard.charts.lineTrend')} points={data.charts.line} />
           </Grid>
         )}
 
         {hasWidget('barChart') && (
           <Grid size={{ xs: 12, lg: 6 }}>
-            <BarChartWidget title="Distribuicao Operacional" points={data.charts.bar} />
+            <BarChartWidget title={ts('dashboard.charts.operationalDist')} points={data.charts.bar} />
           </Grid>
         )}
 
         {hasWidget('pieChart') && (
           <Grid size={{ xs: 12, lg: 4 }}>
-            <PieChartWidget title="Mix de Leads" points={data.charts.pie} />
+            <PieChartWidget title={ts('dashboard.charts.leadsMix')} points={data.charts.pie} />
           </Grid>
         )}
 
         {hasWidget('areaChart') && (
           <Grid size={{ xs: 12, lg: 8 }}>
-            <AreaChartWidget title="Evolucao de Levantamentos" points={data.charts.area} />
+            <AreaChartWidget title={ts('dashboard.charts.surveysEvolution')} points={data.charts.area} />
           </Grid>
         )}
 
         {hasWidget('heatmap') && (
           <Grid size={{ xs: 12 }}>
-            <HeatmapWidget title="Heatmap de Atividades" cells={data.charts.heatmap} />
+            <HeatmapWidget title={ts('dashboard.charts.activityHeatmap')} cells={data.charts.heatmap} />
           </Grid>
         )}
 
@@ -113,8 +132,8 @@ export const DashboardPage = () => {
         {hasWidget('lateProjects') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <LateItemsPanel
-              title="Projetos Atrasados"
-              subtitle="Itens com risco de prazo"
+              title={ts('dashboard.panels.lateProjectsTitle')}
+              subtitle={ts('dashboard.panels.lateProjectsSubtitle')}
               items={data.lateProjects}
             />
           </Grid>
@@ -123,8 +142,8 @@ export const DashboardPage = () => {
         {hasWidget('lateWorks') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <LateItemsPanel
-              title="Obras Atrasadas"
-              subtitle="Pendencias operacionais de campo"
+              title={ts('dashboard.panels.lateWorksTitle')}
+              subtitle={ts('dashboard.panels.lateWorksSubtitle')}
               items={data.lateWorks}
             />
           </Grid>
@@ -133,8 +152,8 @@ export const DashboardPage = () => {
         {hasWidget('pendencias') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <QueuePanel
-              title="Dashboard de Pendencias"
-              subtitle="Itens com atraso, bloqueio ou sem movimentacao"
+              title={ts('dashboard.panels.pendenciasTitle')}
+              subtitle={ts('dashboard.panels.pendenciasSubtitle')}
               items={data.pendencias}
             />
           </Grid>
@@ -143,8 +162,8 @@ export const DashboardPage = () => {
         {hasWidget('minhaFila') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <QueuePanel
-              title="Minha Fila"
-              subtitle="Itens atribuidos ao meu perfil operacional"
+              title={ts('dashboard.panels.minhaFilaTitle')}
+              subtitle={ts('dashboard.panels.minhaFilaSubtitle')}
               items={data.minhaFila}
             />
           </Grid>
@@ -153,8 +172,8 @@ export const DashboardPage = () => {
         {hasWidget('aguardandoAcao') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <QueuePanel
-              title="Aguardando Minha Acao"
-              subtitle="Pendencias que dependem da minha intervencao"
+              title={ts('dashboard.panels.aguardandoAcaoTitle')}
+              subtitle={ts('dashboard.panels.aguardandoAcaoSubtitle')}
               items={data.aguardandoMinhaAcao}
             />
           </Grid>
@@ -163,8 +182,8 @@ export const DashboardPage = () => {
         {hasWidget('projetosParados') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <QueuePanel
-              title="Projetos Parados"
-              subtitle="Projetos sem avancos relevantes no periodo"
+              title={ts('dashboard.panels.projetosParadosTitle')}
+              subtitle={ts('dashboard.panels.projetosParadosSubtitle')}
               items={data.projetosParados}
             />
           </Grid>
@@ -173,10 +192,50 @@ export const DashboardPage = () => {
         {hasWidget('obrasAtrasadas') && (
           <Grid size={{ xs: 12, lg: 6 }}>
             <QueuePanel
-              title="Obras Atrasadas"
-              subtitle="Obras com prazo vencido e acao necessaria"
+              title={ts('dashboard.panels.obrasAtrasadasTitle')}
+              subtitle={ts('dashboard.panels.obrasAtrasadasSubtitle')}
               items={data.obrasAtrasadas}
             />
+          </Grid>
+        )}
+
+        {hasWidget('workflowPipeline') && (
+          <Grid size={{ xs: 12 }}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>{ts('workflow.title')}</Typography>
+              <WorkflowPipelineMetrics metrics={WorkflowPipelineService.calcularMetricas()} />
+            </Paper>
+          </Grid>
+        )}
+
+        {hasWidget('bpeMetrics') && (
+          <Grid size={{ xs: 12 }}>
+            <Paper sx={{ p: 2 }}>
+              <BPEDashboardWidget metrics={BPEOrchestrator.getDashboardMetrics()} />
+            </Paper>
+          </Grid>
+        )}
+
+        {hasWidget('automationMetrics') && (
+          <Grid size={{ xs: 12 }}>
+            <Paper sx={{ p: 2 }}>
+              <AutomationMetricsWidget
+                metrics={AutomationService.getMetrics()}
+                tasks={AutomationService.listTasks()}
+              />
+            </Paper>
+          </Grid>
+        )}
+
+        {hasWidget('technicalKpis') && (
+          <Grid size={{ xs: 12 }}>
+            <Paper sx={{ p: 2 }}>
+              <TechnicalKpiPanel
+                engenharia={{ emRevisao: 0, aguardandoAprovacao: 0, liberados: 0, tempoMedioDias: 7, slaVencidos: 0 }}
+                obras={{ emAndamento: 0, atrasadas: 0, emEntrega: 0, tempoMedioDias: 15, slaVencidos: 0 }}
+                assistencia={AssistenciaService.getMetrics()}
+              />
+            </Paper>
           </Grid>
         )}
       </Grid>

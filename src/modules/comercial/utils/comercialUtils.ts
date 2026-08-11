@@ -32,6 +32,7 @@ export const buildOportunidades = (clientes: Cliente[], visitas: Visita[]): Opor
 
     return {
       id: cliente.id,
+      clienteId: cliente.id,
       clienteNome: cliente.nomeFantasia || cliente.razaoSocial,
       statusCliente: cliente.status,
       ultimaVisita: ultima?.data ?? '',

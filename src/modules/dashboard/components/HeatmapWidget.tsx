@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material'
 import type { HeatmapCell } from '@/modules/dashboard/types/dashboardTypes'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type HeatmapWidgetProps = {
   title: string
@@ -8,10 +9,11 @@ type HeatmapWidgetProps = {
 }
 
 export const HeatmapWidget = ({ title, cells }: HeatmapWidgetProps) => {
+  const ts = useTranslationService()
   const max = Math.max(1, ...cells.map((cell) => cell.value))
 
   return (
-    <DashboardWidgetCard title={title} subtitle="Heatmap de Atividade">
+    <DashboardWidgetCard title={title} subtitle={ts('dashboard.charts.heatmapSubtitle')}>
       <Grid container spacing={0.5}>
         {cells.map((cell) => {
           const intensity = cell.value / max

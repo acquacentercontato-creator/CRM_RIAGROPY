@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import type { ChartPoint } from '@/modules/dashboard/types/dashboardTypes'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type AreaChartWidgetProps = {
   title: string
@@ -8,6 +9,7 @@ type AreaChartWidgetProps = {
 }
 
 export const AreaChartWidget = ({ title, points }: AreaChartWidgetProps) => {
+  const ts = useTranslationService()
   const max = Math.max(1, ...points.map((point) => point.value))
   const width = 520
   const height = 220
@@ -22,7 +24,7 @@ export const AreaChartWidget = ({ title, points }: AreaChartWidgetProps) => {
   const area = `${path} L ${width - 15} ${height - 15} L 15 ${height - 15} Z`
 
   return (
-    <DashboardWidgetCard title={title} subtitle="Grafico de Area">
+    <DashboardWidgetCard title={title} subtitle={ts('dashboard.charts.areaSubtitle')}>
       <Box component="svg" viewBox={`0 0 ${width} ${height}`} sx={{ width: '100%', height: 220 }}>
         <path d={area} fill="rgba(21, 101, 192, 0.2)" stroke="none" />
         <path d={path} stroke="#1565c0" strokeWidth={2.5} fill="none" />

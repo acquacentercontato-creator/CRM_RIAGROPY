@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import type { ChartPoint } from '@/modules/dashboard/types/dashboardTypes'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type LineChartWidgetProps = {
   title: string
@@ -8,6 +9,7 @@ type LineChartWidgetProps = {
 }
 
 export const LineChartWidget = ({ title, points }: LineChartWidgetProps) => {
+  const ts = useTranslationService()
   const max = Math.max(1, ...points.map((point) => point.value))
   const width = 520
   const height = 220
@@ -21,7 +23,7 @@ export const LineChartWidget = ({ title, points }: LineChartWidgetProps) => {
     .join(' ')
 
   return (
-    <DashboardWidgetCard title={title} subtitle="Grafico de Linha">
+    <DashboardWidgetCard title={title} subtitle={ts('dashboard.charts.lineSubtitle')}>
       <Box component="svg" viewBox={`0 0 ${width} ${height}`} sx={{ width: '100%', height: 220 }}>
         <path d={path} stroke="#2e7d32" strokeWidth={3} fill="none" />
       </Box>

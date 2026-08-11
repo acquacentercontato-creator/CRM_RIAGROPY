@@ -5,6 +5,7 @@ import {
   WORKFLOW_STATUS_VALUES,
   type WorkflowStatus,
 } from '@/shared/workflow/WorkflowTypes'
+import { PermissionService } from '@/shared/auth/PermissionService'
 
 const workflowStatusSchema = z.enum(WORKFLOW_STATUS_VALUES as [WorkflowStatus, ...WorkflowStatus[]])
 
@@ -57,7 +58,8 @@ export const validateWorkflowTransition = (fromStatus: WorkflowStatus, toStatus:
 }
 
 export const validateManagerApproval = (role: string, decision: 'APROVAR' | 'SOLICITAR_REVISAO') => {
-  const isManager = role === 'GERENTE' || role === 'ADMINISTRADOR'
+  const isManager = PermissionService.resolveRole(role) === PermissionService.resolveRole('GERENTE')
+    || PermissionService.resolveRole(role) === PermissionService.resolveRole('ADMINISTRADOR')
 
   if (!isManager) {
     return {

@@ -9,13 +9,14 @@ import {
   setDoc,
 } from 'firebase/firestore'
 import { firestoreDb } from '@/firebase/app'
-import type { AgendaCompromisso, Cliente, Oportunidade, Visita } from '@/modules/comercial/types'
-import type { AgendaFormInput, ClienteFormInput, VisitaFormInput } from './ComercialSchemas'
+import type { AgendaCompromisso, Cliente, FollowUp, Oportunidade, Visita } from '@/modules/comercial/types'
+import type { AgendaFormInput, ClienteFormInput, FollowUpFormInput, OportunidadeFormInput, VisitaFormInput } from './ComercialSchemas'
 import { COMERCIAL_COLLECTIONS, COMERCIAL_STORAGE_KEYS } from '@/modules/comercial/models/comercialModels'
 import { ComercialStorageService } from './ComercialStorageService'
 import { buildOportunidades, makeEntityId, nextCodigoInterno, nowIso } from '@/modules/comercial/utils/comercialUtils'
 import { WorkflowService } from '@/shared/workflow/WorkflowService'
 import { WORKFLOW_STATUS } from '@/shared/workflow/WorkflowTypes'
+import { AutomationService } from '@/shared/crm-automation'
 
 const SYSTEM_ACTOR = {
   id: 'comercial-system',
@@ -99,6 +100,17 @@ export const ComercialService = {
         { label: 'Cadastro do cliente validado', done: true },
         { label: 'Contato principal definido', done: Boolean(finalItem.contatoPrincipal) },
       ],
+    })
+
+    // Notificar motor de automação
+    AutomationService.notifyStatusChanged({
+      entityId: finalItem.id,
+      entityType: 'CLIENTE',
+      statusAnterior: '',
+      statusNovo: finalItem.classificacao ?? 'CLIENTE',
+      clienteNome: finalItem.nomeFantasia || finalItem.razaoSocial,
+      codigoInterno: finalItem.codigoInterno,
+      timestamp: finalItem.createdAt,
     })
 
     return finalItem
@@ -267,6 +279,15 @@ export const ComercialService = {
       ],
     })
 
+    AutomationService.notifyStatusChanged({
+      entityId: finalItem.id,
+      entityType: 'VISITA',
+      statusAnterior: 'PENDENTE',
+      statusNovo: finalItem.resultado ? 'CONCLUIDO' : 'PENDENTE',
+      clienteNome: finalItem.clienteNome,
+      timestamp: finalItem.createdAt,
+    })
+
     return finalItem
   },
 
@@ -313,7 +334,136 @@ export const ComercialService = {
 
   /** Consolida oportunidades de clientes com base no historico de visitas. */
   async listOportunidades(): Promise<Oportunidade[]> {
+    // Tenta Firestore primeiro
+    const remote = await listRemote<Oportunidade>(COMERCIAL_COLLECTIONS.oportunidades)
+    if (remote.length > 0) {
+      ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.oportunidades, remote)
+      return remote
+    }
+    const local = ComercialStorageService.readLocal<Oportunidade>(COMERCIAL_STORAGE_KEYS.oportunidades)
+    if (local.length > 0) return local
+    // Fallback: derivar do histórico
     const [clientes, visitas] = await Promise.all([this.listClientes(), this.listVisitas()])
     return buildOportunidades(clientes, visitas)
+  },
+
+  /** Cria oportunidade de venda. */
+  async createOportunidade(input: OportunidadeFormInput): Promise<Oportunidade> {
+    const current = await this.listOportunidades()
+    const now = nowIso()
+    const payload: Oportunidade = {
+      id: makeEntityId(),
+      statusCliente: 'PROSPECT',
+      ultimaVisita: '',
+      resultadoUltimaVisita: '',
+      ...input,
+      nivel: input.nivel,
+      etapaFunil: input.etapaFunil ?? 'LEAD',
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    const remoteId = await createRemote(COMERCIAL_COLLECTIONS.oportunidades, payload)
+    const finalItem = remoteId ? { ...payload, id: remoteId } : payload
+    ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.oportunidades, [finalItem, ...current])
+    if (remoteId) await upsertRemote(COMERCIAL_COLLECTIONS.oportunidades, finalItem)
+
+    AutomationService.notifyStatusChanged({
+      entityId: finalItem.id,
+      entityType: 'OPORTUNIDADE',
+      statusAnterior: '',
+      statusNovo: finalItem.etapaFunil ?? 'LEAD',
+      clienteNome: finalItem.clienteNome,
+      timestamp: finalItem.createdAt ?? nowIso(),
+    })
+
+    return finalItem
+  },
+
+  /** Atualiza oportunidade (incluindo etapa do funil). */
+  async updateOportunidade(id: string, input: Partial<OportunidadeFormInput> & { etapaFunil?: Oportunidade['etapaFunil'] }): Promise<Oportunidade> {
+    const current = await this.listOportunidades()
+    const found = current.find((item) => item.id === id)
+    if (!found) throw new Error('Oportunidade nao encontrada')
+
+    const updated: Oportunidade = {
+      ...found,
+      ...input,
+      updatedAt: nowIso(),
+    }
+
+    const next = current.map((item) => (item.id === id ? updated : item))
+    ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.oportunidades, next)
+    await upsertRemote(COMERCIAL_COLLECTIONS.oportunidades, updated)
+
+    // Notificar mudança de etapa do funil
+    if (input.etapaFunil && input.etapaFunil !== found.etapaFunil) {
+      AutomationService.notifyStatusChanged({
+        entityId: updated.id,
+        entityType: 'OPORTUNIDADE',
+        statusAnterior: found.etapaFunil ?? 'LEAD',
+        statusNovo: input.etapaFunil,
+        clienteNome: updated.clienteNome,
+        timestamp: updated.updatedAt ?? nowIso(),
+      })
+    }
+
+    return updated
+  },
+
+  /** Exclui oportunidade. */
+  async deleteOportunidade(id: string): Promise<void> {
+    const current = await this.listOportunidades()
+    const next = current.filter((item) => item.id !== id)
+    ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.oportunidades, next)
+    await removeRemote(COMERCIAL_COLLECTIONS.oportunidades, id)
+  },
+
+  /** Lista follow-ups. */
+  async listFollowUps(): Promise<FollowUp[]> {
+    const remote = await listRemote<FollowUp>(COMERCIAL_COLLECTIONS.followups)
+    if (remote.length > 0) {
+      ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.followups, remote)
+      return remote
+    }
+    return ComercialStorageService.readLocal<FollowUp>(COMERCIAL_STORAGE_KEYS.followups)
+  },
+
+  /** Cria follow-up. */
+  async createFollowUp(input: FollowUpFormInput, criadoPor: string): Promise<FollowUp> {
+    const current = await this.listFollowUps()
+    const payload: FollowUp = {
+      id: makeEntityId(),
+      ...input,
+      criadoEm: nowIso(),
+      criadoPor,
+    }
+
+    const remoteId = await createRemote(COMERCIAL_COLLECTIONS.followups, payload)
+    const finalItem = remoteId ? { ...payload, id: remoteId } : payload
+    ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.followups, [finalItem, ...current])
+    if (remoteId) await upsertRemote(COMERCIAL_COLLECTIONS.followups, finalItem)
+    return finalItem
+  },
+
+  /** Atualiza follow-up. */
+  async updateFollowUp(id: string, input: Partial<FollowUpFormInput>): Promise<FollowUp> {
+    const current = await this.listFollowUps()
+    const found = current.find((item) => item.id === id)
+    if (!found) throw new Error('FollowUp nao encontrado')
+
+    const updated: FollowUp = { ...found, ...input }
+    const next = current.map((item) => (item.id === id ? updated : item))
+    ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.followups, next)
+    await upsertRemote(COMERCIAL_COLLECTIONS.followups, updated)
+    return updated
+  },
+
+  /** Exclui follow-up. */
+  async deleteFollowUp(id: string): Promise<void> {
+    const current = await this.listFollowUps()
+    const next = current.filter((item) => item.id !== id)
+    ComercialStorageService.persistLocal(COMERCIAL_STORAGE_KEYS.followups, next)
+    await removeRemote(COMERCIAL_COLLECTIONS.followups, id)
   },
 }

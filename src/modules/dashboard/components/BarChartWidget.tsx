@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material'
 import type { ChartPoint } from '@/modules/dashboard/types/dashboardTypes'
 import { DashboardWidgetCard } from '@/modules/dashboard/components/DashboardWidgetCard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type BarChartWidgetProps = {
   title: string
@@ -8,10 +9,11 @@ type BarChartWidgetProps = {
 }
 
 export const BarChartWidget = ({ title, points }: BarChartWidgetProps) => {
+  const ts = useTranslationService()
   const max = Math.max(1, ...points.map((point) => point.value))
 
   return (
-    <DashboardWidgetCard title={title} subtitle="Grafico de Barra">
+    <DashboardWidgetCard title={title} subtitle={ts('dashboard.charts.barSubtitle')}>
       <Stack spacing={1.25}>
         {points.map((point) => (
           <Box key={point.label}>

@@ -16,6 +16,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { GlobalFileUpload } from '@/shared/components/GlobalFileUpload'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { IMOTO_MEDIA_KEYS, IMOTO_SEGMENT_LABELS } from '@/modules/imoto/models/imotoModels'
 import { useImotoDraft } from '@/modules/imoto/hooks/useImotoDraft'
 import { useImotoGps } from '@/modules/imoto/hooks/useImotoGps'
@@ -31,6 +32,7 @@ import { createEmptyLevantamentoForm, createEmptyQuestionnaire } from '@/modules
 import { imotoLevantamentoSchema } from '@/modules/imoto/validators/imotoValidators'
 import { ImotoSegmentForm } from '@/modules/imoto/components/ImotoSegmentForm'
 import { ImotoTimeline } from '@/modules/imoto/components/ImotoTimeline'
+import { ModuleAttachmentsTab } from '@/shared/attachments'
 
 type ImotoLevantamentoDialogProps = {
   open: boolean
@@ -53,6 +55,7 @@ export const ImotoLevantamentoDialog = ({
   onSubmit,
   onUpload,
 }: ImotoLevantamentoDialogProps) => {
+  const ts = useTranslationService()
   const [tab, setTab] = useState(0)
   const [gpsError, setGpsError] = useState('')
   const { capturing, capture } = useImotoGps()
@@ -106,11 +109,12 @@ export const ImotoLevantamentoDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle>{editing ? 'Editar levantamento IMOTO' : 'Novo levantamento IMOTO'}</DialogTitle>
+      <DialogTitle>{editing ? ts('imoto.editSurvey') : ts('imoto.newSurvey')}</DialogTitle>
       <DialogContent>
         <Tabs value={tab} onChange={(_, value) => setTab(value)} sx={{ mb: 2 }}>
-          <Tab label="Dados" />
-          <Tab label="Timeline" />
+          <Tab label={ts('imoto.tabs.dados')} />
+          <Tab label={ts('imoto.tabs.timeline')} />
+          <Tab label={ts('attachments.tab')} disabled={!editing} />
         </Tabs>
 
         {tab === 0 && (
@@ -123,7 +127,7 @@ export const ImotoLevantamentoDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Cliente"
+                      label={ts('imoto.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -138,7 +142,7 @@ export const ImotoLevantamentoDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Unidade Industrial"
+                      label={ts('imoto.fields.unidadeIndustrial')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -153,7 +157,7 @@ export const ImotoLevantamentoDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Responsavel Tecnico"
+                      label={ts('imoto.fields.responsavelTecnico')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -169,7 +173,7 @@ export const ImotoLevantamentoDialog = ({
                     <TextField
                       {...field}
                       select
-                      label="Segmento"
+                      label={ts('imoto.fields.segmento')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -196,7 +200,7 @@ export const ImotoLevantamentoDialog = ({
                     <TextField
                       {...field}
                       select
-                      label="Status"
+                      label={ts('imoto.fields.status')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -219,14 +223,14 @@ export const ImotoLevantamentoDialog = ({
                 <Controller
                   name="gpsLat"
                   control={control}
-                  render={({ field }) => <TextField {...field} label="GPS Latitude" fullWidth />}
+                  render={({ field }) => <TextField {...field} label={ts('imoto.fields.gpsLat')} fullWidth />}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 5 }}>
                 <Controller
                   name="gpsLng"
                   control={control}
-                  render={({ field }) => <TextField {...field} label="GPS Longitude" fullWidth />}
+                  render={({ field }) => <TextField {...field} label={ts('imoto.fields.gpsLng')} fullWidth />}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 2 }}>
@@ -245,7 +249,7 @@ export const ImotoLevantamentoDialog = ({
                   }}
                   disabled={capturing}
                 >
-                  {capturing ? 'Capturando...' : 'GPS'}
+                  {capturing ? ts('imoto.gps.capturing') : ts('imoto.gps.capture')}
                 </Button>
               </Grid>
             </Grid>
@@ -255,13 +259,13 @@ export const ImotoLevantamentoDialog = ({
             <Controller
               name="observacoes"
               control={control}
-              render={({ field }) => <TextField {...field} label="Observacoes" multiline minRows={3} fullWidth />}
+              render={({ field }) => <TextField {...field} label={ts('imoto.fields.observacoes')} multiline minRows={3} fullWidth />}
             />
 
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 4 }}>
                 <GlobalFileUpload
-                  title="Fotos"
+                  title={ts('engenharia.uploads.fotos')}
                   category="FOTO"
                   files={watchedValues.fotos}
                   onUpload={async (files) => {
@@ -272,7 +276,7 @@ export const ImotoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <GlobalFileUpload
-                  title="Videos"
+                  title={ts('engenharia.uploads.videos')}
                   category="VIDEO"
                   files={watchedValues.videos}
                   onUpload={async (files) => {
@@ -283,7 +287,7 @@ export const ImotoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <GlobalFileUpload
-                  title="PDFs"
+                  title={ts('engenharia.uploads.pdfs')}
                   category="PDF"
                   files={watchedValues.pdfs}
                   onUpload={async (files) => {
@@ -294,7 +298,7 @@ export const ImotoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <GlobalFileUpload
-                  title="DWG"
+                  title={ts('engenharia.uploads.dwg')}
                   category="DWG"
                   files={watchedValues.dwgs}
                   onUpload={async (files) => {
@@ -305,7 +309,7 @@ export const ImotoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <GlobalFileUpload
-                  title="DXF"
+                  title={ts('engenharia.uploads.dxf')}
                   category="DXF"
                   files={watchedValues.dxfs}
                   onUpload={async (files) => {
@@ -316,7 +320,7 @@ export const ImotoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <GlobalFileUpload
-                  title="KMZ"
+                  title={ts('engenharia.uploads.kmz')}
                   category="KMZ"
                   files={watchedValues.kmzs}
                   onUpload={async (files) => {
@@ -330,11 +334,20 @@ export const ImotoLevantamentoDialog = ({
         )}
 
         {tab === 1 && <ImotoTimeline events={editing?.timeline ?? []} />}
+
+        {tab === 2 && (
+          <ModuleAttachmentsTab
+            entityId={editing?.id ?? ''}
+            entityNome={editing?.clienteNome ?? ''}
+            moduloContext="ENGENHARIA"
+            projetoId={editing?.id}
+          />
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={onClose}>{ts('actions.cancel')}</Button>
         <Button variant="contained" disabled={loading} onClick={handleSubmit(onSubmit)}>
-          Salvar
+          {ts('actions.save')}
         </Button>
       </DialogActions>
     </Dialog>

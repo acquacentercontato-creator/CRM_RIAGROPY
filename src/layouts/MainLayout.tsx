@@ -20,25 +20,32 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router-dom'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { navigationItems } from '@/app/navigation'
 import { useThemeMode } from '@/theme/ThemeModeContext'
 import { useAuth } from '@/auth/AuthContext'
+import { PermissionService } from '@/shared/auth/PermissionService'
 
 const DRAWER_WIDTH = 260
 
 export const MainLayout = () => {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
+  const ts = useTranslationService()
   const { mode, toggleMode } = useThemeMode()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const allowedNavigationItems = navigationItems.filter((item) =>
+    PermissionService.canSeeMenu(user?.role, item.permission)
+  )
 
   const navContent = (
     <Box sx={{ p: 1.5 }}>
       <Typography variant="h6" sx={{ px: 1, pb: 1 }}>
-        {t('app.name')}
+        {ts('app.name')}
       </Typography>
       <List disablePadding>
-        {navigationItems.map((item) => (
+        {allowedNavigationItems.map((item) => (
           <ListItemButton
             key={item.path}
             component={NavLink}
@@ -58,7 +65,7 @@ export const MainLayout = () => {
             }}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={t(item.labelKey)} />
+            <ListItemText primary={ts(item.labelKey)} />
           </ListItemButton>
         ))}
       </List>
@@ -91,28 +98,28 @@ export const MainLayout = () => {
           </IconButton>
 
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            {t('app.name')}
+            {ts('app.name')}
           </Typography>
 
           <FormControl size="small" sx={{ minWidth: 170 }}>
-            <InputLabel>{t('layout.language')}</InputLabel>
+            <InputLabel>{ts('layout.language')}</InputLabel>
             <Select
               value={i18n.language}
-              label={t('layout.language')}
+              label={ts('layout.language')}
               onChange={(event) => i18n.changeLanguage(event.target.value)}
             >
-              <MenuItem value="pt-BR">{t('language.pt-BR')}</MenuItem>
-              <MenuItem value="es-PY">{t('language.es-PY')}</MenuItem>
-              <MenuItem value="gn">{t('language.gn')}</MenuItem>
+              <MenuItem value="pt-BR">{ts('language.pt-BR')}</MenuItem>
+              <MenuItem value="es-PY">{ts('language.es-PY')}</MenuItem>
+              <MenuItem value="gn-PY">{ts('language.gn-PY')}</MenuItem>
             </Select>
           </FormControl>
 
-          <IconButton color="inherit" onClick={toggleMode} aria-label={t('layout.theme')}>
+          <IconButton color="inherit" onClick={toggleMode} aria-label={ts('layout.theme')}>
             {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
           </IconButton>
 
           <ListItemButton onClick={logout} sx={{ width: 'auto', borderRadius: 2 }}>
-            <ListItemText primary={t('actions.logout')} />
+            <ListItemText primary={ts('actions.logout')} />
           </ListItemButton>
         </Toolbar>
       </AppBar>
@@ -169,7 +176,7 @@ export const MainLayout = () => {
           color="text.secondary"
           sx={{ pt: 4, textAlign: 'center' }}
         >
-          {t('layout.footer')}
+          {ts('layout.footer')}
         </Typography>
       </Box>
     </Box>

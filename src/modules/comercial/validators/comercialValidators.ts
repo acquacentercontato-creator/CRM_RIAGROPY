@@ -17,6 +17,10 @@ export const clienteSchema = z.object({
   observacoes: z.string(),
   status: z.enum(['ATIVO', 'INATIVO', 'PROSPECT']),
   responsavelComercial: z.string().min(2),
+  // CRM fields
+  classificacao: z.enum(['LEAD', 'PROSPECT', 'CLIENTE', 'VIP']).optional(),
+  origem: z.enum(['INSTAGRAM', 'FACEBOOK', 'YOUTUBE', 'INDICACAO', 'SITE', 'FEIRA', 'WHATSAPP', 'LIGACAO', 'OUTRO']).optional(),
+  temperatura: z.enum(['FRIO', 'MORNO', 'QUENTE', 'URGENTE']).optional(),
 })
 
 export const agendaSchema = z.object({
@@ -44,8 +48,38 @@ export const visitaSchema = z.object({
   gpsLat: z.string(),
   gpsLng: z.string(),
   observacoes: z.string(),
+  checkin: z.string().optional(),
+  checkout: z.string().optional(),
+})
+
+export const oportunidadeSchema = z.object({
+  clienteId: z.string().min(1),
+  clienteNome: z.string().min(2),
+  nivel: z.enum(['ALTA', 'MEDIA', 'BAIXA']),
+  etapaFunil: z.enum(['LEAD', 'CONTATO', 'VISITA', 'LEVANTAMENTO', 'PROJETO', 'APRESENTACAO', 'NEGOCIACAO', 'FECHAMENTO', 'EXECUCAO', 'POS_VENDA']).optional(),
+  valorEstimado: z.number().min(0).optional(),
+  probabilidade: z.number().min(0).max(100).optional(),
+  concorrente: z.string().optional(),
+  dataFechamento: z.string().optional(),
+  produto: z.string().optional(),
+  tipoProduto: z.string().optional(),
+  observacoes: z.string().optional(),
+  responsavel: z.string().optional(),
+})
+
+export const followUpSchema = z.object({
+  clienteId: z.string().min(1),
+  clienteNome: z.string().min(2),
+  oportunidadeId: z.string().optional(),
+  tipo: z.enum(['LIGACAO', 'VISITA', 'WHATSAPP', 'EMAIL']),
+  dataHora: z.string().min(1),
+  descricao: z.string().min(2),
+  status: z.enum(['PENDENTE', 'REALIZADO', 'CANCELADO']),
+  resultado: z.string().optional(),
 })
 
 export type ClienteFormInput = z.infer<typeof clienteSchema>
 export type AgendaFormInput = z.infer<typeof agendaSchema>
 export type VisitaFormInput = z.infer<typeof visitaSchema>
+export type OportunidadeFormInput = z.infer<typeof oportunidadeSchema>
+export type FollowUpFormInput = z.infer<typeof followUpSchema>

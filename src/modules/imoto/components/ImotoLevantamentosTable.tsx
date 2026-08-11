@@ -17,6 +17,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import SendIcon from '@mui/icons-material/Send'
 import { useMemo, useState } from 'react'
 import { ImotoStatusChip } from '@/modules/imoto/components/ImotoStatusChip'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import type { ImotoLevantamento } from '@/modules/imoto/types/imotoTypes'
 import { segmentoLabel } from '@/modules/imoto/utils/imotoUtils'
 
@@ -35,6 +36,7 @@ export const ImotoLevantamentosTable = ({
   onDelete,
   onSend,
 }: ImotoLevantamentosTableProps) => {
+  const ts = useTranslationService()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -53,9 +55,9 @@ export const ImotoLevantamentosTable = ({
   return (
     <Paper sx={{ p: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 2 }}>
-        <TextField label="Pesquisa" value={search} onChange={(e) => setSearch(e.target.value)} fullWidth />
+        <TextField label={ts('imoto.table.search')} value={search} onChange={(e) => setSearch(e.target.value)} fullWidth />
         <Button variant="contained" onClick={onCreate}>
-          Novo levantamento
+          {ts('imoto.newSurvey')}
         </Button>
       </Stack>
 
@@ -63,13 +65,13 @@ export const ImotoLevantamentosTable = ({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Codigo</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Segmento</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Responsavel Tecnico</TableCell>
-              <TableCell>Atualizado</TableCell>
-              <TableCell align="right">Acoes</TableCell>
+              <TableCell>{ts('imoto.table.codigo')}</TableCell>
+              <TableCell>{ts('imoto.table.cliente')}</TableCell>
+              <TableCell>{ts('imoto.table.segmento')}</TableCell>
+              <TableCell>{ts('imoto.table.status')}</TableCell>
+              <TableCell>{ts('imoto.table.responsavel')}</TableCell>
+              <TableCell>{ts('imoto.table.atualizado')}</TableCell>
+              <TableCell align="right">{ts('imoto.table.acoes')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -99,7 +101,7 @@ export const ImotoLevantamentosTable = ({
             {paginated.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  Nenhum levantamento encontrado.
+                  {ts('imoto.table.empty')}
                 </TableCell>
               </TableRow>
             )}

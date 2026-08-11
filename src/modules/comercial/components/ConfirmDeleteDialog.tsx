@@ -1,4 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type ConfirmDeleteDialogProps = {
   open: boolean
@@ -17,6 +18,8 @@ export const ConfirmDeleteDialog = ({
   onConfirm,
   loading = false,
 }: ConfirmDeleteDialogProps) => {
+  const ts = useTranslationService()
+
   return (
     <Dialog open={open} onClose={onCancel}>
       <DialogTitle>{title}</DialogTitle>
@@ -24,7 +27,7 @@ export const ConfirmDeleteDialog = ({
         <DialogContentText>{description}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>Cancelar</Button>
+        <Button onClick={onCancel}>{ts('actions.cancel')}</Button>
         <Button
           color="error"
           variant="contained"
@@ -33,7 +36,7 @@ export const ConfirmDeleteDialog = ({
             await onConfirm()
           }}
         >
-          Excluir
+          {ts('actions.delete')}
         </Button>
       </DialogActions>
     </Dialog>

@@ -10,8 +10,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import WaterIcon from '@mui/icons-material/Water'
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { EngenhariaDashboard } from '@/modules/engenharia/components/EngenhariaDashboard'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { EngenhariaProjectDialog } from '@/modules/engenharia/components/EngenhariaProjectDialog'
 import { EngenhariaProjectsTable } from '@/modules/engenharia/components/EngenhariaProjectsTable'
 import { useEngenhariaDashboard, useEngenhariaMutations } from '@/modules/engenharia/hooks/useEngenhariaData'
@@ -19,6 +22,8 @@ import type { EngenhariaProject } from '@/modules/engenharia/types/engenhariaTyp
 
 export const EngenhariaPage = () => {
   const { data = [], isLoading, dashboard } = useEngenhariaDashboard()
+  const ts = useTranslationService()
+  const navigate = useNavigate()
   const {
     create,
     update,
@@ -44,17 +49,23 @@ export const EngenhariaPage = () => {
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">RIAGRO ENGENHARIA</Typography>
+        <Typography variant="h4">{ts('engenharia.title')}</Typography>
+        <Button
+          variant="outlined"
+          startIcon={<WaterIcon />}
+          onClick={() => navigate('/engenharia/hidraulica')}
+          size="small"
+        >
+          {ts('hydraulic.title')}
+        </Button>
       </Stack>
 
-      <Alert severity="info">
-        Fluxo tecnico: Cliente -&gt; Visita -&gt; Levantamento -&gt; Projeto -&gt; Memorial -&gt; Aprovacao -&gt; Orcamento.
-      </Alert>
+      <Alert severity="info">{ts('engenharia.info')}</Alert>
 
       <EngenhariaDashboard metrics={dashboard} />
 
-      <Typography variant="h6">Projetos recebidos</Typography>
-      <Typography color="text.secondary">Aguardando Engenharia: {recebidos.length}</Typography>
+      <Typography variant="h6">{ts('engenharia.receivedTitle')}</Typography>
+      <Typography color="text.secondary">{ts('engenharia.waiting', { count: recebidos.length })}</Typography>
 
       <EngenhariaProjectsTable
         rows={data}
@@ -107,14 +118,14 @@ export const EngenhariaPage = () => {
       />
 
       <Dialog open={Boolean(removeTarget)} onClose={() => setRemoveTarget(null)}>
-        <DialogTitle>Excluir projeto</DialogTitle>
+        <DialogTitle>{ts('engenharia.deleteProject')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirma exclusao do projeto {removeTarget?.codigoProjeto}?
+            {ts('engenharia.deleteDescription', { codigo: removeTarget?.codigoProjeto || '' })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRemoveTarget(null)}>Cancelar</Button>
+          <Button onClick={() => setRemoveTarget(null)}>{ts('actions.cancel')}</Button>
           <Button
             variant="contained"
             color="error"
@@ -124,21 +135,21 @@ export const EngenhariaPage = () => {
               setRemoveTarget(null)
             }}
           >
-            Excluir
+            {ts('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>
 
       <Dialog open={Boolean(revisionTarget)} onClose={() => setRevisionTarget(null)}>
-        <DialogTitle>Nova revisao</DialogTitle>
+        <DialogTitle>{ts('engenharia.newRevision')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Projeto alvo: {revisionTarget?.codigoProjeto}. Informe o motivo da revisao.
+            {ts('engenharia.revisionTarget', { codigo: revisionTarget?.codigoProjeto || '' })}
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            label="Motivo"
+            label={ts('engenharia.reason')}
             fullWidth
             multiline
             minRows={3}
@@ -147,7 +158,7 @@ export const EngenhariaPage = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRevisionTarget(null)}>Cancelar</Button>
+          <Button onClick={() => setRevisionTarget(null)}>{ts('actions.cancel')}</Button>
           <Button
             variant="contained"
             color="warning"
@@ -155,17 +166,17 @@ export const EngenhariaPage = () => {
               if (!revisionTarget) return
               await createRevision.mutateAsync({
                 id: revisionTarget.id,
-                motivo: revisionReason || 'Revisao tecnica solicitada',
+                motivo: revisionReason || ts('engenharia.defaultRevisionReason'),
               })
               setRevisionTarget(null)
             }}
           >
-            Criar revisao
+            {ts('engenharia.createRevision')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {isLoading && <Typography color="text.secondary">Carregando projetos de Engenharia...</Typography>}
+      {isLoading && <Typography color="text.secondary">{ts('engenharia.loading')}</Typography>}
     </Stack>
   )
 }

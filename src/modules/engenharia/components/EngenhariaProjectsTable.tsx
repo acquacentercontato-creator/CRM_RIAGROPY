@@ -1,6 +1,7 @@
 import {
   Button,
   IconButton,
+  MenuItem,
   Paper,
   Stack,
   Table,
@@ -11,6 +12,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
+  Tooltip,
 } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -18,6 +20,7 @@ import ReplayIcon from '@mui/icons-material/Replay'
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote'
 import { useMemo, useState } from 'react'
 import { WORKFLOW_TYPE_MAP } from '@/shared/workflow/WorkflowTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { ENGENHARIA_STATUS_OPTIONS } from '@/modules/engenharia/models/engenhariaModels'
 import { EngenhariaStatusChip } from '@/modules/engenharia/components/EngenhariaStatusChip'
 import type { EngenhariaProject, EngenhariaStatus } from '@/modules/engenharia/types/engenhariaTypes'
@@ -39,6 +42,7 @@ export const EngenhariaProjectsTable = ({
   onCreateRevision,
   onSendBudget,
 }: EngenhariaProjectsTableProps) => {
+  const ts = useTranslationService()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<'TODOS' | EngenhariaStatus>('TODOS')
   const [page, setPage] = useState(0)
@@ -60,9 +64,9 @@ export const EngenhariaProjectsTable = ({
   return (
     <Paper sx={{ p: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 2 }}>
-        <TextField label="Pesquisa" value={search} onChange={(event) => setSearch(event.target.value)} fullWidth />
+        <TextField label={ts('engenharia.table.search')} value={search} onChange={(event) => setSearch(event.target.value)} fullWidth />
         <TextField
-          label="Status"
+          label={ts('engenharia.table.status')}
           value={statusFilter}
           select
           onChange={(event) => {
@@ -71,15 +75,15 @@ export const EngenhariaProjectsTable = ({
           }}
           sx={{ minWidth: 240 }}
         >
-          <option value="TODOS">Todos</option>
+          <MenuItem value="TODOS">{ts('engenharia.table.all')}</MenuItem>
           {ENGENHARIA_STATUS_OPTIONS.map((status) => (
-            <option key={status} value={status}>
+            <MenuItem key={status} value={status}>
               {status}
-            </option>
+            </MenuItem>
           ))}
         </TextField>
         <Button variant="contained" onClick={onCreate}>
-          Novo projeto
+          {ts('engenharia.newProject')}
         </Button>
       </Stack>
 
@@ -87,13 +91,13 @@ export const EngenhariaProjectsTable = ({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Codigo</TableCell>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Tipo</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Revisoes</TableCell>
-              <TableCell>Orcamento</TableCell>
-              <TableCell align="right">Acoes</TableCell>
+              <TableCell>{ts('engenharia.table.codigo')}</TableCell>
+              <TableCell>{ts('engenharia.table.cliente')}</TableCell>
+              <TableCell>{ts('engenharia.table.tipo')}</TableCell>
+              <TableCell>{ts('engenharia.table.status')}</TableCell>
+              <TableCell>{ts('engenharia.table.revisoes')}</TableCell>
+              <TableCell>{ts('engenharia.table.orcamento')}</TableCell>
+              <TableCell align="right">{ts('engenharia.table.acoes')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,32 +110,42 @@ export const EngenhariaProjectsTable = ({
                   <EngenhariaStatusChip status={row.status} />
                 </TableCell>
                 <TableCell>{row.revisoes.length}</TableCell>
-                <TableCell>{row.enviadoOrcamento ? 'Sim' : 'Nao'}</TableCell>
+                <TableCell>{row.enviadoOrcamento ? ts('engenharia.table.yes') : ts('engenharia.table.no')}</TableCell>
                 <TableCell align="right">
-                  <IconButton size="small" onClick={() => onEdit(row)}>
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton size="small" color="warning" onClick={() => onCreateRevision(row)}>
-                    <ReplayIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    color="info"
-                    disabled={row.enviadoOrcamento}
-                    onClick={() => onSendBudget(row)}
-                  >
-                    <RequestQuoteIcon fontSize="small" />
-                  </IconButton>
-                  <IconButton size="small" color="error" onClick={() => onDelete(row)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
+                  <Tooltip title={ts('actions.edit')}>
+                    <IconButton size="small" onClick={() => onEdit(row)}>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={ts('engenharia.newRevision')}>
+                    <IconButton size="small" color="warning" onClick={() => onCreateRevision(row)}>
+                      <ReplayIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={ts('engenharia.table.orcamento')}>
+                    <span>
+                      <IconButton
+                        size="small"
+                        color="info"
+                        disabled={row.enviadoOrcamento}
+                        onClick={() => onSendBudget(row)}
+                      >
+                        <RequestQuoteIcon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                  <Tooltip title={ts('actions.delete')}>
+                    <IconButton size="small" color="error" onClick={() => onDelete(row)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
             {paginated.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  Nenhum projeto encontrado.
+                  {ts('engenharia.table.empty')}
                 </TableCell>
               </TableRow>
             )}

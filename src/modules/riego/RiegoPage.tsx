@@ -11,12 +11,14 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 import type { RiegoLevantamento } from '@/modules/riego/types/riegoTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { useRiegoLevantamentos, useRiegoMutations } from '@/modules/riego/hooks/useRiegoData'
 import { RiegoLevantamentoDialog } from '@/modules/riego/components/RiegoLevantamentoDialog'
 import { RiegoLevantamentosTable } from '@/modules/riego/components/RiegoLevantamentosTable'
 
 export const RiegoPage = () => {
   const { data = [], isLoading } = useRiegoLevantamentos()
+  const ts = useTranslationService()
   const { create, update, remove, sendToEngineering, uploadMedia } = useRiegoMutations()
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -26,13 +28,10 @@ export const RiegoPage = () => {
   return (
     <Stack spacing={2}>
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">RIAGRO RIEGO</Typography>
+        <Typography variant="h4">{ts('riego.title')}</Typography>
       </Stack>
 
-      <Alert severity="info">
-        Modulo completo com CRUD de levantamentos, questionarios segmentados, autosave, midia, GPS,
-        historico e envio para Engenharia.
-      </Alert>
+      <Alert severity="info">{ts('riego.info')}</Alert>
 
       <RiegoLevantamentosTable
         rows={data}
@@ -66,14 +65,14 @@ export const RiegoPage = () => {
       />
 
       <Dialog open={Boolean(removeTarget)} onClose={() => setRemoveTarget(null)}>
-        <DialogTitle>Excluir levantamento</DialogTitle>
+        <DialogTitle>{ts('riego.deleteSurvey')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Confirma exclusao do levantamento {removeTarget?.codigo}?
+            {ts('riego.deleteDescription', { codigo: removeTarget?.codigo || '' })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setRemoveTarget(null)}>Cancelar</Button>
+          <Button onClick={() => setRemoveTarget(null)}>{ts('actions.cancel')}</Button>
           <Button
             variant="contained"
             color="error"
@@ -83,12 +82,12 @@ export const RiegoPage = () => {
               setRemoveTarget(null)
             }}
           >
-            Excluir
+            {ts('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {isLoading && <Typography color="text.secondary">Carregando levantamentos...</Typography>}
+      {isLoading && <Typography color="text.secondary">{ts('riego.loading')}</Typography>}
     </Stack>
   )
 }

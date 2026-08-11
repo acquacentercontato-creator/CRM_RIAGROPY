@@ -15,6 +15,7 @@ import {
 } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import {
   RIEGO_SEGMENTS,
   RIEGO_STATUS,
@@ -33,6 +34,7 @@ import { RiegoSegmentForm } from './RiegoSegmentForm'
 import { RiegoTimeline } from './RiegoTimeline'
 import { useRiegoDraft } from '@/modules/riego/hooks/useRiegoDraft'
 import { useRiegoGps } from '@/modules/riego/hooks/useRiegoGps'
+import { ModuleAttachmentsTab } from '@/shared/attachments'
 
 type RiegoLevantamentoDialogProps = {
   open: boolean
@@ -51,6 +53,7 @@ export const RiegoLevantamentoDialog = ({
   onSubmit,
   onUpload,
 }: RiegoLevantamentoDialogProps) => {
+  const ts = useTranslationService()
   const [tab, setTab] = useState(0)
   const [gpsError, setGpsError] = useState('')
   const { capturing, capture } = useRiegoGps()
@@ -93,11 +96,12 @@ export const RiegoLevantamentoDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle>{editing ? 'Editar levantamento RIEGO' : 'Novo levantamento RIEGO'}</DialogTitle>
+      <DialogTitle>{editing ? ts('riego.editSurvey') : ts('riego.newSurvey')}</DialogTitle>
       <DialogContent>
         <Tabs value={tab} onChange={(_, value) => setTab(value)} sx={{ mb: 2 }}>
-          <Tab label="Dados" />
-          <Tab label="Timeline" />
+          <Tab label={ts('riego.tabs.dados')} />
+          <Tab label={ts('riego.tabs.timeline')} />
+          <Tab label={ts('attachments.tab')} disabled={!editing} />
         </Tabs>
 
         {tab === 0 && (
@@ -110,7 +114,7 @@ export const RiegoLevantamentoDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Cliente"
+                      label={ts('riego.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -125,7 +129,7 @@ export const RiegoLevantamentoDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Propriedade"
+                      label={ts('riego.fields.propriedade')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -140,7 +144,7 @@ export const RiegoLevantamentoDialog = ({
                   render={({ field, fieldState }) => (
                     <TextField
                       {...field}
-                      label="Responsavel"
+                      label={ts('riego.fields.responsavel')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -156,7 +160,7 @@ export const RiegoLevantamentoDialog = ({
                     <TextField
                       {...field}
                       select
-                      label="Segmento"
+                      label={ts('riego.fields.segmento')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -183,7 +187,7 @@ export const RiegoLevantamentoDialog = ({
                     <TextField
                       {...field}
                       select
-                      label="Status"
+                      label={ts('riego.fields.status')}
                       fullWidth
                       error={Boolean(fieldState.error)}
                       helperText={fieldState.error?.message}
@@ -206,14 +210,14 @@ export const RiegoLevantamentoDialog = ({
                 <Controller
                   name="gpsLat"
                   control={control}
-                  render={({ field }) => <TextField {...field} label="GPS Latitude" fullWidth />}
+                  render={({ field }) => <TextField {...field} label={ts('riego.fields.gpsLat')} fullWidth />}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 5 }}>
                 <Controller
                   name="gpsLng"
                   control={control}
-                  render={({ field }) => <TextField {...field} label="GPS Longitude" fullWidth />}
+                  render={({ field }) => <TextField {...field} label={ts('riego.fields.gpsLng')} fullWidth />}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 2 }}>
@@ -232,7 +236,7 @@ export const RiegoLevantamentoDialog = ({
                   }}
                   disabled={capturing}
                 >
-                  {capturing ? 'Capturando...' : 'GPS'}
+                  {capturing ? ts('riego.gps.capturing') : ts('riego.gps.capture')}
                 </Button>
               </Grid>
             </Grid>
@@ -242,13 +246,13 @@ export const RiegoLevantamentoDialog = ({
             <Controller
               name="observacoes"
               control={control}
-              render={({ field }) => <TextField {...field} label="Observacoes" multiline minRows={3} fullWidth />}
+              render={({ field }) => <TextField {...field} label={ts('riego.fields.observacoes')} multiline minRows={3} fullWidth />}
             />
 
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 4 }}>
                 <RiegoMediaUploader
-                  title="Fotos"
+                  title={ts('engenharia.uploads.fotos')}
                   type="FOTO"
                   items={watchedValues.fotos}
                   onUpload={async (files, type) => {
@@ -259,7 +263,7 @@ export const RiegoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <RiegoMediaUploader
-                  title="Videos"
+                  title={ts('engenharia.uploads.videos')}
                   type="VIDEO"
                   items={watchedValues.videos}
                   onUpload={async (files, type) => {
@@ -270,7 +274,7 @@ export const RiegoLevantamentoDialog = ({
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <RiegoMediaUploader
-                  title="Documentos"
+                  title={ts('riego.fields.documentos')}
                   type="DOCUMENTO"
                   items={watchedValues.documentos}
                   onUpload={async (files, type) => {
@@ -281,14 +285,23 @@ export const RiegoLevantamentoDialog = ({
               </Grid>
             </Grid>
 
-            {!editing && <Alert severity="info">Salvamento automatico ativado para rascunho.</Alert>}
+            {!editing && <Alert severity="info">{ts('riego.autoDraft')}</Alert>}
           </Stack>
         )}
 
         {tab === 1 && <RiegoTimeline events={editing?.timeline ?? []} />}
+
+        {tab === 2 && (
+          <ModuleAttachmentsTab
+            entityId={editing?.id ?? ''}
+            entityNome={editing?.clienteNome ?? ''}
+            moduloContext="ENGENHARIA"
+            projetoId={editing?.id}
+          />
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={onClose}>{ts('actions.cancel')}</Button>
         <Button
           variant="contained"
           disabled={loading}
@@ -298,7 +311,7 @@ export const RiegoLevantamentoDialog = ({
             onClose()
           })}
         >
-          Salvar
+          {ts('actions.save')}
         </Button>
       </DialogActions>
     </Dialog>
