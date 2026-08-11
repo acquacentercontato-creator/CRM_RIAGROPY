@@ -1,5 +1,6 @@
 import { Chip } from '@mui/material'
 import type { EngenhariaStatus } from '@/modules/engenharia/types/engenhariaTypes'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type EngenhariaStatusChipProps = {
   status: EngenhariaStatus
@@ -14,5 +15,7 @@ const colorByStatus: Record<EngenhariaStatus, 'default' | 'warning' | 'info' | '
 }
 
 export const EngenhariaStatusChip = ({ status }: EngenhariaStatusChipProps) => {
-  return <Chip size="small" color={colorByStatus[status]} label={status} />
+  const ts = useTranslationService()
+
+  return <Chip size="small" color={colorByStatus[status]} label={ts(`engenharia.status.${status}`)} />
 }

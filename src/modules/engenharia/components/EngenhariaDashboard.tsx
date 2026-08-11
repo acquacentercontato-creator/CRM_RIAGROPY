@@ -1,4 +1,5 @@
 import { Grid, Paper, Typography } from '@mui/material'
+import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
 type EngenhariaDashboardProps = {
   metrics: {
@@ -12,22 +13,24 @@ type EngenhariaDashboardProps = {
 }
 
 const cards = [
-  { key: 'total', label: 'Total Projetos' },
-  { key: 'aguardando', label: 'Aguardando Engenharia' },
-  { key: 'emProjeto', label: 'Em Projeto' },
-  { key: 'memorial', label: 'Aguardando Memorial' },
-  { key: 'revisao', label: 'Em Revisao' },
-  { key: 'completo', label: 'Projeto Completo' },
+  { key: 'total', label: 'engenharia.dashboard.total' },
+  { key: 'aguardando', label: 'engenharia.dashboard.aguardando' },
+  { key: 'emProjeto', label: 'engenharia.dashboard.emProjeto' },
+  { key: 'memorial', label: 'engenharia.dashboard.memorial' },
+  { key: 'revisao', label: 'engenharia.dashboard.revisao' },
+  { key: 'completo', label: 'engenharia.dashboard.completo' },
 ] as const
 
 export const EngenhariaDashboard = ({ metrics }: EngenhariaDashboardProps) => {
+  const ts = useTranslationService()
+
   return (
     <Grid container spacing={2}>
       {cards.map((card) => (
         <Grid key={card.key} size={{ xs: 12, sm: 6, md: 4, lg: 2 }}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              {card.label}
+              {ts(card.label)}
             </Typography>
             <Typography variant="h5" sx={{ mt: 1 }}>
               {metrics[card.key]}

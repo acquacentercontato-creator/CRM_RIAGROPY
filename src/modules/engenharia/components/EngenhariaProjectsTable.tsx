@@ -19,7 +19,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import ReplayIcon from '@mui/icons-material/Replay'
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote'
 import { useMemo, useState } from 'react'
-import { WORKFLOW_TYPE_MAP } from '@/shared/workflow/WorkflowTypes'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import { ENGENHARIA_STATUS_OPTIONS } from '@/modules/engenharia/models/engenhariaModels'
 import { EngenhariaStatusChip } from '@/modules/engenharia/components/EngenhariaStatusChip'
@@ -78,7 +77,7 @@ export const EngenhariaProjectsTable = ({
           <MenuItem value="TODOS">{ts('engenharia.table.all')}</MenuItem>
           {ENGENHARIA_STATUS_OPTIONS.map((status) => (
             <MenuItem key={status} value={status}>
-              {status}
+              {ts(`engenharia.status.${status}`)}
             </MenuItem>
           ))}
         </TextField>
@@ -105,7 +104,7 @@ export const EngenhariaProjectsTable = ({
               <TableRow key={row.id} hover>
                 <TableCell>{row.codigoProjeto}</TableCell>
                 <TableCell>{row.clienteNome}</TableCell>
-                <TableCell>{WORKFLOW_TYPE_MAP[row.tipoProjeto]}</TableCell>
+                <TableCell>{ts(`engenharia.types.${row.tipoProjeto}`)}</TableCell>
                 <TableCell>
                   <EngenhariaStatusChip status={row.status} />
                 </TableCell>
@@ -159,6 +158,10 @@ export const EngenhariaProjectsTable = ({
         page={page}
         onPageChange={(_, next) => setPage(next)}
         rowsPerPage={rowsPerPage}
+        labelRowsPerPage={ts('engenharia.table.rowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) =>
+          ts('engenharia.table.displayedRows', { from, to, count })
+        }
         onRowsPerPageChange={(event) => {
           setRowsPerPage(Number(event.target.value))
           setPage(0)

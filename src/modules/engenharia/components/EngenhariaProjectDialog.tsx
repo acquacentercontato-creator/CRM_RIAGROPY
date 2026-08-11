@@ -36,7 +36,6 @@ import { useWorkflowPipeline } from '@/shared/workflow/pipeline/hooks/useWorkflo
 import { ApprovalPanel } from '@/shared/bpe/components/ApprovalPanel'
 import { UniversalChecklist, type ChecklistItem } from '@/shared/components/UniversalChecklist'
 import { AutomationService } from '@/shared/crm-automation'
-import { WORKFLOW_TYPE_MAP } from '@/shared/workflow/WorkflowTypes'
 
 type EngenhariaProjectDialogProps = {
   open: boolean
@@ -160,7 +159,7 @@ export const EngenhariaProjectDialog = ({
                       label={ts('engenharia.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -175,7 +174,7 @@ export const EngenhariaProjectDialog = ({
                       label={ts('engenharia.fields.tituloProjeto')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message}
+                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     />
                   )}
                 />
@@ -188,7 +187,7 @@ export const EngenhariaProjectDialog = ({
                     <TextField {...field} select label={ts('engenharia.fields.tipo')} fullWidth>
                       {ENGENHARIA_TYPE_OPTIONS.map((typeCode) => (
                         <MenuItem key={typeCode} value={typeCode}>
-                          {typeCode} - {WORKFLOW_TYPE_MAP[typeCode]}
+                          {typeCode} - {ts(`engenharia.types.${typeCode}`)}
                         </MenuItem>
                       ))}
                     </TextField>
@@ -201,9 +200,9 @@ export const EngenhariaProjectDialog = ({
                   control={control}
                   render={({ field }) => (
                     <TextField {...field} select label={ts('engenharia.fields.origem')} fullWidth>
-                      <MenuItem value="RIEGO">RIEGO</MenuItem>
-                      <MenuItem value="IMOTO">IMOTO</MenuItem>
-                      <MenuItem value="OUTRO">OUTRO</MenuItem>
+                      <MenuItem value="RIEGO">{ts('engenharia.origins.RIEGO')}</MenuItem>
+                      <MenuItem value="IMOTO">{ts('engenharia.origins.IMOTO')}</MenuItem>
+                      <MenuItem value="OUTRO">{ts('engenharia.origins.OUTRO')}</MenuItem>
                     </TextField>
                   )}
                 />
@@ -216,7 +215,7 @@ export const EngenhariaProjectDialog = ({
                     <TextField {...field} select label={ts('engenharia.fields.status')} fullWidth>
                       {ENGENHARIA_STATUS.map((status) => (
                         <MenuItem key={status} value={status}>
-                          {status}
+                          {ts(`engenharia.status.${status}`)}
                         </MenuItem>
                       ))}
                     </TextField>

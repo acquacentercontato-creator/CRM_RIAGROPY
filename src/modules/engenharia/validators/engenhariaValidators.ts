@@ -12,8 +12,8 @@ const uploadedFileSchema = z.object({
 })
 
 export const engenhariaProjectSchema = z.object({
-  clienteNome: z.string().min(2),
-  titulo: z.string().min(3),
+  clienteNome: z.string().min(2, 'engenharia.validation.clientMin'),
+  titulo: z.string().min(3, 'engenharia.validation.titleMin'),
   tipoProjeto: z.enum(['A', 'C', 'P', 'G', 'M', 'R', 'I', 'T']),
   origem: z.enum(['RIEGO', 'IMOTO', 'OUTRO']),
   status: z.enum(ENGENHARIA_STATUS),
