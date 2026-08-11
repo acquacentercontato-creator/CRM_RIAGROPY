@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.19% </span>
+                <span class="strong">84.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/73</span>
+                <span class='fraction'>72/85</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.19% </span>
+                <span class="strong">84.7% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>60/73</span>
+                <span class='fraction'>72/85</span>
             </div>
         
             
@@ -147,7 +147,19 @@
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
 <a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -178,11 +190,21 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -206,6 +228,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -253,13 +277,17 @@ export const WORKFLOW_STATUS = {
   EM_PROJETO: 'EM PROJETO',
   AGUARDANDO_MEMORIAL: 'AGUARDANDO MEMORIAL',
   PROJETO_COMPLETO: 'PROJETO COMPLETO',
+  APRESENTACAO: 'APRESENTACAO',
   ORCAMENTO: 'ORÇAMENTO',
   NEGOCIACAO: 'NEGOCIAÇÃO',
   VENDIDO: 'VENDIDO',
+  LIBERACAO_FINANCEIRA: 'LIBERACAO FINANCEIRA',
   OBRA: 'OBRA',
   ENTREGUE: 'ENTREGUE',
+  TREINAMENTO: 'TREINAMENTO',
   GARANTIA: 'GARANTIA',
   ASSISTENCIA: 'ASSISTÊNCIA',
+  FINALIZADO: 'FINALIZADO',
   CANCELADO: 'CANCELADO',
 } as const
 &nbsp;
@@ -268,18 +296,24 @@ export type WorkflowStatus = (typeof WORKFLOW_STATUS)[keyof typeof WORKFLOW_STAT
 export const WORKFLOW_STATUS_VALUES = Object.values(WORKFLOW_STATUS) as WorkflowStatus[]
 &nbsp;
 export const WORKFLOW_DEFAULT_SEQUENCE: WorkflowStatus[] = [
+  WORKFLOW_STATUS.LEAD,
   WORKFLOW_STATUS.CLIENTE,
   WORKFLOW_STATUS.VISITA,
   WORKFLOW_STATUS.LEVANTAMENTO,
+  WORKFLOW_STATUS.AGUARDANDO_ENGENHARIA,
   WORKFLOW_STATUS.EM_PROJETO,
   WORKFLOW_STATUS.AGUARDANDO_MEMORIAL,
-  WORKFLOW_STATUS.ORCAMENTO,
+  WORKFLOW_STATUS.PROJETO_COMPLETO,
+  WORKFLOW_STATUS.APRESENTACAO,
   WORKFLOW_STATUS.NEGOCIACAO,
   WORKFLOW_STATUS.VENDIDO,
+  WORKFLOW_STATUS.LIBERACAO_FINANCEIRA,
   WORKFLOW_STATUS.OBRA,
   WORKFLOW_STATUS.ENTREGUE,
+  WORKFLOW_STATUS.TREINAMENTO,
   WORKFLOW_STATUS.GARANTIA,
   WORKFLOW_STATUS.ASSISTENCIA,
+  WORKFLOW_STATUS.FINALIZADO,
 ]
 &nbsp;
 const normalize = <span class="fstat-no" title="function not covered" >(value: string) =&gt;</span>
@@ -291,18 +325,20 @@ const normalize = <span class="fstat-no" title="function not covered" >(value: s
 <span class="cstat-no" title="statement not covered" >    .replace(/\s+/g, ' ')</span>
 &nbsp;
 export const WORKFLOW_LEGACY_STATUS_MAP: Record&lt;string, WorkflowStatus&gt; = {
-  'AGENDAR APRESENTACAO': WORKFLOW_STATUS.LEAD,
+  'AGENDAR APRESENTACAO': WORKFLOW_STATUS.APRESENTACAO,
   'APRESENTADO / FALTA FECHAR': WORKFLOW_STATUS.NEGOCIACAO,
   CONCORRENCIA: WORKFLOW_STATUS.NEGOCIACAO,
-  'VENDIDO / ENCAMINHADO BANCO': WORKFLOW_STATUS.VENDIDO,
-  'VENDIDO / BANCO PENAPOLIS': WORKFLOW_STATUS.VENDIDO,
+  'VENDIDO / ENCAMINHADO BANCO': WORKFLOW_STATUS.LIBERACAO_FINANCEIRA,
+  'VENDIDO / BANCO PENAPOLIS': WORKFLOW_STATUS.LIBERACAO_FINANCEIRA,
   'AGUARDANDO PROJETISTA': WORKFLOW_STATUS.AGUARDANDO_ENGENHARIA,
   PROJETO: WORKFLOW_STATUS.EM_PROJETO,
   'AJUSTE PROJETO': WORKFLOW_STATUS.EM_PROJETO,
   'PROJETO HIDRAULICO PRONTO': WORKFLOW_STATUS.PROJETO_COMPLETO,
   'MEMORIAL DESCRITIVO PRONTO': WORKFLOW_STATUS.AGUARDANDO_MEMORIAL,
-  LIBERADO: WORKFLOW_STATUS.OBRA,
+  LIBERADO: WORKFLOW_STATUS.LIBERACAO_FINANCEIRA,
   EXECUCAO: WORKFLOW_STATUS.OBRA,
+  GARANTIA: WORKFLOW_STATUS.GARANTIA,
+  ENCERRADO: WORKFLOW_STATUS.FINALIZADO,
 }
 &nbsp;
 export const normalizeWorkflowStatus = <span class="fstat-no" title="function not covered" >(value: string): WorkflowStatus | null =&gt; {</span>
@@ -322,7 +358,7 @@ export const isWorkflowStatus = <span class="fstat-no" title="function not cover
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-28T01:39:52.194Z
+                at 2026-08-11T10:25:01.228Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

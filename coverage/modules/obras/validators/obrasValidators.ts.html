@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/72</span>
+                <span class='fraction'>0/75</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/72</span>
+                <span class='fraction'>0/75</span>
             </div>
         
             
@@ -141,7 +141,10 @@
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
 <a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -167,6 +170,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -223,54 +229,57 @@
 <span class="cstat-no" title="statement not covered" >import { OBRAS_STATUS } from '@/modules/obras/types/obrasTypes'</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >const uploadSchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >  id: z.string().min(1),</span>
+<span class="cstat-no" title="statement not covered" >  id: z.string().min(1, 'obras.validation.required'),</span>
 <span class="cstat-no" title="statement not covered" >  category: z.enum(['FOTO', 'VIDEO', 'PDF', 'OUTRO']),</span>
-<span class="cstat-no" title="statement not covered" >  name: z.string().min(1),</span>
+<span class="cstat-no" title="statement not covered" >  name: z.string().min(1, 'obras.validation.required'),</span>
 <span class="cstat-no" title="statement not covered" >  mimeType: z.string(),</span>
-<span class="cstat-no" title="statement not covered" >  size: z.number().nonnegative(),</span>
-<span class="cstat-no" title="statement not covered" >  url: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  createdAt: z.string().min(1),</span>
+<span class="cstat-no" title="statement not covered" >  size: z.number().nonnegative('obras.validation.nonnegative'),</span>
+<span class="cstat-no" title="statement not covered" >  url: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  createdAt: z.string().min(1, 'obras.validation.required'),</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >const teamMemberSchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >  id: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  nome: z.string().min(2),</span>
-<span class="cstat-no" title="statement not covered" >  funcao: z.string().min(2),</span>
+<span class="cstat-no" title="statement not covered" >  id: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  nome: z.string().min(2, 'obras.validation.minTwo'),</span>
+<span class="cstat-no" title="statement not covered" >  funcao: z.string().min(2, 'obras.validation.minTwo'),</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >const teamSchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >  id: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  nome: z.string().min(2),</span>
-<span class="cstat-no" title="statement not covered" >  responsavel: z.string().min(2),</span>
+<span class="cstat-no" title="statement not covered" >  id: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  nome: z.string().min(2, 'obras.validation.minTwo'),</span>
+<span class="cstat-no" title="statement not covered" >  responsavel: z.string().min(2, 'obras.validation.minTwo'),</span>
 <span class="cstat-no" title="statement not covered" >  integrantes: z.array(teamMemberSchema),</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >const scheduleSchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >  id: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  etapa: z.string().min(2),</span>
-<span class="cstat-no" title="statement not covered" >  dataInicio: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  dataFim: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  percentualConcluido: z.number().min(0).max(100),</span>
+<span class="cstat-no" title="statement not covered" >  id: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  etapa: z.string().min(2, 'obras.validation.minTwo'),</span>
+<span class="cstat-no" title="statement not covered" >  dataInicio: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  dataFim: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  percentualConcluido: z</span>
+<span class="cstat-no" title="statement not covered" >    .number()</span>
+<span class="cstat-no" title="statement not covered" >    .min(0, 'obras.validation.percentage')</span>
+<span class="cstat-no" title="statement not covered" >    .max(100, 'obras.validation.percentage'),</span>
 <span class="cstat-no" title="statement not covered" >  dependencias: z.array(z.string()),</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >const diarySchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >  id: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  data: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  responsavel: z.string().min(2),</span>
-<span class="cstat-no" title="statement not covered" >  atividades: z.string().min(2),</span>
+<span class="cstat-no" title="statement not covered" >  id: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  data: z.string().min(1, 'obras.validation.required'),</span>
+<span class="cstat-no" title="statement not covered" >  responsavel: z.string().min(2, 'obras.validation.minTwo'),</span>
+<span class="cstat-no" title="statement not covered" >  atividades: z.string().min(2, 'obras.validation.minTwo'),</span>
 <span class="cstat-no" title="statement not covered" >  ocorrencias: z.string(),</span>
 <span class="cstat-no" title="statement not covered" >  observacoes: z.string(),</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export const obraSchema = z.object({</span>
-<span class="cstat-no" title="statement not covered" >  clienteNome: z.string().min(2),</span>
-<span class="cstat-no" title="statement not covered" >  projetoId: z.string().min(1),</span>
-<span class="cstat-no" title="statement not covered" >  projetoNome: z.string().min(2),</span>
+<span class="cstat-no" title="statement not covered" >  clienteNome: z.string().min(2, 'obras.validation.clientMin'),</span>
+<span class="cstat-no" title="statement not covered" >  projetoId: z.string().min(1, 'obras.validation.projectRequired'),</span>
+<span class="cstat-no" title="statement not covered" >  projetoNome: z.string().min(2, 'obras.validation.projectNameMin'),</span>
 <span class="cstat-no" title="statement not covered" >  projetoTipo: z.enum(['A', 'C', 'P', 'G', 'M', 'R', 'I', 'T']),</span>
-<span class="cstat-no" title="statement not covered" >  responsavelObra: z.string().min(2),</span>
+<span class="cstat-no" title="statement not covered" >  responsavelObra: z.string().min(2, 'obras.validation.responsibleMin'),</span>
 <span class="cstat-no" title="statement not covered" >  status: z.enum(OBRAS_STATUS),</span>
-<span class="cstat-no" title="statement not covered" >  dataCriacaoObra: z.string().min(1),</span>
+<span class="cstat-no" title="statement not covered" >  dataCriacaoObra: z.string().min(1, 'obras.validation.required'),</span>
 <span class="cstat-no" title="statement not covered" >  dataInicio: z.string(),</span>
 <span class="cstat-no" title="statement not covered" >  dataPrevista: z.string(),</span>
 <span class="cstat-no" title="statement not covered" >  dataEntrega: z.string(),</span>
@@ -304,7 +313,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-28T01:39:52.194Z
+                at 2026-08-11T10:25:01.228Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
