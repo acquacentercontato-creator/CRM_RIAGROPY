@@ -1064,6 +1064,16 @@ export const gnPY = {
       info: 'Chamado, triaje, agendamiento, mantenimiento ha garantia.',
       novoChamado: 'Chamado pyahu',
       semChamados: 'Ndaipori chamado.',
+      all: 'Opavave',
+      system: 'Sistema',
+      units: {
+        daysShort: '{{count}} ára',
+        hoursShort: '{{count}}h',
+      },
+      history: {
+        opened: 'Chamado ojepe\'a',
+        statusChanged: 'Estado oñemoambue {{status}}-pe',
+      },
       status: {
         CHAMADO: 'Chamado',
         TRIAGEM: 'Triaje',

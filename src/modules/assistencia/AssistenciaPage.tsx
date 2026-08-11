@@ -55,7 +55,7 @@ export const AssistenciaPage = () => {
       tipo: form.tipo as AssistenciaChamado['tipo'],
       prioridade: form.prioridade as AssistenciaChamado['prioridade'],
       descricao: form.descricao,
-      responsavel: user?.name ?? 'Sistema',
+      responsavel: user?.name ?? 'technical.ass.system',
       dataAbertura: new Date().toISOString(),
       slaHoras: 24,
     })
@@ -65,7 +65,7 @@ export const AssistenciaPage = () => {
   }
 
   const handleStatusChange = (id: string, novoStatus: AssistenciaStatus) => {
-    AssistenciaService.updateStatus(id, novoStatus, user?.name ?? 'Sistema')
+    AssistenciaService.updateStatus(id, novoStatus, user?.name ?? 'technical.ass.system')
     reload()
     if (selected?.id === id) setSelected(AssistenciaService.getById(id))
   }
@@ -92,7 +92,11 @@ export const AssistenciaPage = () => {
           { label: ts('technical.kpi.ass.emSla'), value: metrics.emSla, color: 'success.main' },
           { label: ts('technical.kpi.ass.slaVencidos'), value: metrics.slaVencidos, color: 'warning.main' },
           { label: ts('technical.kpi.ass.garantias'), value: metrics.garantias, color: 'primary.main' },
-          { label: ts('technical.kpi.ass.tempoMedio'), value: `${metrics.tempoMedioDias}d`, color: 'secondary.main' },
+          {
+            label: ts('technical.kpi.ass.tempoMedio'),
+            value: ts('technical.ass.units.daysShort', { count: metrics.tempoMedioDias }),
+            color: 'secondary.main',
+          },
         ].map((kpi) => (
           <Grid key={kpi.label} size={{ xs: 6, sm: 4, md: 2 }}>
             <Paper variant="outlined" sx={{ p: 1.5 }}>
@@ -112,7 +116,7 @@ export const AssistenciaPage = () => {
         onChange={(e) => setFilterStatus(e.target.value as AssistenciaStatus | '')}
         sx={{ maxWidth: 200 }}
       >
-        <MenuItem value="">{ts('engenharia.table.all')}</MenuItem>
+        <MenuItem value="">{ts('technical.ass.all')}</MenuItem>
         {ASSISTENCIA_STATUS.map((s) => (
           <MenuItem key={s} value={s}>{ts(`technical.ass.status.${s}`)}</MenuItem>
         ))}
@@ -179,8 +183,13 @@ export const AssistenciaPage = () => {
                   {[
                     [ts('technical.ass.fields.tipo'), ts(`technical.ass.tipo.${selected.tipo}`)],
                     [ts('technical.ass.fields.prioridade'), ts(`technical.ass.prioridade.${selected.prioridade}`)],
-                    [ts('technical.ass.fields.sla'), `${selected.slaHoras}h`],
-                    [ts('technical.ass.fields.responsavel'), selected.responsavel ?? '—'],
+                    [ts('technical.ass.fields.sla'), ts('technical.ass.units.hoursShort', { count: selected.slaHoras })],
+                    [
+                      ts('technical.ass.fields.responsavel'),
+                      selected.responsavel === 'Sistema' || selected.responsavel === 'technical.ass.system'
+                        ? ts('technical.ass.system')
+                        : selected.responsavel ?? '—',
+                    ],
                   ].map(([label, value]) => (
                     <Grid key={label} size={{ xs: 6, md: 3 }}>
                       <Typography variant="caption" color="text.secondary">{label}</Typography>
@@ -219,8 +228,20 @@ export const AssistenciaPage = () => {
                       <Chip label={ts(`technical.ass.status.${h.status}`)} size="small" color={STATUS_COLOR[h.status]} />
                       <Typography variant="caption" color="text.secondary">{new Date(h.timestamp).toLocaleString()}</Typography>
                     </Stack>
-                    <Typography variant="body2" sx={{ mt: 0.5 }}>{h.descricao}</Typography>
-                    <Typography variant="caption" color="text.secondary">{h.responsavel}</Typography>
+                    <Typography variant="body2" sx={{ mt: 0.5 }}>
+                      {h.descricao === 'Chamado aberto' || h.descricao === 'technical.ass.history.opened'
+                        ? ts('technical.ass.history.opened')
+                        : h.descricao.startsWith('Status alterado para ') || h.descricao === 'technical.ass.history.statusChanged'
+                          ? ts('technical.ass.history.statusChanged', {
+                              status: ts(`technical.ass.status.${h.status}`),
+                            })
+                          : h.descricao}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {h.responsavel === 'Sistema' || h.responsavel === 'technical.ass.system'
+                        ? ts('technical.ass.system')
+                        : h.responsavel}
+                    </Typography>
                   </Paper>
                 ))}
               </Stack>

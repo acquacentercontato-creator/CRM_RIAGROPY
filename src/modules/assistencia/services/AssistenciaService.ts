@@ -48,8 +48,8 @@ export const AssistenciaService = {
         {
           id: crypto.randomUUID(),
           status: 'CHAMADO',
-          descricao: 'Chamado aberto',
-          responsavel: input.responsavel ?? 'Sistema',
+          descricao: 'technical.ass.history.opened',
+          responsavel: input.responsavel ?? 'technical.ass.system',
           timestamp: now,
         },
       ],
@@ -90,7 +90,7 @@ export const AssistenciaService = {
         {
           id: crypto.randomUUID(),
           status: novoStatus,
-          descricao: descricao ?? `Status alterado para ${novoStatus}`,
+          descricao: descricao ?? 'technical.ass.history.statusChanged',
           responsavel,
           timestamp: now,
         },

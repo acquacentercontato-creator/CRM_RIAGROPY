@@ -1065,6 +1065,16 @@ export const ptBR = {
       info: 'Gestão de chamados, triagem, agendamento, manutenção e garantia.',
       novoChamado: 'Novo Chamado',
       semChamados: 'Nenhum chamado encontrado.',
+      all: 'Todos',
+      system: 'Sistema',
+      units: {
+        daysShort: '{{count}}d',
+        hoursShort: '{{count}}h',
+      },
+      history: {
+        opened: 'Chamado aberto',
+        statusChanged: 'Status alterado para {{status}}',
+      },
       status: {
         CHAMADO: 'Chamado',
         TRIAGEM: 'Triagem',

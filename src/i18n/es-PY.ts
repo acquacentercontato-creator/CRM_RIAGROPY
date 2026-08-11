@@ -1064,6 +1064,16 @@ export const esPY = {
       info: 'Gestion de llamados, triaje, agendamiento, mantenimiento y garantia.',
       novoChamado: 'Nuevo Llamado',
       semChamados: 'Ningun llamado encontrado.',
+      all: 'Todos',
+      system: 'Sistema',
+      units: {
+        daysShort: '{{count}}d',
+        hoursShort: '{{count}}h',
+      },
+      history: {
+        opened: 'Llamado abierto',
+        statusChanged: 'Estado cambiado a {{status}}',
+      },
       status: {
         CHAMADO: 'Llamado',
         TRIAGEM: 'Triaje',
