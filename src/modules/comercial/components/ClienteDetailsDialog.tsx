@@ -78,7 +78,9 @@ export const ClienteDetailsDialog = ({ open, onClose, cliente }: ClienteDetailsD
               <Typography variant="body2">{ts('comercial.clientes.razaoSocial')}: {cliente?.razaoSocial}</Typography>
               <Typography variant="body2">{ts('comercial.clientes.nomeFantasia')}: {cliente?.nomeFantasia}</Typography>
               <Typography variant="body2">{ts('comercial.clientes.rucCnpj')}: {cliente?.rucCnpj}</Typography>
-              <Typography variant="body2">{ts('common.status')}: {cliente?.status}</Typography>
+              <Typography variant="body2">
+                {ts('common.status')}: {cliente?.status ? ts(`comercial.status.${cliente.status}`) : ''}
+              </Typography>
               <Typography variant="body2">{ts('comercial.clientes.responsavel')}: {cliente?.responsavelComercial}</Typography>
               {cliente?.classificacao && (
                 <Typography variant="body2">{ts('crm.cliente.classificacao')}: {ts(`crm.cliente.classificacoes.${cliente.classificacao}`)}</Typography>

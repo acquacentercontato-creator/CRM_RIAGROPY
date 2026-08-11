@@ -121,7 +121,7 @@ export const ClienteFormDialog = ({
                     {...field}
                     label={label}
                     error={Boolean(fieldState.error)}
-                    helperText={fieldState.error?.message}
+                    helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                     fullWidth
                   />
                 )}
@@ -139,7 +139,7 @@ export const ClienteFormDialog = ({
                   select
                   label={ts('common.status')}
                   error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
+                  helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   fullWidth
                 >
                   <MenuItem value="PROSPECT">{ts('comercial.status.PROSPECT')}</MenuItem>
@@ -205,7 +205,7 @@ export const ClienteFormDialog = ({
                   {...field}
                   label={ts('comercial.fields.observacoes')}
                   error={Boolean(fieldState.error)}
-                  helperText={fieldState.error?.message}
+                  helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
                   fullWidth
                   multiline
                   minRows={3}

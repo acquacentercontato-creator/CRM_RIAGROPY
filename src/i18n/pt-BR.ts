@@ -186,13 +186,23 @@ export const ptBR = {
     },
     clientes: {
       title: 'Clientes',
+      loading: 'Carregando clientes...',
       new: 'Novo Cliente',
       newLower: 'Novo cliente',
       edit: 'Editar cliente',
+      view: 'Visualizar cliente',
       nomeFantasia: 'Nome Fantasia',
       razaoSocial: 'Razao Social',
       rucCnpj: 'RUC/CNPJ',
       responsavel: 'Responsavel',
+      rowsPerPage: 'Clientes por pagina',
+      displayedRows: '{{from}}–{{to}} de {{count}}',
+      validation: {
+        minTwoCharacters: 'Informe pelo menos 2 caracteres.',
+        minFiveCharacters: 'Informe pelo menos 5 caracteres.',
+        minSixCharacters: 'Informe pelo menos 6 caracteres.',
+        invalidEmail: 'Informe um email valido.',
+      },
     },
     agenda: {
       title: 'Agenda Comercial',

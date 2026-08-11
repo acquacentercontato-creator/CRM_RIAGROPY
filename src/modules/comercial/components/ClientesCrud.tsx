@@ -114,7 +114,7 @@ export const ClientesCrud = () => {
         <Stack sx={{ alignItems: 'center', py: 4 }}>
           <CircularProgress size={32} />
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            {ts('comercial.clientes.title')}...
+            {ts('comercial.clientes.loading')}
           </Typography>
         </Stack>
       ) : (
@@ -151,7 +151,7 @@ export const ClientesCrud = () => {
                     </TableCell>
                     <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>{item.responsavelComercial}</TableCell>
                     <TableCell align="right">
-                      <Tooltip title={ts('comercial.details.tabs.dadosGerais')}>
+                      <Tooltip title={ts('comercial.clientes.view')}>
                         <IconButton size="small" onClick={() => setDetailsTarget(item)}>
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
@@ -181,9 +181,7 @@ export const ClientesCrud = () => {
                 {paginated.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={8} align="center" sx={{ py: 4, color: 'text.secondary' }}>
-                      {search || statusFilter !== 'TODOS'
-                        ? ts('common.emptyClient')
-                        : ts('common.emptyClient')}
+                      {ts('common.emptyClient')}
                     </TableCell>
                   </TableRow>
                 )}
@@ -197,6 +195,10 @@ export const ClientesCrud = () => {
             page={page}
             onPageChange={(_, next) => setPage(next)}
             rowsPerPage={rowsPerPage}
+            labelRowsPerPage={ts('comercial.clientes.rowsPerPage')}
+            labelDisplayedRows={({ from, to, count }) =>
+              ts('comercial.clientes.displayedRows', { from, to, count })
+            }
             onRowsPerPageChange={(event) => {
               setRowsPerPage(Number(event.target.value))
               setPage(0)

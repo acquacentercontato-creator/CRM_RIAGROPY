@@ -186,13 +186,23 @@ export const gnPY = {
     },
     clientes: {
       title: 'Clientes',
+      loading: 'Oñemyanyhy hina cliente kuera...',
       new: 'Nuevo Cliente',
       newLower: 'Nuevo cliente',
       edit: 'Editar cliente',
+      view: 'Ehecha cliente',
       nomeFantasia: 'Nombre Fantasia',
       razaoSocial: 'Razon Social',
       rucCnpj: 'RUC/CNPJ',
       responsavel: 'Responsable',
+      rowsPerPage: 'Cliente kuera pagina rehe',
+      displayedRows: '{{from}}–{{to}} de {{count}}',
+      validation: {
+        minTwoCharacters: 'Ehai mokoi tai jepe.',
+        minFiveCharacters: 'Ehai po tai jepe.',
+        minSixCharacters: 'Ehai potei tai jepe.',
+        invalidEmail: 'Ehai correo oikova.',
+      },
     },
     agenda: {
       title: 'Agenda Comercial',

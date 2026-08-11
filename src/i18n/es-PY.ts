@@ -186,13 +186,23 @@ export const esPY = {
     },
     clientes: {
       title: 'Clientes',
+      loading: 'Cargando clientes...',
       new: 'Nuevo Cliente',
       newLower: 'Nuevo cliente',
       edit: 'Editar cliente',
+      view: 'Ver cliente',
       nomeFantasia: 'Nombre Fantasia',
       razaoSocial: 'Razon Social',
       rucCnpj: 'RUC/CNPJ',
       responsavel: 'Responsable',
+      rowsPerPage: 'Clientes por pagina',
+      displayedRows: '{{from}}–{{to}} de {{count}}',
+      validation: {
+        minTwoCharacters: 'Ingrese al menos 2 caracteres.',
+        minFiveCharacters: 'Ingrese al menos 5 caracteres.',
+        minSixCharacters: 'Ingrese al menos 6 caracteres.',
+        invalidEmail: 'Ingrese un correo valido.',
+      },
     },
     agenda: {
       title: 'Agenda Comercial',
