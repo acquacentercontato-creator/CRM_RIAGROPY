@@ -20,6 +20,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ModuleAttachmentsTab } from '@/shared/attachments/components/ModuleAttachmentsTab'
+import { useClientes } from '@/modules/comercial/hooks/useComercialData'
 import { ECOLIFE_QUESTIONS, ECOLIFE_QUESTION_SECTIONS } from '@/modules/ecolife/models/ecolifeModels'
 import {
   ECOLIFE_STATUS,
@@ -33,6 +34,8 @@ import { useTranslationService } from '@/shared/hooks/useTranslationService'
 const emptyForm = (product: EcolifeProduct): EcolifeDiagnosticForm => ({
   product,
   propertyName: '',
+  clientId: '',
+  clientName: '',
   municipality: '',
   department: '',
   consultantName: '',
@@ -48,19 +51,23 @@ export const EcolifeDiagnosticDialog = ({
   editing,
   onClose,
   onSave,
+  onAttachmentUploaded,
 }: {
   open: boolean
   product: EcolifeProduct
   editing: EcolifeDiagnostic | null
   onClose: () => void
   onSave: (form: EcolifeDiagnosticForm) => Promise<void>
+  onAttachmentUploaded: (item: EcolifeDiagnostic) => void
 }) => {
   const ts = useTranslationService()
+  const { data: clients = [] } = useClientes()
   const [tab, setTab] = useState(0)
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<EcolifeDiagnosticForm>({
     resolver: zodResolver(ecolifeDiagnosticSchema),
@@ -72,6 +79,8 @@ export const EcolifeDiagnosticDialog = ({
         editing
           ? {
               product: editing.product,
+              clientId: editing.clientId || '',
+              clientName: editing.clientName || '',
               propertyName: editing.propertyName,
               municipality: editing.municipality,
               department: editing.department,
@@ -96,6 +105,38 @@ export const EcolifeDiagnosticDialog = ({
       <DialogContent dividers>
         {tab === 0 && (
           <Grid container spacing={2}>
+            <Grid size={12}>
+              <Controller
+                name="clientId"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    label={ts('ecolife.fields.client')}
+                    error={Boolean(errors.clientId)}
+                    helperText={errors.clientId ? ts(String(errors.clientId.message)) : ''}
+                    onChange={(event) => {
+                      field.onChange(event)
+                      const client = clients.find((item) => item.id === event.target.value)
+                      if (!client) return
+                      const clientName = client.nomeFantasia || client.razaoSocial
+                      setValue('clientName', clientName)
+                      setValue('propertyName', clientName)
+                      setValue('municipality', client.cidade)
+                      setValue('department', client.departamento)
+                    }}
+                  >
+                    {clients.map((client) => (
+                      <MenuItem key={client.id} value={client.id}>
+                        {client.nomeFantasia || client.razaoSocial}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            </Grid>
             {(['propertyName', 'municipality', 'department', 'consultantName'] as const).map((name) => (
               <Grid key={name} size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -203,10 +244,11 @@ export const EcolifeDiagnosticDialog = ({
           ))}
         {tab === 3 && (
           <ModuleAttachmentsTab
-            entityId={editing?.id || ''}
-            entityNome={editing?.propertyName || ''}
+            entityId={editing?.clientId || ''}
+            entityNome={editing?.clientName || editing?.propertyName || ''}
             moduloContext="ECOLIFE"
             projetoId={editing?.id}
+            onUploadComplete={() => editing && onAttachmentUploaded(editing)}
           />
         )}
       </DialogContent>

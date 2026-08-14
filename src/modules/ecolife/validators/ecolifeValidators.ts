@@ -3,6 +3,8 @@ import { ECOLIFE_PRODUCTS, ECOLIFE_STATUS } from '@/modules/ecolife/types/ecolif
 
 export const ecolifeDiagnosticSchema = z.object({
   product: z.enum(ECOLIFE_PRODUCTS),
+  clientId: z.string().min(1, 'ecolife.validation.client'),
+  clientName: z.string().min(1, 'ecolife.validation.client'),
   propertyName: z.string().min(2, 'ecolife.validation.property'),
   municipality: z.string().min(2, 'ecolife.validation.municipality'),
   department: z.string().min(2, 'ecolife.validation.department'),

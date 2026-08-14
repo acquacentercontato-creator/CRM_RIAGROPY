@@ -10,10 +10,12 @@ import {
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
+import { AttachmentService } from '@/shared/attachments'
 import { EcolifeDashboard } from '@/modules/ecolife/components/EcolifeDashboard'
 import { EcolifeDiagnosticDialog } from '@/modules/ecolife/components/EcolifeDiagnosticDialog'
 import { EcolifeDiagnosticsTable } from '@/modules/ecolife/components/EcolifeDiagnosticsTable'
 import { useEcolifeDiagnostics, useEcolifeMutations } from '@/modules/ecolife/hooks/useEcolifeData'
+import { EcolifePdfService } from '@/modules/ecolife/services/EcolifePdfService'
 import type { EcolifeDiagnostic, EcolifeProduct } from '@/modules/ecolife/types/ecolifeTypes'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
 
@@ -28,6 +30,28 @@ export const EcolifePage = () => {
   const start = () => {
     setEditing(null)
     setOpen(true)
+  }
+  const generateAndAttachReport = async (item: EcolifeDiagnostic) => {
+    const file = EcolifePdfService.createFile(item, ts)
+    await mutations.logAction.mutateAsync({ item, action: 'PDF_GENERATED' })
+    try {
+      await AttachmentService.upload({
+        arquivo: file,
+        nome: item.code,
+        tipo: 'PDF',
+        categoria: 'TECNICO',
+        clienteId: item.clientId,
+        clienteNome: item.clientName,
+        projetoId: item.id,
+        moduloContext: 'ECOLIFE',
+        observacoes: ts('ecolife.pdf.autoAttachment'),
+        tags: ['ECOLIFE', item.product, item.code],
+      })
+      await mutations.logAction.mutateAsync({ item, action: 'ATTACHMENT_UPLOADED' })
+    } catch {
+      // O diagnóstico permanece salvo e o relatório continua disponível para impressão.
+    }
+    EcolifePdfService.print(item, ts)
   }
   if (!product) {
     return (
@@ -75,10 +99,15 @@ export const EcolifePage = () => {
         editing={editing}
         onClose={() => setOpen(false)}
         onSave={async (form) => {
-          if (editing) await mutations.update.mutateAsync({ id: editing.id, form })
-          else await mutations.create.mutateAsync(form)
+          const saved = editing
+            ? await mutations.update.mutateAsync({ id: editing.id, form })
+            : await mutations.create.mutateAsync(form)
+          await generateAndAttachReport(saved)
           setOpen(false)
         }}
+        onAttachmentUploaded={(item) =>
+          mutations.logAction.mutate({ item, action: 'ATTACHMENT_UPLOADED' })
+        }
       />
       <Dialog open={Boolean(removing)} onClose={() => setRemoving(null)}>
         <DialogTitle>{ts('ecolife.actions.delete')}</DialogTitle>

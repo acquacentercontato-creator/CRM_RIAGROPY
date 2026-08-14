@@ -25,6 +25,8 @@ export type EcolifeDiagnostic = {
   id: string
   code: string
   product: EcolifeProduct
+  clientId: string
+  clientName: string
   propertyName: string
   municipality: string
   department: string
@@ -43,6 +45,8 @@ export type EcolifeDiagnostic = {
 export type EcolifeDiagnosticForm = Pick<
   EcolifeDiagnostic,
   | 'product'
+  | 'clientId'
+  | 'clientName'
   | 'propertyName'
   | 'municipality'
   | 'department'

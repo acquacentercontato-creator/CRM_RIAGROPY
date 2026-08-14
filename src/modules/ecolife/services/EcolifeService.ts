@@ -97,6 +97,8 @@ export const EcolifeService = {
     return this.create(
       {
         product: item.product,
+        clientId: item.clientId,
+        clientName: item.clientName,
         propertyName: item.propertyName,
         municipality: item.municipality,
         department: item.department,

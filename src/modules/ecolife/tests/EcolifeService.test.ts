@@ -14,6 +14,8 @@ describe('EcolifeService', () => {
   beforeEach(() => localStorage.clear())
   it('keeps swine and poultry diagnostics independent', async () => {
     const common = {
+      clientId: 'client-1',
+      clientName: 'Cliente Teste',
       propertyName: 'Farm',
       municipality: 'City',
       department: 'State',

@@ -43,6 +43,7 @@ interface ModuleAttachmentsTabProps {
   entityNome: string
   moduloContext: ModuleContext
   projetoId?: string
+  onUploadComplete?: () => void
 }
 
 export const ModuleAttachmentsTab = ({
@@ -50,6 +51,7 @@ export const ModuleAttachmentsTab = ({
   entityNome,
   moduloContext,
   projetoId,
+  onUploadComplete,
 }: ModuleAttachmentsTabProps) => {
   const ts = useTranslationService()
   const { can } = useRBAC()
@@ -154,6 +156,7 @@ export const ModuleAttachmentsTab = ({
         onUploadCompleto={() => {
           setUploaderOpen(false)
           reload()
+          onUploadComplete?.()
         }}
       />
 
