@@ -9,7 +9,7 @@ export const ECOLIFE_STATUS = [
   'APRESENTADO',
   'NEGOCIACAO',
   'VENDIDO',
-  'ARQUIVADO',
+  'IMPLANTACAO',
 ] as const
 export type EcolifeStatus = (typeof ECOLIFE_STATUS)[number]
 

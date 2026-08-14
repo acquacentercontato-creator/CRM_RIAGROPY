@@ -18,7 +18,7 @@ export const EcolifeDashboard = ({ rows }: { rows: EcolifeDiagnostic[] }) => {
         maximumFractionDigits: 0,
       }).format(
         rows
-          .filter((row) => row.status !== 'ARQUIVADO')
+          .filter((row) => row.status !== 'IMPLANTACAO')
           .reduce((total, row) => total + row.expectedRevenue, 0)
       ),
     ],
