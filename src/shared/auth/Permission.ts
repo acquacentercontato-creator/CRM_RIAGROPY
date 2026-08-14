@@ -6,6 +6,7 @@ export interface Permission {
   oportunidades: boolean
   riego: boolean
   imoto: boolean
+  ecolife: boolean
   engenharia: boolean
   obras: boolean
   assistencia: boolean
@@ -28,6 +29,7 @@ export type MenuPermissionKey =
   | 'oportunidades'
   | 'riego'
   | 'imoto'
+  | 'ecolife'
   | 'engenharia'
   | 'obras'
   | 'assistencia'

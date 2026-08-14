@@ -36,6 +36,7 @@ export type ModuleContext =
   | 'OBRAS'
   | 'ASSISTENCIA'
   | 'COMERCIAL'
+  | 'ECOLIFE'
 
 export interface AttachmentMetadata {
   id: string

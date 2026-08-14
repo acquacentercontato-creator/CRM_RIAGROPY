@@ -5,6 +5,7 @@ import EventIcon from '@mui/icons-material/Event'
 import PinDropIcon from '@mui/icons-material/PinDrop'
 import WaterDropIcon from '@mui/icons-material/WaterDrop'
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing'
+import SpaIcon from '@mui/icons-material/Spa'
 import EngineeringIcon from '@mui/icons-material/Engineering'
 import ConstructionIcon from '@mui/icons-material/Construction'
 import SupportAgentIcon from '@mui/icons-material/SupportAgent'
@@ -53,6 +54,12 @@ export const navigationItems: NavigationItem[] = [
     labelKey: 'menu.imoto',
     icon: <PrecisionManufacturingIcon fontSize="small" />,
     permission: 'imoto',
+  },
+  {
+    path: '/ecolife',
+    labelKey: 'menu.ecolife',
+    icon: <SpaIcon fontSize="small" />,
+    permission: 'ecolife',
   },
   {
     path: '/engenharia',

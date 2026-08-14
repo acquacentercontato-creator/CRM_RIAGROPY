@@ -21,6 +21,7 @@ const OportunidadesPage = lazy(() =>
 )
 const RiegoPage = lazy(() => import('@/modules/riego/RiegoPage').then((module) => ({ default: module.RiegoPage })))
 const ImotoPage = lazy(() => import('@/modules/imoto/ImotoPage').then((module) => ({ default: module.ImotoPage })))
+const EcolifePage = lazy(() => import('@/modules/ecolife/EcolifePage').then((module) => ({ default: module.EcolifePage })))
 const EngenhariaPage = lazy(() =>
   import('@/modules/engenharia/EngenhariaPage').then((module) => ({ default: module.EngenhariaPage }))
 )
@@ -81,6 +82,10 @@ export const AppRouter = () => {
 
             <Route element={<PermissionRoute permission="imoto" />}>
               <Route path="/imoto" element={<ImotoPage />} />
+            </Route>
+
+            <Route element={<PermissionRoute permission="ecolife" />}>
+              <Route path="/ecolife" element={<EcolifePage />} />
             </Route>
 
             <Route element={<PermissionRoute permission="engenharia" />}>
