@@ -17,6 +17,7 @@ describe('EcolifeService', () => {
       propertyName: 'Farm',
       municipality: 'City',
       department: 'State',
+      consultantName: 'Consultant',
       status: 'LEVANTAMENTO' as const,
       expectedRevenue: 0,
       answers: {},

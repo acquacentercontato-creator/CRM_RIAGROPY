@@ -52,3 +52,23 @@ export const ECOLIFE_QUESTIONS: Record<EcolifeProduct, readonly string[]> = {
     'energyAvailability',
   ],
 }
+
+export const ECOLIFE_QUESTION_SECTIONS: Record<
+  EcolifeProduct,
+  readonly { key: string; questions: readonly string[] }[]
+> = {
+  SWINE: [
+    { key: 'production', questions: ['productionSystem', 'breedingSows', 'growthExpectation', 'birthsPerSow', 'pigletsBorn'] },
+    { key: 'mortality', questions: ['stillborn', 'stillbornWeight', 'sowMortality', 'maternityMortality', 'nurseryMortality', 'rearingMortality', 'finishingMortality', 'averageDeadWeight', 'knowsTotalMass'] },
+    { key: 'currentProcess', questions: ['currentDestination', 'composting', 'usedArea', 'processTime', 'finalDestination'] },
+    { key: 'costs', questions: ['woodShavingsConsumption', 'woodShavingsCost', 'laborHours', 'machineUse', 'fuelConsumption'] },
+    { key: 'problems', questions: ['problems'] },
+    { key: 'expansion', questions: ['futureExpansion'] },
+  ],
+  POULTRY: [
+    { key: 'production', questions: ['birdCount', 'growthPerspective', 'birdsPerHouse', 'model'] },
+    { key: 'currentProcess', questions: ['wasteDestination', 'dailyMass', 'batchDisposalDestination', 'transportMethod', 'containers', 'effluentTreatment'] },
+    { key: 'costs', questions: ['solidFuel', 'waterAvailability', 'energyAvailability'] },
+    { key: 'expansion', questions: ['availableArea'] },
+  ],
+}

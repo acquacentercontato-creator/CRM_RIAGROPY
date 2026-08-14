@@ -15,6 +15,7 @@ export type EcolifeStatus = (typeof ECOLIFE_STATUS)[number]
 
 export type EcolifeTimelineEvent = {
   id: string
+  action: 'CREATED' | 'EDITED' | 'PDF_GENERATED' | 'ATTACHMENT_UPLOADED' | 'STATUS_CHANGED'
   status: EcolifeStatus
   createdAt: string
   actorName: string
@@ -27,6 +28,7 @@ export type EcolifeDiagnostic = {
   propertyName: string
   municipality: string
   department: string
+  consultantName: string
   status: EcolifeStatus
   expectedRevenue: number
   answers: Record<string, string>
@@ -44,6 +46,7 @@ export type EcolifeDiagnosticForm = Pick<
   | 'propertyName'
   | 'municipality'
   | 'department'
+  | 'consultantName'
   | 'status'
   | 'expectedRevenue'
   | 'answers'

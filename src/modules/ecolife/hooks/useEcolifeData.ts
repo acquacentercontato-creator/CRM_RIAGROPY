@@ -25,5 +25,14 @@ export const useEcolifeMutations = () => {
       mutationFn: (item: EcolifeDiagnostic) => EcolifeService.remove(item),
       onSuccess: refresh,
     }),
+    duplicate: useMutation({
+      mutationFn: (item: EcolifeDiagnostic) => EcolifeService.duplicate(item, actor),
+      onSuccess: refresh,
+    }),
+    logAction: useMutation({
+      mutationFn: ({ item, action }: { item: EcolifeDiagnostic; action: 'PDF_GENERATED' | 'ATTACHMENT_UPLOADED' }) =>
+        EcolifeService.logAction(item, action, actor),
+      onSuccess: refresh,
+    }),
   }
 }

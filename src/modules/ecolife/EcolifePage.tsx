@@ -1,6 +1,5 @@
-import { Agriculture, Egg, Spa } from '@mui/icons-material'
+import { Add, Agriculture, ArrowBack, Egg } from '@mui/icons-material'
 import {
-  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -22,46 +21,51 @@ export const EcolifePage = () => {
   const ts = useTranslationService()
   const { data = [], isLoading } = useEcolifeDiagnostics()
   const mutations = useEcolifeMutations()
-  const [product, setProduct] = useState<EcolifeProduct>('SWINE')
+  const [product, setProduct] = useState<EcolifeProduct | null>(null)
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<EcolifeDiagnostic | null>(null)
   const [removing, setRemoving] = useState<EcolifeDiagnostic | null>(null)
-  const start = (next: EcolifeProduct) => {
-    setProduct(next)
+  const start = () => {
     setEditing(null)
     setOpen(true)
   }
+  if (!product) {
+    return (
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ minHeight: '65vh', alignItems: 'stretch', justifyContent: 'center' }}>
+        {(['SWINE', 'POULTRY'] as const).map((item) => (
+          <Paper key={item} variant="outlined" sx={{ flex: 1, maxWidth: 520, display: 'grid' }}>
+            <Button onClick={() => setProduct(item)} sx={{ minHeight: 360, display: 'flex', flexDirection: 'column', gap: 2, fontSize: '1.5rem' }}>
+              {item === 'SWINE' ? <Agriculture sx={{ fontSize: 88 }} /> : <Egg sx={{ fontSize: 88 }} />}
+              {ts(`ecolife.buttons.${item === 'SWINE' ? 'swine' : 'poultry'}`)}
+            </Button>
+          </Paper>
+        ))}
+      </Stack>
+    )
+  }
+  const productRows = data.filter((item) => item.product === product)
   return (
     <Stack spacing={2}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-        <Spa color="success" />
-        <Typography variant="h4">{ts('ecolife.title')}</Typography>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ justifyContent: 'space-between', alignItems: { md: 'center' } }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Button startIcon={<ArrowBack />} onClick={() => setProduct(null)}>{ts('ecolife.actions.back')}</Button>
+          <Typography variant="h4">{ts(`ecolife.products.${product}`)}</Typography>
+        </Stack>
+        <Button variant="contained" startIcon={<Add />} onClick={start}>{ts('ecolife.actions.new')}</Button>
       </Stack>
-      <Alert severity="success">{ts('ecolife.info')}</Alert>
-      <EcolifeDashboard rows={data} />
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-        <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
-          <Button fullWidth size="large" startIcon={<Agriculture />} onClick={() => start('SWINE')}>
-            {ts('ecolife.buttons.swine')}
-          </Button>
-        </Paper>
-        <Paper variant="outlined" sx={{ p: 2, flex: 1 }}>
-          <Button fullWidth size="large" startIcon={<Egg />} onClick={() => start('POULTRY')}>
-            {ts('ecolife.buttons.poultry')}
-          </Button>
-        </Paper>
-      </Stack>
+      <EcolifeDashboard rows={productRows} />
       {isLoading ? (
         <Typography>{ts('ecolife.loading')}</Typography>
       ) : (
         <EcolifeDiagnosticsTable
-          rows={data}
+          rows={productRows}
           onEdit={(item) => {
-            setProduct(item.product)
             setEditing(item)
             setOpen(true)
           }}
           onDelete={setRemoving}
+          onDuplicate={(item) => mutations.duplicate.mutate(item)}
+          onPdf={(item) => mutations.logAction.mutate({ item, action: 'PDF_GENERATED' })}
         />
       )}
       <EcolifeDiagnosticDialog

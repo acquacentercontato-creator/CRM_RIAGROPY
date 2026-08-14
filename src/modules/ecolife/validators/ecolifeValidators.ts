@@ -6,6 +6,7 @@ export const ecolifeDiagnosticSchema = z.object({
   propertyName: z.string().min(2, 'ecolife.validation.property'),
   municipality: z.string().min(2, 'ecolife.validation.municipality'),
   department: z.string().min(2, 'ecolife.validation.department'),
+  consultantName: z.string().min(2, 'ecolife.validation.consultant'),
   status: z.enum(ECOLIFE_STATUS),
   expectedRevenue: z.number().min(0, 'ecolife.validation.revenue'),
   answers: z.record(z.string(), z.string()),

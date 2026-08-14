@@ -7,7 +7,11 @@ import {
   DialogTitle,
   Grid,
   MenuItem,
+  Paper,
   Stack,
+  Step,
+  StepLabel,
+  Stepper,
   Tab,
   Tabs,
   TextField,
@@ -16,7 +20,7 @@ import {
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ModuleAttachmentsTab } from '@/shared/attachments/components/ModuleAttachmentsTab'
-import { ECOLIFE_QUESTIONS } from '@/modules/ecolife/models/ecolifeModels'
+import { ECOLIFE_QUESTIONS, ECOLIFE_QUESTION_SECTIONS } from '@/modules/ecolife/models/ecolifeModels'
 import {
   ECOLIFE_STATUS,
   type EcolifeDiagnostic,
@@ -31,6 +35,7 @@ const emptyForm = (product: EcolifeProduct): EcolifeDiagnosticForm => ({
   propertyName: '',
   municipality: '',
   department: '',
+  consultantName: '',
   status: 'LEVANTAMENTO',
   expectedRevenue: 0,
   answers: Object.fromEntries(ECOLIFE_QUESTIONS[product].map((key) => [key, ''])),
@@ -70,6 +75,7 @@ export const EcolifeDiagnosticDialog = ({
               propertyName: editing.propertyName,
               municipality: editing.municipality,
               department: editing.department,
+              consultantName: editing.consultantName || '',
               status: editing.status,
               expectedRevenue: editing.expectedRevenue,
               answers: editing.answers,
@@ -90,7 +96,7 @@ export const EcolifeDiagnosticDialog = ({
       <DialogContent dividers>
         {tab === 0 && (
           <Grid container spacing={2}>
-            {(['propertyName', 'municipality', 'department'] as const).map((name) => (
+            {(['propertyName', 'municipality', 'department', 'consultantName'] as const).map((name) => (
               <Grid key={name} size={{ xs: 12, md: 6 }}>
                 <Controller
                   name={name}
@@ -152,24 +158,32 @@ export const EcolifeDiagnosticDialog = ({
                 )}
               />
             </Grid>
+            <Grid size={12}>
+              <Stepper activeStep={ECOLIFE_STATUS.indexOf(editing?.status || 'LEVANTAMENTO')} alternativeLabel>
+                {ECOLIFE_STATUS.map((status) => <Step key={status}><StepLabel>{ts(`ecolife.status.${status}`)}</StepLabel></Step>)}
+              </Stepper>
+            </Grid>
           </Grid>
         )}
         {tab === 1 && (
           <Stack spacing={2}>
-            {ECOLIFE_QUESTIONS[editing?.product || product].map((key) => (
-              <Controller
-                key={key}
-                name={`answers.${key}`}
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    multiline
-                    label={ts(`ecolife.questions.${key}`)}
-                  />
-                )}
-              />
+            <Paper variant="outlined" sx={{ p: 2 }}>
+              <Typography variant="h6">{ts('ecolife.sections.property')}</Typography>
+              <Typography color="text.secondary">{ts(`ecolife.products.${editing?.product || product}`)}</Typography>
+            </Paper>
+            {ECOLIFE_QUESTION_SECTIONS[editing?.product || product].map((section) => (
+              <Paper key={section.key} variant="outlined" sx={{ p: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>{ts(`ecolife.sections.${section.key}`)}</Typography>
+                <Grid container spacing={2}>
+                  {section.questions.map((key) => (
+                    <Grid key={key} size={{ xs: 12, md: 6 }}>
+                      <Controller name={`answers.${key}`} control={control} render={({ field }) => (
+                        <TextField {...field} fullWidth multiline minRows={2} label={ts(`ecolife.questions.${key}`)} />
+                      )} />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Paper>
             ))}
           </Stack>
         )}
@@ -178,7 +192,7 @@ export const EcolifeDiagnosticDialog = ({
             <Stack spacing={1}>
               {editing.timeline.map((event) => (
                 <Typography key={event.id}>
-                  {ts(`ecolife.status.${event.status}`)} ·{' '}
+                  {ts(`ecolife.timeline.actions.${event.action || 'CREATED'}`)} · {ts(`ecolife.status.${event.status}`)} ·{' '}
                   {new Date(event.createdAt).toLocaleString(ts('ecolife.locale'))} ·{' '}
                   {event.actorName}
                 </Typography>
