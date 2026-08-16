@@ -7,13 +7,13 @@ export type FirebaseRuntimeConfig = {
   appId: string
 }
 
-export const firebaseConfig: FirebaseRuntimeConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: '',
+export const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "...",
 }
 
-export const firebaseIsConfigured = false
+export const firebaseIsConfigured = true

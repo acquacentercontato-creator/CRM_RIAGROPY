@@ -52,7 +52,17 @@ export const AttachmentService = {
    */
   async upload(request: AttachmentUploadRequest): Promise<AttachmentMetadata> {
     try {
+      console.log("======== ATTACHMENT ========")
+
+console.log("firestoreDb:", firestoreDb)
+
+console.log("firebaseAuth:", firebaseAuth)
+
+console.log("currentUser:", firebaseAuth?.currentUser)
+
+console.log("firebaseStorage:", firebaseStorage)
       const userId = getCurrentUserId()
+      console.log("userId:", userId)
       if (!userId) throw new Error('Usuario nao autenticado')
 
       // Validar arquivo
