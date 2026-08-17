@@ -44,9 +44,9 @@ const USERS = [
     email: 'jonasmaia@riagro.com',
   },
   {
-    id: 'casemiro',
-    name: 'Casemiro Norio',
-    email: 'casemironorio@riagro.com',
+    id: 'cacemiro',
+    name: 'Cacemiro Norio',
+    email: 'cacemironorio@riagro.com',
   },
   {
     id: 'projetista',
