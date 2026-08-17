@@ -23,6 +23,8 @@ describe('EcolifeService', () => {
       priority: 'MEDIA' as const,
       status: 'LEVANTAMENTO' as const,
       expectedRevenue: 0,
+      saleValue: 0,
+      riagroCommission: 0,
       answers: {},
       observations: '',
     }

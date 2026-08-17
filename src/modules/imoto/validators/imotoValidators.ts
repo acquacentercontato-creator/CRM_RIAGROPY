@@ -23,6 +23,8 @@ export const imotoLevantamentoSchema = z
     gpsLat: z.string(),
     gpsLng: z.string(),
     questionnaire: z.record(z.string(), z.string()),
+    valorVenda: z.number().min(0),
+    valorComissaoRiagro: z.number().min(0),
     fotos: z.array(uploadedFileSchema),
     videos: z.array(uploadedFileSchema),
     pdfs: z.array(uploadedFileSchema),

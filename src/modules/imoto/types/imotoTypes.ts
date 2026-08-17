@@ -9,6 +9,11 @@ export const IMOTO_STATUS = [
   'RASCUNHO',
   'EM_ANALISE',
   'ENVIADO',
+  'ORÇAMENTO',
+  'APRESENTACAO',
+  'NEGOCIAÇÃO',
+  'VENDIDO',
+  'CANCELADO',
   'APROVADO',
   'REPROVADO',
 ] as const
@@ -46,6 +51,8 @@ export type ImotoLevantamento = Omit<BaseEntity, 'status'> &
     gpsLat: string
     gpsLng: string
     questionnaire: ImotoQuestionAnswers
+    valorVenda: number
+    valorComissaoRiagro: number
     workflowTipo: 'I' | 'T'
     status: ImotoStatus
   }
@@ -60,6 +67,8 @@ export type ImotoLevantamentoForm = ImotoMediaBuckets & {
   gpsLat: string
   gpsLng: string
   questionnaire: ImotoQuestionAnswers
+  valorVenda: number
+  valorComissaoRiagro: number
 }
 
 export type ImotoActor = {

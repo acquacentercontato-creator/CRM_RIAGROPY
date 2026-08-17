@@ -15,6 +15,8 @@ const diagnostic: EcolifeDiagnostic = {
   priority: 'ALTA',
   status: 'LEVANTAMENTO',
   expectedRevenue: 10000,
+  saleValue: 0,
+  riagroCommission: 0,
   answers: { birdCount: '10000 aves', dailyMass: '50 kg/dia' },
   observations: 'Resumo técnico do levantamento.',
   createdAt: '2026-08-17T12:00:00.000Z',

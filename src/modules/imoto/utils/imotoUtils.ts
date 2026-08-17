@@ -1,9 +1,6 @@
 import { CORE_EVENTS, EventBus } from '@/shared/services/EventBus'
 import type { TimelineEvent } from '@/shared/types/core'
-import {
-  IMOTO_SEGMENT_LABELS,
-  IMOTO_SEGMENT_QUESTIONS,
-} from '@/modules/imoto/models/imotoModels'
+import { IMOTO_SEGMENT_LABELS, IMOTO_SEGMENT_QUESTIONS } from '@/modules/imoto/models/imotoModels'
 import type {
   ImotoActor,
   ImotoLevantamento,
@@ -80,6 +77,8 @@ export const createEmptyLevantamentoForm = (): ImotoLevantamentoForm => ({
   gpsLat: '',
   gpsLng: '',
   questionnaire: createEmptyQuestionnaire('FABRICA_RACOES'),
+  valorVenda: 0,
+  valorComissaoRiagro: 0,
   fotos: [],
   videos: [],
   pdfs: [],

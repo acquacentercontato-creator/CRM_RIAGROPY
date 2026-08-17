@@ -52,7 +52,13 @@ export const ImotoService = {
   async create(payload: ImotoLevantamentoForm, actor: ImotoActor): Promise<ImotoLevantamento> {
     const current = await this.list()
     const timeline = [
-      createTimelineEvent('CRIADO', 'Levantamento criado no modulo IMOTO.', actor, payload.status, null),
+      createTimelineEvent(
+        'CRIADO',
+        'Levantamento criado no modulo IMOTO.',
+        actor,
+        payload.status,
+        null
+      ),
     ]
 
     const workflowTipo = resolveWorkflowType(payload.segmento)
@@ -67,6 +73,8 @@ export const ImotoService = {
       gpsLat: payload.gpsLat,
       gpsLng: payload.gpsLng,
       questionnaire: payload.questionnaire,
+      valorVenda: payload.valorVenda,
+      valorComissaoRiagro: payload.valorComissaoRiagro,
       fotos: payload.fotos,
       videos: payload.videos,
       pdfs: payload.pdfs,
@@ -113,7 +121,10 @@ export const ImotoService = {
       prazo: created.updatedAt,
       comentario: created.observacoes || 'Levantamento IMOTO registrado.',
       checklist: [
-        { label: 'Questionario segmentado preenchido', done: Object.keys(created.questionnaire).length > 0 },
+        {
+          label: 'Questionario segmentado preenchido',
+          done: Object.keys(created.questionnaire).length > 0,
+        },
         { label: 'Coordenadas GPS informadas', done: Boolean(created.gpsLat && created.gpsLng) },
       ],
     })
@@ -127,7 +138,11 @@ export const ImotoService = {
     return created
   },
 
-  async update(id: string, payload: ImotoLevantamentoForm, actor: ImotoActor): Promise<ImotoLevantamento> {
+  async update(
+    id: string,
+    payload: ImotoLevantamentoForm,
+    actor: ImotoActor
+  ): Promise<ImotoLevantamento> {
     const current = await this.list()
     const found = current.find((item) => item.id === id)
     if (!found) throw new Error('Levantamento IMOTO nao encontrado')
@@ -141,7 +156,13 @@ export const ImotoService = {
         found.id,
         found.codigo,
         found.timeline,
-        createTimelineEvent('ATUALIZADO', 'Levantamento atualizado.', actor, payload.status, found.status)
+        createTimelineEvent(
+          'ATUALIZADO',
+          'Levantamento atualizado.',
+          actor,
+          payload.status,
+          found.status
+        )
       ),
       updatedAt: nowIso(),
     }

@@ -21,7 +21,10 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ModuleAttachmentsTab } from '@/shared/attachments/components/ModuleAttachmentsTab'
 import { useClientes } from '@/modules/comercial/hooks/useComercialData'
-import { ECOLIFE_QUESTIONS, ECOLIFE_QUESTION_SECTIONS } from '@/modules/ecolife/models/ecolifeModels'
+import {
+  ECOLIFE_QUESTIONS,
+  ECOLIFE_QUESTION_SECTIONS,
+} from '@/modules/ecolife/models/ecolifeModels'
 import {
   ECOLIFE_PRIORITIES,
   ECOLIFE_STATUS,
@@ -43,6 +46,8 @@ const emptyForm = (product: EcolifeProduct): EcolifeDiagnosticForm => ({
   priority: 'MEDIA',
   status: 'LEVANTAMENTO',
   expectedRevenue: 0,
+  saleValue: 0,
+  riagroCommission: 0,
   answers: Object.fromEntries(ECOLIFE_QUESTIONS[product].map((key) => [key, ''])),
   observations: '',
 })
@@ -90,6 +95,8 @@ export const EcolifeDiagnosticDialog = ({
               priority: editing.priority || 'MEDIA',
               status: editing.status,
               expectedRevenue: editing.expectedRevenue,
+              saleValue: editing.saleValue ?? 0,
+              riagroCommission: editing.riagroCommission ?? 0,
               answers: editing.answers,
               observations: editing.observations,
             }
@@ -140,23 +147,25 @@ export const EcolifeDiagnosticDialog = ({
                 )}
               />
             </Grid>
-            {(['propertyName', 'municipality', 'department', 'consultantName'] as const).map((name) => (
-              <Grid key={name} size={{ xs: 12, md: 6 }}>
-                <Controller
-                  name={name}
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      label={ts(`ecolife.fields.${name}`)}
-                      error={Boolean(errors[name])}
-                      helperText={errors[name] ? ts(String(errors[name]?.message)) : ''}
-                    />
-                  )}
-                />
-              </Grid>
-            ))}
+            {(['propertyName', 'municipality', 'department', 'consultantName'] as const).map(
+              (name) => (
+                <Grid key={name} size={{ xs: 12, md: 6 }}>
+                  <Controller
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label={ts(`ecolife.fields.${name}`)}
+                        error={Boolean(errors[name])}
+                        helperText={errors[name] ? ts(String(errors[name]?.message)) : ''}
+                      />
+                    )}
+                  />
+                </Grid>
+              )
+            )}
             <Grid size={{ xs: 12, md: 6 }}>
               <Controller
                 name="priority"
@@ -169,6 +178,38 @@ export const EcolifeDiagnosticDialog = ({
                       </MenuItem>
                     ))}
                   </TextField>
+                )}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Controller
+                name="saleValue"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="number"
+                    fullWidth
+                    label={ts('ecolife.fields.saleValue')}
+                    slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Controller
+                name="riagroCommission"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="number"
+                    fullWidth
+                    label={ts('ecolife.fields.riagroCommission')}
+                    slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
                 )}
               />
             </Grid>
@@ -192,13 +233,13 @@ export const EcolifeDiagnosticDialog = ({
                 name="expectedRevenue"
                 control={control}
                 render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="number"
-                  fullWidth
-                  label={ts('ecolife.fields.expectedRevenue')}
-                  onChange={(event) => field.onChange(Number(event.target.value))}
-                />
+                  <TextField
+                    {...field}
+                    type="number"
+                    fullWidth
+                    label={ts('ecolife.fields.expectedRevenue')}
+                    onChange={(event) => field.onChange(Number(event.target.value))}
+                  />
                 )}
               />
             </Grid>
@@ -218,8 +259,15 @@ export const EcolifeDiagnosticDialog = ({
               />
             </Grid>
             <Grid size={12}>
-              <Stepper activeStep={ECOLIFE_STATUS.indexOf(editing?.status || 'LEVANTAMENTO')} alternativeLabel>
-                {ECOLIFE_STATUS.map((status) => <Step key={status}><StepLabel>{ts(`ecolife.status.${status}`)}</StepLabel></Step>)}
+              <Stepper
+                activeStep={ECOLIFE_STATUS.indexOf(editing?.status || 'LEVANTAMENTO')}
+                alternativeLabel
+              >
+                {ECOLIFE_STATUS.map((status) => (
+                  <Step key={status}>
+                    <StepLabel>{ts(`ecolife.status.${status}`)}</StepLabel>
+                  </Step>
+                ))}
               </Stepper>
             </Grid>
           </Grid>
@@ -228,17 +276,31 @@ export const EcolifeDiagnosticDialog = ({
           <Stack spacing={2}>
             <Paper variant="outlined" sx={{ p: 2 }}>
               <Typography variant="h6">{ts('ecolife.sections.property')}</Typography>
-              <Typography color="text.secondary">{ts(`ecolife.products.${editing?.product || product}`)}</Typography>
+              <Typography color="text.secondary">
+                {ts(`ecolife.products.${editing?.product || product}`)}
+              </Typography>
             </Paper>
             {ECOLIFE_QUESTION_SECTIONS[editing?.product || product].map((section) => (
               <Paper key={section.key} variant="outlined" sx={{ p: 2 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>{ts(`ecolife.sections.${section.key}`)}</Typography>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  {ts(`ecolife.sections.${section.key}`)}
+                </Typography>
                 <Grid container spacing={2}>
                   {section.questions.map((key) => (
                     <Grid key={key} size={{ xs: 12, md: 6 }}>
-                      <Controller name={`answers.${key}`} control={control} render={({ field }) => (
-                        <TextField {...field} fullWidth multiline minRows={2} label={ts(`ecolife.questions.${key}`)} />
-                      )} />
+                      <Controller
+                        name={`answers.${key}`}
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            fullWidth
+                            multiline
+                            minRows={2}
+                            label={ts(`ecolife.questions.${key}`)}
+                          />
+                        )}
+                      />
                     </Grid>
                   ))}
                 </Grid>
@@ -251,7 +313,8 @@ export const EcolifeDiagnosticDialog = ({
             <Stack spacing={1}>
               {editing.timeline.map((event) => (
                 <Typography key={event.id}>
-                  {ts(`ecolife.timeline.actions.${event.action || 'CREATED'}`)} · {ts(`ecolife.status.${event.status}`)} ·{' '}
+                  {ts(`ecolife.timeline.actions.${event.action || 'CREATED'}`)} ·{' '}
+                  {ts(`ecolife.status.${event.status}`)} ·{' '}
                   {new Date(event.createdAt).toLocaleString(ts('ecolife.locale'))} ·{' '}
                   {event.actorName}
                 </Typography>

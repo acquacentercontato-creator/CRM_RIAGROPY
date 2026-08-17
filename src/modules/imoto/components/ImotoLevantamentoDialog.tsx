@@ -28,7 +28,10 @@ import type {
   ImotoUploadCategory,
 } from '@/modules/imoto/types/imotoTypes'
 import { IMOTO_SEGMENTS, IMOTO_STATUS } from '@/modules/imoto/types/imotoTypes'
-import { createEmptyLevantamentoForm, createEmptyQuestionnaire } from '@/modules/imoto/utils/imotoUtils'
+import {
+  createEmptyLevantamentoForm,
+  createEmptyQuestionnaire,
+} from '@/modules/imoto/utils/imotoUtils'
 import { imotoLevantamentoSchema } from '@/modules/imoto/validators/imotoValidators'
 import { ImotoSegmentForm } from '@/modules/imoto/components/ImotoSegmentForm'
 import { ImotoTimeline } from '@/modules/imoto/components/ImotoTimeline'
@@ -75,6 +78,8 @@ export const ImotoLevantamentoDialog = ({
           ...createEmptyQuestionnaire(editing.segmento),
           ...editing.questionnaire,
         },
+        valorVenda: editing.valorVenda ?? 0,
+        valorComissaoRiagro: editing.valorComissaoRiagro ?? 0,
         fotos: editing.fotos,
         videos: editing.videos,
         pdfs: editing.pdfs,
@@ -141,7 +146,9 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.cliente')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
+                      helperText={
+                        fieldState.error?.message ? ts(fieldState.error.message) : undefined
+                      }
                     />
                   )}
                 />
@@ -156,7 +163,9 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.unidadeIndustrial')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
+                      helperText={
+                        fieldState.error?.message ? ts(fieldState.error.message) : undefined
+                      }
                     />
                   )}
                 />
@@ -171,7 +180,9 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.responsavelTecnico')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
+                      helperText={
+                        fieldState.error?.message ? ts(fieldState.error.message) : undefined
+                      }
                     />
                   )}
                 />
@@ -187,7 +198,9 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.segmento')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
+                      helperText={
+                        fieldState.error?.message ? ts(fieldState.error.message) : undefined
+                      }
                       onChange={(event) => {
                         const value = event.target.value as ImotoLevantamento['segmento']
                         field.onChange(value)
@@ -221,7 +234,9 @@ export const ImotoLevantamentoDialog = ({
                       label={ts('imoto.fields.status')}
                       fullWidth
                       error={Boolean(fieldState.error)}
-                      helperText={fieldState.error?.message ? ts(fieldState.error.message) : undefined}
+                      helperText={
+                        fieldState.error?.message ? ts(fieldState.error.message) : undefined
+                      }
                     >
                       {IMOTO_STATUS.map((status) => (
                         <MenuItem key={status} value={status}>
@@ -232,23 +247,63 @@ export const ImotoLevantamentoDialog = ({
                   )}
                 />
               </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="valorVenda"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      type="number"
+                      label={ts('imoto.fields.valorVenda')}
+                      fullWidth
+                      slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
+                      onChange={(event) => field.onChange(Number(event.target.value))}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="valorComissaoRiagro"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      type="number"
+                      label={ts('imoto.fields.valorComissaoRiagro')}
+                      fullWidth
+                      slotProps={{ htmlInput: { min: 0, step: 0.01 } }}
+                      onChange={(event) => field.onChange(Number(event.target.value))}
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
 
-            <ImotoSegmentForm segment={watchedValues.segmento} control={control} errors={formState.errors} />
+            <ImotoSegmentForm
+              segment={watchedValues.segmento}
+              control={control}
+              errors={formState.errors}
+            />
 
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 5 }}>
                 <Controller
                   name="gpsLat"
                   control={control}
-                  render={({ field }) => <TextField {...field} label={ts('imoto.fields.gpsLat')} fullWidth />}
+                  render={({ field }) => (
+                    <TextField {...field} label={ts('imoto.fields.gpsLat')} fullWidth />
+                  )}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 5 }}>
                 <Controller
                   name="gpsLng"
                   control={control}
-                  render={({ field }) => <TextField {...field} label={ts('imoto.fields.gpsLng')} fullWidth />}
+                  render={({ field }) => (
+                    <TextField {...field} label={ts('imoto.fields.gpsLng')} fullWidth />
+                  )}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 2 }}>
@@ -277,7 +332,15 @@ export const ImotoLevantamentoDialog = ({
             <Controller
               name="observacoes"
               control={control}
-              render={({ field }) => <TextField {...field} label={ts('imoto.fields.observacoes')} multiline minRows={3} fullWidth />}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label={ts('imoto.fields.observacoes')}
+                  multiline
+                  minRows={3}
+                  fullWidth
+                />
+              )}
             />
 
             <Grid container spacing={2}>

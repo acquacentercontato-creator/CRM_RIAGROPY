@@ -25,6 +25,7 @@ import { AutomationMetricsWidget } from '@/shared/crm-automation/components/Auto
 import { AutomationService } from '@/shared/crm-automation'
 import { TechnicalKpiPanel } from '@/shared/components/TechnicalKpiPanel'
 import { AssistenciaService } from '@/modules/assistencia/services/AssistenciaService'
+import { BusinessPortfolioDashboard } from '@/modules/dashboard/components/BusinessPortfolioDashboard'
 
 export const DashboardPage = () => {
   const { data, isLoading, role, filters, setFilters, widgets } = useExecutiveDashboard()
@@ -39,7 +40,9 @@ export const DashboardPage = () => {
     return (
       <Stack spacing={2}>
         <Typography variant="h4">{ts('dashboard.title')}</Typography>
-        <Typography color="text.secondary">{isLoading ? ts('dashboard.loading') : ts('dashboard.noData')}</Typography>
+        <Typography color="text.secondary">
+          {isLoading ? ts('dashboard.loading') : ts('dashboard.noData')}
+        </Typography>
       </Stack>
     )
   }
@@ -62,6 +65,8 @@ export const DashboardPage = () => {
 
       <Alert severity="info">{ts('dashboard.info')}</Alert>
 
+      <BusinessPortfolioDashboard commercialKpis={data.kpis} />
+
       {hasWidget('filters') && (
         <DashboardFiltersBar value={filters} options={data.filters} onChange={setFilters} />
       )}
@@ -77,7 +82,10 @@ export const DashboardPage = () => {
 
         {hasWidget('barChart') && (
           <Grid size={{ xs: 12, lg: 6 }}>
-            <BarChartWidget title={ts('dashboard.charts.operationalDist')} points={data.charts.bar} />
+            <BarChartWidget
+              title={ts('dashboard.charts.operationalDist')}
+              points={data.charts.bar}
+            />
           </Grid>
         )}
 
@@ -89,13 +97,19 @@ export const DashboardPage = () => {
 
         {hasWidget('areaChart') && (
           <Grid size={{ xs: 12, lg: 8 }}>
-            <AreaChartWidget title={ts('dashboard.charts.surveysEvolution')} points={data.charts.area} />
+            <AreaChartWidget
+              title={ts('dashboard.charts.surveysEvolution')}
+              points={data.charts.area}
+            />
           </Grid>
         )}
 
         {hasWidget('heatmap') && (
           <Grid size={{ xs: 12 }}>
-            <HeatmapWidget title={ts('dashboard.charts.activityHeatmap')} cells={data.charts.heatmap} />
+            <HeatmapWidget
+              title={ts('dashboard.charts.activityHeatmap')}
+              cells={data.charts.heatmap}
+            />
           </Grid>
         )}
 
@@ -202,7 +216,9 @@ export const DashboardPage = () => {
         {hasWidget('workflowPipeline') && (
           <Grid size={{ xs: 12 }}>
             <Paper sx={{ p: 2 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>{ts('workflow.title')}</Typography>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                {ts('workflow.title')}
+              </Typography>
               <WorkflowPipelineMetrics metrics={WorkflowPipelineService.calcularMetricas()} />
             </Paper>
           </Grid>
@@ -231,8 +247,20 @@ export const DashboardPage = () => {
           <Grid size={{ xs: 12 }}>
             <Paper sx={{ p: 2 }}>
               <TechnicalKpiPanel
-                engenharia={{ emRevisao: 0, aguardandoAprovacao: 0, liberados: 0, tempoMedioDias: 7, slaVencidos: 0 }}
-                obras={{ emAndamento: 0, atrasadas: 0, emEntrega: 0, tempoMedioDias: 15, slaVencidos: 0 }}
+                engenharia={{
+                  emRevisao: 0,
+                  aguardandoAprovacao: 0,
+                  liberados: 0,
+                  tempoMedioDias: 7,
+                  slaVencidos: 0,
+                }}
+                obras={{
+                  emAndamento: 0,
+                  atrasadas: 0,
+                  emEntrega: 0,
+                  tempoMedioDias: 15,
+                  slaVencidos: 0,
+                }}
                 assistencia={AssistenciaService.getMetrics()}
               />
             </Paper>

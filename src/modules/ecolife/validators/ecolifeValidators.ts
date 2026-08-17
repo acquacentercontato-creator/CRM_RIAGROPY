@@ -16,6 +16,8 @@ export const ecolifeDiagnosticSchema = z.object({
   priority: z.enum(ECOLIFE_PRIORITIES),
   status: z.enum(ECOLIFE_STATUS),
   expectedRevenue: z.number().min(0, 'ecolife.validation.revenue'),
+  saleValue: z.number().min(0, 'ecolife.validation.revenue'),
+  riagroCommission: z.number().min(0, 'ecolife.validation.revenue'),
   answers: z.record(z.string(), z.string()),
   observations: z.string(),
 })

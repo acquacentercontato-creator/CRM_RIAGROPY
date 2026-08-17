@@ -40,7 +40,13 @@ export const EcolifeService = {
       createdBy: actor.id,
       updatedBy: actor.id,
       timeline: [
-        { id: makeId(), action: 'CREATED', status: payload.status, createdAt: timestamp, actorName: actor.name },
+        {
+          id: makeId(),
+          action: 'CREATED',
+          status: payload.status,
+          createdAt: timestamp,
+          actorName: actor.name,
+        },
       ],
     }
     let created: EcolifeDiagnostic
@@ -64,8 +70,24 @@ export const EcolifeService = {
       updatedBy: actor.id,
       timeline: [
         ...found.timeline,
-        { id: makeId(), action: 'EDITED', status: payload.status, createdAt: timestamp, actorName: actor.name },
-        ...(found.status === payload.status ? [] : [{ id: makeId(), action: 'STATUS_CHANGED' as const, status: payload.status, createdAt: timestamp, actorName: actor.name }]),
+        {
+          id: makeId(),
+          action: 'EDITED',
+          status: payload.status,
+          createdAt: timestamp,
+          actorName: actor.name,
+        },
+        ...(found.status === payload.status
+          ? []
+          : [
+              {
+                id: makeId(),
+                action: 'STATUS_CHANGED' as const,
+                status: payload.status,
+                createdAt: timestamp,
+                actorName: actor.name,
+              },
+            ]),
       ],
     }
     const { id: _id, ...changes } = updated
@@ -106,23 +128,39 @@ export const EcolifeService = {
         priority: item.priority || 'MEDIA',
         status: 'LEVANTAMENTO',
         expectedRevenue: item.expectedRevenue,
+        saleValue: item.saleValue ?? 0,
+        riagroCommission: item.riagroCommission ?? 0,
         answers: { ...item.answers },
         observations: item.observations,
       },
       actor
     )
   },
-  async logAction(item: EcolifeDiagnostic, action: EcolifeTimelineEvent['action'], actor: EcolifeActor) {
+  async logAction(
+    item: EcolifeDiagnostic,
+    action: EcolifeTimelineEvent['action'],
+    actor: EcolifeActor
+  ) {
     const current = await this.list(item.product)
     const found = current.find((row) => row.id === item.id)
     if (!found) return
     const updated: EcolifeDiagnostic = {
       ...found,
-      timeline: [...found.timeline, { id: makeId(), action, status: found.status, createdAt: now(), actorName: actor.name }],
+      timeline: [
+        ...found.timeline,
+        { id: makeId(), action, status: found.status, createdAt: now(), actorName: actor.name },
+      ],
     }
     const { id: _id, ...changes } = updated
     void _id
-    try { await getEcolifeRepository(item.product).update(item.id, changes) } catch { /* offline cache */ }
-    writeLocal(item.product, current.map((row) => (row.id === item.id ? updated : row)))
+    try {
+      await getEcolifeRepository(item.product).update(item.id, changes)
+    } catch {
+      /* offline cache */
+    }
+    writeLocal(
+      item.product,
+      current.map((row) => (row.id === item.id ? updated : row))
+    )
   },
 }

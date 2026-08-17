@@ -10,6 +10,11 @@ const statusColor: Record<ImotoStatus, 'default' | 'warning' | 'info' | 'success
   RASCUNHO: 'default',
   EM_ANALISE: 'info',
   ENVIADO: 'warning',
+  ORÇAMENTO: 'info',
+  APRESENTACAO: 'info',
+  NEGOCIAÇÃO: 'warning',
+  VENDIDO: 'success',
+  CANCELADO: 'error',
   APROVADO: 'success',
   REPROVADO: 'error',
 }

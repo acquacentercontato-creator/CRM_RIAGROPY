@@ -37,6 +37,8 @@ export type EcolifeDiagnostic = {
   priority: EcolifePriority
   status: EcolifeStatus
   expectedRevenue: number
+  saleValue: number
+  riagroCommission: number
   answers: Record<string, string>
   observations: string
   createdAt: string
@@ -58,6 +60,8 @@ export type EcolifeDiagnosticForm = Pick<
   | 'priority'
   | 'status'
   | 'expectedRevenue'
+  | 'saleValue'
+  | 'riagroCommission'
   | 'answers'
   | 'observations'
 >
