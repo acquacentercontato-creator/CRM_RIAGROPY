@@ -68,7 +68,10 @@ export const RiegoLevantamentoDialog = ({
         observacoes: editing.observacoes,
         gpsLat: editing.gpsLat,
         gpsLng: editing.gpsLng,
-        questionnaire: editing.questionnaire,
+        questionnaire: {
+          ...createEmptyQuestionnaire(editing.segmento),
+          ...editing.questionnaire,
+        },
         fotos: editing.fotos,
         videos: editing.videos,
         documentos: editing.documentos,
@@ -166,7 +169,10 @@ export const RiegoLevantamentoDialog = ({
                       onChange={(event) => {
                         const value = event.target.value as RiegoSegment
                         field.onChange(value)
-                        setValue('questionnaire', createEmptyQuestionnaire(value))
+                        setValue('questionnaire', {
+                          ...createEmptyQuestionnaire(value),
+                          ...watchedValues.questionnaire,
+                        })
                       }}
                     >
                       {RIEGO_SEGMENTS.map((segment) => (
