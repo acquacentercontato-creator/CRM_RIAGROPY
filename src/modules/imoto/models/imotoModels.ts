@@ -32,15 +32,54 @@ export const IMOTO_MEDIA_KEYS = {
   KMZ: 'kmzs',
 } as const
 
-export const IMOTO_SEGMENT_QUESTIONS: Record<
-  ImotoSegment,
-  Array<{ key: string; label: string }>
-> = {
+type ImotoQuestion = { key: string; label: string; required?: boolean }
+
+export const IMOTO_SEGMENT_QUESTIONS: Record<ImotoSegment, ImotoQuestion[]> = {
   FABRICA_RACOES: [
     { key: 'capacidadeProducaoDia', label: 'Capacidade de producao por dia (t)' },
     { key: 'tipoMisturador', label: 'Tipo de misturador principal' },
     { key: 'numeroSilos', label: 'Numero de silos de armazenamento' },
     { key: 'demandaAutomacao', label: 'Demanda de automacao industrial' },
+    { key: 'nomeRepresentante', label: 'Nome do representante', required: false },
+    { key: 'etapaObra', label: 'Etapa atual da obra', required: false },
+    { key: 'nomeEmpresa', label: 'Nome da empresa', required: false },
+    { key: 'nomeFantasia', label: 'Nome fantasia da empresa', required: false },
+    { key: 'responsavelFabrica', label: 'Nome do responsável da fábrica', required: false },
+    { key: 'nomeComprador', label: 'Nome do comprador', required: false },
+    { key: 'telefoneResponsavel', label: 'Telefone do responsável', required: false },
+    { key: 'telefoneComprador', label: 'Telefone do comprador', required: false },
+    { key: 'emailResponsavel', label: 'E-mail do responsável', required: false },
+    { key: 'emailComprador', label: 'E-mail do comprador', required: false },
+    { key: 'cidade', label: 'Cidade', required: false },
+    { key: 'localizacaoAreaConstrucao', label: 'Localização e área disponível para construção', required: false },
+    { key: 'producaoDesejadaMes', label: 'Produção desejada por mês', required: false },
+    { key: 'turnosTrabalho', label: 'Turnos de trabalho', required: false },
+    { key: 'horasTrabalhoTurno', label: 'Horas de trabalho por turno', required: false },
+    { key: 'diasTrabalhadosMes', label: 'Dias trabalhados no mês', required: false },
+    { key: 'racaoGado', label: 'Tipos de ração para gado', required: false },
+    { key: 'racaoAves', label: 'Tipos de ração para aves', required: false },
+    { key: 'racaoSuinos', label: 'Tipos de ração para suínos', required: false },
+    { key: 'racaoPetFilhotes', label: 'Tipos de ração para pets/filhotes', required: false },
+    { key: 'armazenagemAtual', label: 'Forma de armazenagem atual', required: false },
+    { key: 'produtosMaisUtilizados', label: 'Produtos mais utilizados', required: false },
+    { key: 'armazenagemExterna', label: 'Detalhes da armazenagem externa', required: false },
+    { key: 'armazenagemInterna', label: 'Detalhes da armazenagem interna', required: false },
+    { key: 'diametroPeneiraNormal', label: 'Diâmetro da peneira para moagem normal', required: false },
+    { key: 'diametroPeneiraFina', label: 'Diâmetro da peneira para moagem fina', required: false },
+    { key: 'tipoMoagem', label: 'Tipo de moagem', required: false },
+    { key: 'dosagem', label: 'Produtos dosados e forma de armazenagem', required: false },
+    { key: 'tipoDosagem', label: 'Tipo de dosagem', required: false },
+    { key: 'necessitaMoegaDosagem', label: 'Necessidade de moega para dosagem', required: false },
+    { key: 'equipamentosDosagem', label: 'Equipamentos necessários para dosagem', required: false },
+    { key: 'dosagemOleo', label: 'Dosagem de óleo e capacidade de armazenagem', required: false },
+    { key: 'peletizacao', label: 'Peletização, extrusão ou laminação', required: false },
+    { key: 'quantidadeSilosExpedicao', label: 'Quantidade de silos de expedição', required: false },
+    { key: 'armazenagemRacaoPronta', label: 'Forma de armazenagem da ração pronta', required: false },
+    { key: 'balancaRobo', label: 'Necessidade de balança robô', required: false },
+    { key: 'quantidadeSilosEnsaque', label: 'Quantidade de silos para ensaque interno', required: false },
+    { key: 'ensacadeira', label: 'Tipo de ensacadeira', required: false },
+    { key: 'voltagem', label: 'Tipo de alimentação elétrica', required: false },
+    { key: 'tensaoVoltagem', label: 'Tensão elétrica disponível', required: false },
   ],
   TRANSPORTADORES_RODOVIARIOS: [
     { key: 'capacidadeTransporteHora', label: 'Capacidade de transporte por hora (t/h)' },
