@@ -34,6 +34,8 @@ export const imotoLevantamentoSchema = z
     const questions = IMOTO_SEGMENT_QUESTIONS[value.segmento]
 
     questions.forEach((question) => {
+      if (question.required === false) return
+
       const answer = value.questionnaire[question.key]
       if (!answer || !answer.trim()) {
         ctx.addIssue({
