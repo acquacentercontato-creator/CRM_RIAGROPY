@@ -23,6 +23,7 @@ import { ModuleAttachmentsTab } from '@/shared/attachments/components/ModuleAtta
 import { useClientes } from '@/modules/comercial/hooks/useComercialData'
 import { ECOLIFE_QUESTIONS, ECOLIFE_QUESTION_SECTIONS } from '@/modules/ecolife/models/ecolifeModels'
 import {
+  ECOLIFE_PRIORITIES,
   ECOLIFE_STATUS,
   type EcolifeDiagnostic,
   type EcolifeDiagnosticForm,
@@ -39,6 +40,7 @@ const emptyForm = (product: EcolifeProduct): EcolifeDiagnosticForm => ({
   municipality: '',
   department: '',
   consultantName: '',
+  priority: 'MEDIA',
   status: 'LEVANTAMENTO',
   expectedRevenue: 0,
   answers: Object.fromEntries(ECOLIFE_QUESTIONS[product].map((key) => [key, ''])),
@@ -85,6 +87,7 @@ export const EcolifeDiagnosticDialog = ({
               municipality: editing.municipality,
               department: editing.department,
               consultantName: editing.consultantName || '',
+              priority: editing.priority || 'MEDIA',
               status: editing.status,
               expectedRevenue: editing.expectedRevenue,
               answers: editing.answers,
@@ -154,6 +157,21 @@ export const EcolifeDiagnosticDialog = ({
                 />
               </Grid>
             ))}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Controller
+                name="priority"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} select fullWidth label={ts('ecolife.fields.priority')}>
+                    {ECOLIFE_PRIORITIES.map((priority) => (
+                      <MenuItem key={priority} value={priority}>
+                        {ts(`ecolife.priorities.${priority}`)}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+            </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <Controller
                 name="status"
