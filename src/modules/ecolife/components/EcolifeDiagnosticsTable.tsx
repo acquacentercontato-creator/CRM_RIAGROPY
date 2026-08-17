@@ -81,7 +81,7 @@ export const EcolifeDiagnosticsTable = ({
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={ts('ecolife.actions.pdf')}>
-                  <IconButton onClick={() => { onPdf(row); EcolifePdfService.print(row, ts) }}>
+                  <IconButton onClick={() => { onPdf(row); EcolifePdfService.download(row, ts) }}>
                     <PictureAsPdf />
                   </IconButton>
                 </Tooltip>
