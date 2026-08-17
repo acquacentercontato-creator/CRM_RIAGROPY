@@ -20,6 +20,7 @@ describe('EcolifeService', () => {
       municipality: 'City',
       department: 'State',
       consultantName: 'Consultant',
+      priority: 'MEDIA' as const,
       status: 'LEVANTAMENTO' as const,
       expectedRevenue: 0,
       answers: {},
