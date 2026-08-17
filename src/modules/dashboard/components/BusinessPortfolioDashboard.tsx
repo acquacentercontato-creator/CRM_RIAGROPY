@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react'
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded'
+import TableViewRoundedIcon from '@mui/icons-material/TableViewRounded'
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded'
 import {
+  Button,
   Card,
   CardContent,
   Chip,
@@ -18,6 +22,13 @@ import {
   Tabs,
   Typography,
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/auth/AuthContext'
+import {
+  CorporateReportService,
+  type CorporateReportKpi,
+  type CorporateReportPayload,
+} from '@/modules/administracao/services/CorporateReportService'
 import { useRiegoLevantamentos } from '@/modules/riego/hooks/useRiegoData'
 import { useImotoLevantamentos } from '@/modules/imoto/hooks/useImotoData'
 import { useEcolifeDiagnostics } from '@/modules/ecolife/hooks/useEcolifeData'
@@ -32,6 +43,7 @@ type PortfolioRow = {
   client: string
   modality: string
   status: string
+  date: string
   saleValue?: number
   commission?: number
 }
@@ -145,6 +157,8 @@ export const BusinessPortfolioDashboard = ({
   commercialKpis: DashboardKpi[]
 }) => {
   const ts = useTranslationService()
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const [tab, setTab] = useState(0)
   const [showValues, setShowValues] = useState(
     () => localStorage.getItem('riagro.dashboard.showValues') !== 'false'
@@ -161,6 +175,7 @@ export const BusinessPortfolioDashboard = ({
         client: item.clienteNome,
         modality: item.segmento,
         status: item.status,
+        date: item.updatedAt || item.createdAt,
       })),
     [riego]
   )
@@ -173,6 +188,7 @@ export const BusinessPortfolioDashboard = ({
         client: item.clienteNome,
         modality: ts(`imoto.segments.${item.segmento}`),
         status: item.status,
+        date: item.updatedAt || item.createdAt,
         saleValue: item.valorVenda ?? 0,
         commission: item.valorComissaoRiagro ?? 0,
       }))
@@ -182,6 +198,7 @@ export const BusinessPortfolioDashboard = ({
     client: item.clientName,
     modality: ts(`ecolife.products.${item.product}`),
     status: item.status,
+    date: item.updatedAt || item.createdAt,
     saleValue: item.saleValue ?? 0,
     commission: item.riagroCommission ?? 0,
   }))
@@ -192,6 +209,44 @@ export const BusinessPortfolioDashboard = ({
     ecolifeRows,
   ]
   const activeRows = portfolios[tab - 1] || []
+  const reportDefinitions = [
+    { title: 'Clientes e Comercial', subtitle: 'Clientes, agenda, visitas e oportunidades' },
+    { title: 'Projetos de Irrigação', subtitle: 'Todas as modalidades e seus status' },
+    { title: 'Fábricas de Ração', subtitle: 'Projetos, vendas e comissões' },
+    { title: 'Transportadores Rodoviários', subtitle: 'Projetos, vendas e comissões' },
+    { title: 'ECOLIFE', subtitle: 'Suinocultura e avicultura' },
+  ]
+  const definition = reportDefinitions[tab]
+  const soldRows = activeRows.filter((row) => row.status === 'VENDIDO')
+  const reportKpis: CorporateReportKpi[] = tab === 0
+    ? commercialKpis.map((kpi) => ({ label: ts(kpi.label), value: String(kpi.value) }))
+    : [
+        { label: 'Projetos', value: String(activeRows.length) },
+        { label: 'Vendas concluídas', value: String(soldRows.length) },
+        { label: 'Valor real vendido', value: showValues && tab !== 1
+          ? currency.format(soldRows.reduce((total, row) => total + (row.saleValue || 0), 0)) : 'Valores ocultos' },
+        { label: 'Comissão RIAGRO', value: showValues && tab !== 1
+          ? currency.format(soldRows.reduce((total, row) => total + (row.commission || 0), 0)) : 'Valores ocultos' },
+      ]
+  const reportPayload: CorporateReportPayload = {
+    title: `Relatório Executivo · ${definition.title}`,
+    subtitle: definition.subtitle,
+    periodLabel: 'Período ativo no Dashboard',
+    clientLabel: 'Todos os clientes',
+    statusLabel: 'Todos os status',
+    generatedBy: user?.name || user?.email || 'RIAGRO CRM',
+    includeValues: showValues && tab > 1,
+    kpis: reportKpis,
+    rows: activeRows.map((row) => ({
+      code: row.code,
+      client: row.client,
+      modality: row.modality,
+      status: row.status,
+      date: row.date,
+      saleValue: row.saleValue,
+      commission: row.commission,
+    })),
+  }
 
   return (
     <Stack spacing={2}>
@@ -229,6 +284,20 @@ export const BusinessPortfolioDashboard = ({
           <Tab label="05 · ECOLIFE" />
         </Tabs>
       </Paper>
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}
+        sx={{ justifyContent: 'flex-end' }}>
+        <Button variant="text" startIcon={<TuneRoundedIcon />} onClick={() => navigate('/relatorios')}>
+          Relatório com filtros avançados
+        </Button>
+        <Button variant="outlined" startIcon={<TableViewRoundedIcon />}
+          onClick={() => CorporateReportService.downloadCsv(reportPayload)}>
+          Exportar Excel/CSV
+        </Button>
+        <Button variant="contained" startIcon={<PictureAsPdfRoundedIcon />}
+          onClick={() => CorporateReportService.downloadPdf(reportPayload)}>
+          Baixar PDF desta aba
+        </Button>
+      </Stack>
       {tab === 0 ? (
         <Grid container spacing={2}>
           {commercialKpis.map((kpi) => (
