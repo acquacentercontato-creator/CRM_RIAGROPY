@@ -29,6 +29,8 @@ export const riegoLevantamentoSchema = z
     const questions = RIEGO_SEGMENT_QUESTIONS[value.segmento]
 
     questions.forEach((question) => {
+      if (question.required === false) return
+
       const answer = value.questionnaire[question.key]
       if (!answer || !answer.trim()) {
         ctx.addIssue({
