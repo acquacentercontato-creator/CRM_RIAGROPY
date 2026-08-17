@@ -103,6 +103,7 @@ export const EcolifeService = {
         municipality: item.municipality,
         department: item.department,
         consultantName: item.consultantName,
+        priority: item.priority || 'MEDIA',
         status: 'LEVANTAMENTO',
         expectedRevenue: item.expectedRevenue,
         answers: { ...item.answers },
