@@ -13,6 +13,9 @@ export const ECOLIFE_STATUS = [
 ] as const
 export type EcolifeStatus = (typeof ECOLIFE_STATUS)[number]
 
+export const ECOLIFE_PRIORITIES = ['BAIXA', 'MEDIA', 'ALTA', 'CRITICA'] as const
+export type EcolifePriority = (typeof ECOLIFE_PRIORITIES)[number]
+
 export type EcolifeTimelineEvent = {
   id: string
   action: 'CREATED' | 'EDITED' | 'PDF_GENERATED' | 'ATTACHMENT_UPLOADED' | 'STATUS_CHANGED'
@@ -31,6 +34,7 @@ export type EcolifeDiagnostic = {
   municipality: string
   department: string
   consultantName: string
+  priority: EcolifePriority
   status: EcolifeStatus
   expectedRevenue: number
   answers: Record<string, string>
@@ -51,6 +55,7 @@ export type EcolifeDiagnosticForm = Pick<
   | 'municipality'
   | 'department'
   | 'consultantName'
+  | 'priority'
   | 'status'
   | 'expectedRevenue'
   | 'answers'
