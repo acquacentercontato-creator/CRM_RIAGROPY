@@ -71,7 +71,10 @@ export const ImotoLevantamentoDialog = ({
         observacoes: editing.observacoes,
         gpsLat: editing.gpsLat,
         gpsLng: editing.gpsLng,
-        questionnaire: editing.questionnaire,
+        questionnaire: {
+          ...createEmptyQuestionnaire(editing.segmento),
+          ...editing.questionnaire,
+        },
         fotos: editing.fotos,
         videos: editing.videos,
         pdfs: editing.pdfs,
@@ -82,7 +85,15 @@ export const ImotoLevantamentoDialog = ({
     }
 
     const draft = ImotoService.loadDraft()
-    return draft ?? createEmptyLevantamentoForm()
+    if (!draft) return createEmptyLevantamentoForm()
+
+    return {
+      ...draft,
+      questionnaire: {
+        ...createEmptyQuestionnaire(draft.segmento),
+        ...draft.questionnaire,
+      },
+    }
   }, [editing])
 
   const { control, reset, setValue, handleSubmit, formState } = useForm<ImotoLevantamentoForm>({
@@ -180,7 +191,14 @@ export const ImotoLevantamentoDialog = ({
                       onChange={(event) => {
                         const value = event.target.value as ImotoLevantamento['segmento']
                         field.onChange(value)
-                        setValue('questionnaire', createEmptyQuestionnaire(value), { shouldDirty: true })
+                        setValue(
+                          'questionnaire',
+                          {
+                            ...createEmptyQuestionnaire(value),
+                            ...watchedValues.questionnaire,
+                          },
+                          { shouldDirty: true }
+                        )
                       }}
                     >
                       {IMOTO_SEGMENTS.map((segment) => (
