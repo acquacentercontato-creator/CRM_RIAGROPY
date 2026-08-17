@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf'
-import { RIAGRO_LOGO_DATA_URL } from '@/modules/ecolife/assets/riagroLogo'
+import { RIAGRO_LOGO_DATA_URL as riagroLogo } from '@/assets/riagroLogo'
 import type { EcolifeDiagnostic } from '@/modules/ecolife/types/ecolifeTypes'
 
 type Translate = (key: string, params?: Record<string, unknown>) => string
@@ -25,7 +25,7 @@ const createDocument = (item: EcolifeDiagnostic, translate: Translate) => {
   let y = 18
 
   const addPageHeader = () => {
-    document.addImage(RIAGRO_LOGO_DATA_URL, 'JPEG', MARGIN, 10, 48, 20)
+    document.addImage(riagroLogo, 'PNG', MARGIN, 10, 56, 17)
     document.setDrawColor(33, 111, 62)
     document.setLineWidth(0.7)
     document.line(MARGIN, 34, PAGE_WIDTH - MARGIN, 34)
