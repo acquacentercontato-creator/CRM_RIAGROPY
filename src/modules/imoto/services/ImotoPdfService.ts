@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf'
-import riagroLogo from '@/assets/logo-riagro.png'
+import { RIAGRO_LOGO_DATA_URL as riagroLogo } from '@/assets/riagroLogo'
 import modeloCabine from '@/modules/imoto/assets/transportadores/modelo-cabine.png'
 import larguraChassi from '@/modules/imoto/assets/transportadores/largura-chassi.png'
 import configuracaoVeiculo from '@/modules/imoto/assets/transportadores/configuracao-veiculo.png'
@@ -59,7 +59,7 @@ const createDocument = async (item: ImotoLevantamento, translate: Translate) => 
 
   const addHeader = () => {
     const logo = images.get(riagroLogo)
-    if (logo) document.addImage(logo, 'PNG', MARGIN, 8, 42, 18)
+    if (logo) document.addImage(logo, 'PNG', MARGIN, 8, 52, 15.75)
     document.setFont('helvetica', 'bold')
     document.setFontSize(9)
     document.setTextColor(25, 67, 47)
