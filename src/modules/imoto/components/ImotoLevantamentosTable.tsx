@@ -15,10 +15,12 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import SendIcon from '@mui/icons-material/Send'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import { useMemo, useState } from 'react'
 import { ImotoStatusChip } from '@/modules/imoto/components/ImotoStatusChip'
 import { useTranslationService } from '@/shared/hooks/useTranslationService'
 import type { ImotoLevantamento } from '@/modules/imoto/types/imotoTypes'
+import { ImotoPdfService } from '@/modules/imoto/services/ImotoPdfService'
 
 type ImotoLevantamentosTableProps = {
   rows: ImotoLevantamento[]
@@ -54,7 +56,12 @@ export const ImotoLevantamentosTable = ({
   return (
     <Paper sx={{ p: 2 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mb: 2 }}>
-        <TextField label={ts('imoto.table.search')} value={search} onChange={(e) => setSearch(e.target.value)} fullWidth />
+        <TextField
+          label={ts('imoto.table.search')}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          fullWidth
+        />
         <Button variant="contained" onClick={onCreate}>
           {ts('imoto.newSurvey')}
         </Button>
@@ -88,7 +95,20 @@ export const ImotoLevantamentosTable = ({
                   <IconButton size="small" onClick={() => onEdit(row)}>
                     <EditIcon fontSize="small" />
                   </IconButton>
-                  <IconButton size="small" color="warning" disabled={row.status === 'ENVIADO'} onClick={() => onSend(row)}>
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    aria-label={ts('actions.download')}
+                    onClick={() => void ImotoPdfService.download(row, ts)}
+                  >
+                    <PictureAsPdfIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    color="warning"
+                    disabled={row.status === 'ENVIADO'}
+                    onClick={() => onSend(row)}
+                  >
                     <SendIcon fontSize="small" />
                   </IconButton>
                   <IconButton size="small" color="error" onClick={() => onDelete(row)}>
