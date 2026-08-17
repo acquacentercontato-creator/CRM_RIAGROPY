@@ -29,7 +29,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import agricultureBackground from '@/assets/login-agriculture.webp'
-import riagroLogo from '@/assets/logo-riagro.png'
+import { RIAGRO_LOGO_DATA_URL as riagroLogo } from '@/assets/riagroLogo'
 import { useAuth } from './AuthContext'
 
 const USERS = [
