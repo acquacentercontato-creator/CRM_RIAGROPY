@@ -1,94 +1,107 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { PropsWithChildren } from 'react'
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  type User as FirebaseUser,
+} from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 import type { AppRole, AuthUser } from '@/shared/types/auth'
 import { APP_ROLES } from '@/shared/types/auth'
-import { TranslationService } from '@/shared/services/TranslationService'
-
-type LoginPayload = {
-  role: AppRole
-  email: string
-}
+import { firebaseAuth, firestoreDb } from '@/firebase/app'
 
 type AuthContextType = {
   user: AuthUser | null
   roles: readonly AppRole[]
-  login: (payload: LoginPayload) => void
-  logout: () => void
+  login: (email: string, password: string) => Promise<void>
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
-
-const AUTH_STORAGE_KEY = 'riagro.auth.session.v1'
-
 const sanitizeEmail = (email: string) => email.trim().toLowerCase()
 
-const readInitialUser = (): AuthUser | null => {
-  const raw = globalThis.localStorage?.getItem(AUTH_STORAGE_KEY)
-  if (!raw) return null
+type UserDocument = {
+  name?: string
+  nome?: string
+  email?: string
+  role?: string
+  perfil?: string
+}
 
-  try {
-    const parsed = JSON.parse(raw) as AuthUser
-    if (!APP_ROLES.includes(parsed.role)) return null
-    if (!parsed.email || !parsed.id) return null
-    return {
-      ...parsed,
-      email: sanitizeEmail(parsed.email),
-      name: parsed.name || sanitizeEmail(parsed.email),
-    }
-  } catch {
-    return null
+const normalizeRole = (value: unknown): AppRole | null => {
+  if (typeof value !== 'string') return null
+  const normalized = value.trim().toUpperCase()
+  if (normalized === 'ADMIN' || normalized === 'ADMINISTRADOR') return 'ADMINISTRADOR'
+  return APP_ROLES.includes(normalized as AppRole) ? (normalized as AppRole) : null
+}
+
+const loadUserDocument = async (firebaseUser: FirebaseUser): Promise<UserDocument> => {
+  if (!firestoreDb) throw new Error('Firestore indisponível')
+
+  const byUid = await getDoc(doc(firestoreDb, 'users', firebaseUser.uid))
+  if (byUid.exists()) return byUid.data() as UserDocument
+
+  throw new Error('Usuário não cadastrado na coleção users')
+}
+
+const toAuthUser = async (firebaseUser: FirebaseUser): Promise<AuthUser> => {
+  const profile = await loadUserDocument(firebaseUser)
+  const email = sanitizeEmail(firebaseUser.email || profile.email || '')
+  const role = normalizeRole(profile.role ?? profile.perfil)
+  if (!role) throw new Error('Perfil inválido na coleção users')
+
+  return {
+    id: firebaseUser.uid,
+    name: profile.name || profile.nome || firebaseUser.displayName || email,
+    email,
+    role,
   }
 }
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<AuthUser | null>(readInitialUser)
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [initializing, setInitializing] = useState(Boolean(firebaseAuth))
 
-  const login = useCallback(({ role, email }: LoginPayload) => {
-    const normalizedEmail = sanitizeEmail(email)
+  useEffect(() => {
+    if (!firebaseAuth) return
 
-    if (!APP_ROLES.includes(role)) {
-      throw new Error(TranslationService.t('errors.invalidRole'))
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      throw new Error(TranslationService.t('errors.invalidEmail'))
-    }
-
-    const session: AuthUser = {
-      id: `user-${normalizedEmail}`,
-      name: normalizedEmail,
-      email: normalizedEmail,
-      role,
-    }
-
-    globalThis.localStorage?.setItem(AUTH_STORAGE_KEY, JSON.stringify(session))
-    setUser(session)
+    return onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
+      try {
+        setUser(firebaseUser ? await toAuthUser(firebaseUser) : null)
+      } catch {
+        setUser(null)
+      } finally {
+        setInitializing(false)
+      }
+    })
   }, [])
 
-  const logout = useCallback(() => {
-    globalThis.localStorage?.removeItem(AUTH_STORAGE_KEY)
+  const login = useCallback(async (email: string, password: string) => {
+    if (!firebaseAuth) throw new Error('Firebase Authentication indisponível')
+
+    const normalizedEmail = sanitizeEmail(email)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      throw new Error('E-mail inválido')
+    }
+
+    const credential = await signInWithEmailAndPassword(firebaseAuth, normalizedEmail, password)
+    setUser(await toAuthUser(credential.user))
+  }, [])
+
+  const logout = useCallback(async () => {
+    if (firebaseAuth) await signOut(firebaseAuth)
     setUser(null)
   }, [])
 
-  const value = useMemo(
-    () => ({
-      user,
-      roles: APP_ROLES,
-      login,
-      logout,
-    }),
-    [user, login, logout]
-  )
+  const value = useMemo(() => ({ user, roles: APP_ROLES, login, logout }), [user, login, logout])
 
+  if (initializing) return null
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
-
-  if (!context) {
-    throw new Error('useAuth must be used inside AuthProvider')
-  }
-
+  if (!context) throw new Error('useAuth must be used inside AuthProvider')
   return context
 }
