@@ -51,7 +51,7 @@ export const EcolifePage = () => {
     } catch {
       // O diagnóstico permanece salvo e o relatório continua disponível para impressão.
     }
-    EcolifePdfService.print(item, ts)
+    EcolifePdfService.download(item, ts)
   }
   if (!product) {
     return (
